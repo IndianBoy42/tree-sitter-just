@@ -1,0 +1,20 @@
+{
+  "name": "tree-sitter-just",
+  "version": "0.1.0",
+  "description": "Treesitter grammar for Justfiles (casey/just)",
+  "main": "grammar.js",
+  "scripts": {
+    "test": "tree-sitter test",
+    "gen": "tree-sitter generate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "y"
+  },
+  "keywords": [
+    "tree-sitter",
+    "justfiles"
+  ],
+  "author": "Anshuman Medhi",
+  "license": "Apache-2.0"
+}
