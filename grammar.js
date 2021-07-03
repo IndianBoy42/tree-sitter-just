@@ -33,9 +33,9 @@ module.exports = grammar({
     //               | 'set' 'shell' ':=' '[' string (',' string)* ','? ']'
     setting: ($) =>
       choice(
-        seq("set", "dotenv-load", optional($.boolean)),
-        seq("set", "export", optional($.boolean)),
-        seq("set", "positional-arguments", optional($.boolean)),
+        seq("set", "dotenv-load", optional($.boolean), $.eol),
+        seq("set", "export", optional($.boolean), $.eol),
+        seq("set", "positional-arguments", optional($.boolean), $.eol),
         seq(
           "set",
           "shell",
@@ -44,7 +44,8 @@ module.exports = grammar({
           $.string,
           repeat(seq(",", $.string)),
           optional(","),
-          "]"
+          "]",
+          $.eol
         )
       ),
 
@@ -64,7 +65,7 @@ module.exports = grammar({
           "}",
           "else",
           "{",
-          "expression",
+          $.expression,
           "}"
         ),
         seq($.value, "+", $.expression),
@@ -149,13 +150,17 @@ module.exports = grammar({
     // body          : INDENT line+ DEDENT
     body: ($) => seq($.INDENT, repeat1($.line), $.DEDENT),
 
+    // TODO: how to handle the LINE token
     // line          : LINE (TEXT | interpolation)+ NEWLINE
     //               | NEWLINE
     line: ($) =>
       choice(
-        seq($.LINE, repeat1(choice($.TEXT, $.interpolation)), $.NEWLINE),
+        seq(repeat1(choice($.text, $.interpolation)), $.NEWLINE),
         $.NEWLINE
       ),
+
+    // TODO: separately parse bash/fish to a good enough extent here
+    text: ($) => $.TEXT,
 
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),
@@ -171,9 +176,9 @@ module.exports = grammar({
 
     // TODO: IDK about these
     DEDENT: (_) => /\n/,
-    LINE: (_) => /\s/,
+    SPACE: (_) => /\s/,
     STRING: (_) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
     INDENTED_STRING: (_) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes
-    TEXT: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/, //recipe text, only matches in a recipe body
+    TEXT: (_) => /[^\s]+/, //recipe text, only matches in a recipe body
   },
 });

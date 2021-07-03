@@ -1,15 +1,5 @@
 [
   {
-    "type": "NAME",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "TEXT",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "alias",
     "named": true,
     "fields": {},
@@ -225,19 +215,15 @@
       "required": true,
       "types": [
         {
-          "type": "LINE",
-          "named": true
-        },
-        {
           "type": "NEWLINE",
           "named": true
         },
         {
-          "type": "TEXT",
+          "type": "interpolation",
           "named": true
         },
         {
-          "type": "interpolation",
+          "type": "text",
           "named": true
         }
       ]
@@ -318,10 +304,14 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "boolean",
+          "named": true
+        },
+        {
+          "type": "eol",
           "named": true
         },
         {
@@ -368,6 +358,21 @@
         },
         {
           "type": "STRING",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "text",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "TEXT",
           "named": true
         }
       ]
@@ -500,7 +505,7 @@
     "named": true
   },
   {
-    "type": "LINE",
+    "type": "NAME",
     "named": true
   },
   {
@@ -512,7 +517,15 @@
     "named": true
   },
   {
+    "type": "SPACE",
+    "named": true
+  },
+  {
     "type": "STRING",
+    "named": true
+  },
+  {
+    "type": "TEXT",
     "named": true
   },
   {
@@ -537,10 +550,6 @@
   },
   {
     "type": "export",
-    "named": false
-  },
-  {
-    "type": "expression",
     "named": false
   },
   {
