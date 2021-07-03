@@ -110,6 +110,7 @@ module.exports = grammar({
         seq($.expression, ",", $.sequence),
         seq($.expression, optional(","))
       ),
+
     // recipe        : '@'? NAME parameter* variadic? ':' dependency* body?
     recipe: ($) =>
       seq(
@@ -118,9 +119,10 @@ module.exports = grammar({
         repeat($.parameter),
         optional($.variadic),
         ":",
-        repeat(dependency),
-        optional(body)
+        repeat($.dependency),
+        optional($.body)
       ),
+
     // parameter     : '$'? NAME
     //               | '$'? NAME '=' value
     parameter: ($) =>
@@ -135,10 +137,11 @@ module.exports = grammar({
 
     // dependency    : NAME
     //               | '(' NAME expression* ')'
-    dependency: ($) => choice($.NAME, seq("(", NAME, repeat(expression), ")")),
+    dependency: ($) =>
+      choice($.NAME, seq("(", $.NAME, repeat($.expression), ")")),
 
     // body          : INDENT line+ DEDENT
-    body: ($) => seq($.IDENT, repeat1($.line), $.DEDENT),
+    body: ($) => seq($.INDENT, repeat1($.line), $.DEDENT),
 
     // line          : LINE (TEXT | interpolation)+ NEWLINE
     //               | NEWLINE
@@ -153,7 +156,7 @@ module.exports = grammar({
 
     BACKTICK: ($) => /`[^`]*`/,
     INDENTED_BACKTICK: ($) => /```[^(```)]*```/,
-    COMMENT: ($) => /#([^!].*)?$/,
+    COMMENT: ($) => /\#([^!].*)?/, // /\#([^!].*)?$/, // Problem: '$' Regex assertions not supported
     INDENT: ($) => /\s\s\s\s/,
     NAME: ($) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
     NEWLINE: ($) => /\n|\r\n/,
