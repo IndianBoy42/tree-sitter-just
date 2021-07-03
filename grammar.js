@@ -2,7 +2,6 @@ module.exports = grammar({
   name: "just",
 
   rules: {
-    // TODO: add the actual grammar rules
     // justfile      : item* EOF
     source_file: ($) => repeat($.item),
 
@@ -87,13 +86,16 @@ module.exports = grammar({
     //               | string
     //               | '(' expression ')'
     value: ($) =>
-      choice(
-        seq($.NAME, "(", optional($.sequence), ")"),
-        seq($.BACKTICK),
-        seq($.INDENTED_BACKTICK),
-        seq($.NAME),
-        seq($.string),
-        seq("(", $.expression, ")")
+      prec.left(
+        0,
+        choice(
+          seq($.NAME, "(", optional($.sequence), ")"),
+          seq($.BACKTICK),
+          seq($.INDENTED_BACKTICK),
+          seq($.NAME),
+          seq($.string),
+          seq("(", $.expression, ")")
+        )
       ),
 
     // string        : STRING
@@ -111,16 +113,19 @@ module.exports = grammar({
         seq($.expression, optional(","))
       ),
 
-    // recipe        : '@'? NAME parameter* variadic? ':' dependency* body?
+    // recipe        : '@'? NAME parameter* variadic_parameters? ':' dependency* body?
     recipe: ($) =>
-      seq(
-        optional("@"),
-        $.NAME,
-        repeat($.parameter),
-        optional($.variadic),
-        ":",
-        repeat($.dependency),
-        optional($.body)
+      prec.left(
+        0,
+        seq(
+          optional("@"),
+          $.NAME,
+          repeat($.parameter),
+          optional($.variadic_parameters),
+          ":",
+          repeat($.dependency),
+          optional($.body)
+        )
       ),
 
     // parameter     : '$'? NAME
@@ -131,9 +136,10 @@ module.exports = grammar({
         seq(optional("$"), $.NAME, "=", $.value)
       ),
 
-    // variadic      : '*' parameter
+    // variadic_parameters      : '*' parameter
     //               | '+' parameter
-    variadic: ($) => choice(seq("*", $.parameter), seq("+", $.parameter)),
+    variadic_parameters: ($) =>
+      choice(seq("*", $.parameter), seq("+", $.parameter)),
 
     // dependency    : NAME
     //               | '(' NAME expression* ')'
@@ -154,20 +160,20 @@ module.exports = grammar({
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),
 
-    BACKTICK: ($) => /`[^`]*`/,
-    INDENTED_BACKTICK: ($) => /```[^(```)]*```/,
-    COMMENT: ($) => /\#([^!].*)?/, // /\#([^!].*)?$/, // Problem: '$' Regex assertions not supported
-    INDENT: ($) => /\s\s\s\s/,
-    NAME: ($) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
-    NEWLINE: ($) => /\n|\r\n/,
-    RAW_STRING: ($) => /'[^']*'/,
-    INDENTED_RAW_STRING: ($) => /'''[^(''')]*'''/,
+    BACKTICK: (_) => /`[^`]*`/,
+    INDENTED_BACKTICK: (_) => /```[^(```)]*```/,
+    COMMENT: (_) => /\#([^!].*)?/, // /\#([^!].*)?$/, // FIXME: '$' Regex assertions not supported
+    INDENT: (_) => /\s\s\s\s/,
+    NAME: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
+    NEWLINE: (_) => /\n|\r\n/,
+    RAW_STRING: (_) => /'[^']*'/,
+    INDENTED_RAW_STRING: (_) => /'''[^(''')]*'''/,
 
     // TODO: IDK about these
-    DEDENT: ($) => /\s\s\s\s/,
-    LINE: ($) => /\s/,
-    STRING: ($) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
-    INDENTED_STRING: ($) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes
-    TEXT: ($) => /[a-zA-Z_][a-zA-Z0-9_-]*/, //recipe text, only matches in a recipe body
+    DEDENT: (_) => /\n/,
+    LINE: (_) => /\s/,
+    STRING: (_) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
+    INDENTED_STRING: (_) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes
+    TEXT: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/, //recipe text, only matches in a recipe body
   },
 });
