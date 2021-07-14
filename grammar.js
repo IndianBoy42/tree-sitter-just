@@ -1,6 +1,8 @@
 module.exports = grammar({
   name: "just",
 
+  externals: ($) => [$.INDENT, $.DEDENT, $.NEWLINE],
+
   rules: {
     // justfile      : item* EOF
     source_file: ($) => repeat($.item),
@@ -168,14 +170,11 @@ module.exports = grammar({
     BACKTICK: (_) => /`[^`]*`/,
     INDENTED_BACKTICK: (_) => /```[^(```)]*```/,
     COMMENT: (_) => /\#([^!].*)?/, // /\#([^!].*)?$/, // FIXME: '$' Regex assertions not supported
-    INDENT: (_) => /\s\s\s\s/,
     NAME: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
-    NEWLINE: (_) => /\n|\r\n/,
     RAW_STRING: (_) => /'[^']*'/,
     INDENTED_RAW_STRING: (_) => /'''[^(''')]*'''/,
 
     // TODO: IDK about these
-    DEDENT: (_) => /\n/,
     SPACE: (_) => /\s/,
     STRING: (_) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
     INDENTED_STRING: (_) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes

@@ -823,17 +823,9 @@
       "type": "PATTERN",
       "value": "\\#([^!].*)?"
     },
-    "INDENT": {
-      "type": "PATTERN",
-      "value": "\\s\\s\\s\\s"
-    },
     "NAME": {
       "type": "PATTERN",
       "value": "[a-zA-Z_][a-zA-Z0-9_-]*"
-    },
-    "NEWLINE": {
-      "type": "PATTERN",
-      "value": "\\n|\\r\\n"
     },
     "RAW_STRING": {
       "type": "PATTERN",
@@ -842,10 +834,6 @@
     "INDENTED_RAW_STRING": {
       "type": "PATTERN",
       "value": "'''[^(''')]*'''"
-    },
-    "DEDENT": {
-      "type": "PATTERN",
-      "value": "\\n"
     },
     "SPACE": {
       "type": "PATTERN",
@@ -872,7 +860,20 @@
   ],
   "conflicts": [],
   "precedences": [],
-  "externals": [],
+  "externals": [
+    {
+      "type": "SYMBOL",
+      "name": "INDENT"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "DEDENT"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "NEWLINE"
+    }
+  ],
   "inline": [],
   "supertypes": []
 }
