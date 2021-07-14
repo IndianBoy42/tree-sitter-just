@@ -763,6 +763,10 @@
           "type": "SEQ",
           "members": [
             {
+              "type": "SYMBOL",
+              "name": "LINE"
+            },
+            {
               "type": "REPEAT1",
               "content": {
                 "type": "CHOICE",
@@ -835,10 +839,6 @@
       "type": "PATTERN",
       "value": "'''[^(''')]*'''"
     },
-    "SPACE": {
-      "type": "PATTERN",
-      "value": "\\s"
-    },
     "STRING": {
       "type": "PATTERN",
       "value": "\"[^\"]*\""
@@ -872,6 +872,10 @@
     {
       "type": "SYMBOL",
       "name": "NEWLINE"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "LINE"
     }
   ],
   "inline": [],

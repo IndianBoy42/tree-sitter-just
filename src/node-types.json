@@ -215,6 +215,10 @@
       "required": true,
       "types": [
         {
+          "type": "LINE",
+          "named": true
+        },
+        {
           "type": "NEWLINE",
           "named": true
         },
@@ -505,6 +509,10 @@
     "named": true
   },
   {
+    "type": "LINE",
+    "named": true
+  },
+  {
     "type": "NAME",
     "named": true
   },
@@ -514,10 +522,6 @@
   },
   {
     "type": "RAW_STRING",
-    "named": true
-  },
-  {
-    "type": "SPACE",
     "named": true
   },
   {

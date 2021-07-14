@@ -1,7 +1,7 @@
 module.exports = grammar({
   name: "just",
 
-  externals: ($) => [$.INDENT, $.DEDENT, $.NEWLINE],
+  externals: ($) => [$.INDENT, $.DEDENT, $.NEWLINE, $.LINE],
 
   rules: {
     // justfile      : item* EOF
@@ -157,7 +157,7 @@ module.exports = grammar({
     //               | NEWLINE
     line: ($) =>
       choice(
-        seq(repeat1(choice($.text, $.interpolation)), $.NEWLINE),
+        seq($.LINE, repeat1(choice($.text, $.interpolation)), $.NEWLINE),
         $.NEWLINE
       ),
 
@@ -175,7 +175,6 @@ module.exports = grammar({
     INDENTED_RAW_STRING: (_) => /'''[^(''')]*'''/,
 
     // TODO: IDK about these
-    SPACE: (_) => /\s/,
     STRING: (_) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
     INDENTED_STRING: (_) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes
     TEXT: (_) => /[^\s]+/, //recipe text, only matches in a recipe body

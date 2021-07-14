@@ -5,13 +5,14 @@
 #include <cassert>
 #include <cstring>
 #include <cwctype>
+#include <iostream>
 #include <string>
 #include <vector>
 
-enum TokenType { INDENT, DEDENT, NEWLINE };
+enum TokenType { INDENT, DEDENT, NEWLINE, LINE };
 
 struct ScannerState {
-	uint32_t prev_indent;
+	uint32_t prev_indent = 0;
 };
 
 extern "C" {
@@ -49,8 +50,11 @@ void tree_sitter_just_external_scanner_deserialize(void *payload, const char *bu
 	// ...
 	ScannerState *state = static_cast<ScannerState *>(payload);
 	const char *end = buffer + length;
-	// convert string to curr_indent
-	state->prev_indent = std::stoi(std::string(buffer, end));
+	// convert string to prev_indent
+	if (length == 0)
+		state->prev_indent = 0;
+	else
+		state->prev_indent = std::stoi(std::string(buffer, end));
 }
 
 // This function is responsible for recognizing external tokens. It should return true if a token
@@ -66,6 +70,12 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
 	auto get_column = [lexer] { return lexer->get_column(lexer); };
 	bool (*is_at_included_range_start)(const TSLexer *) = lexer->is_at_included_range_start;
 
+	if (state->prev_indent > 0) {
+		state->prev_indent = 0;
+		result_symbol = LINE;
+		return true;
+	}
+
 	bool eol = false;
 	int indent = 0;
 	while (std::iswspace(lookahead)) {
@@ -73,22 +83,24 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
 			case '\n':
 			case '\r':
 				eol = true;
+				indent = 0;
 				skip();
 				break;
 
 			case '\t':
 			case ' ':
 				indent++;
+				skip();
 				break;
 
-			case '#':
-				// Skip past the whole comment
-				while (lexer->lookahead && lexer->lookahead != '\n') {
-					skip();
-				}
-				skip();
-				indent = 0;
-				break;
+				// case '#':
+				// 	// Skip past the whole comment
+				// 	while (lookahead && lookahead != '\n') {
+				// 		skip();
+				// 	}
+				// 	skip();
+				// 	indent = 0;
+				// 	break;
 
 			default:
 				break;
@@ -96,14 +108,20 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
 	}
 
 	if (eol) {
+		indent = indent ? get_column() : 0;
 		if (indent != 0 && state->prev_indent == 0) {
 			result_symbol = INDENT;
+			state->prev_indent = indent;
 		} else if (indent == 0 && state->prev_indent != 0) {
 			result_symbol = DEDENT;
-		} else if (indent != state->prev_indent) {
-			// Technically an error, idk what to do
-			return false;
+			state->prev_indent = indent;
+		} else if (indent == state->prev_indent && indent > 0) {
+			result_symbol = LINE;
 		}
+		//  else if (indent != state->prev_indent) {
+		// 	// Technically an error, idk what to do
+		// 	return false;
+		// }
 		if (valid_symbols[result_symbol]) {
 			return true;
 		} else if (valid_symbols[NEWLINE]) {
