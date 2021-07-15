@@ -27,15 +27,12 @@ You can use the `nvim-treesitter/playground` plugin [from here](https://github.c
 - [x] Implement a basic parser that is able to understand all features of Justfiles
 - [ ] Implement queries for highlighting using `nvim-treesitter` ([reference](https://tree-sitter.github.io/tree-sitter/syntax-highlighting), `highlights.scm`)
 - [ ] Implement queries for textobjects compatible with [`nvim-treesitter/nvim-treesitter-textobjects`](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
-  - [ ] @block.inner|outer
-  - [ ] @call.inner|outer
-  - [ ] @class.inner|outer
+  - [ ] @block.inner|outer (recipe)
+  - [ ] @function.inner|outer (recipe)
+  - [ ] @call.inner|outer (dependencies)
   - [ ] @comment.outer
   - [ ] @conditional.inner|outer
-  - [ ] @frame.inner|outer
-  - [ ] @function.inner|outer
-  - [ ] @loop.inner|outer
   - [ ] @parameter.inner|outer
-  - [ ] @scopename.inner|outer
+  - [ ] @statement.outer (recipe line or one variable)
 - [ ] Implement support for indentation using `nvim-treesitter`
 - [ ] Implement support for code folding using `nvim-treesitter` (`folds.scm`)
