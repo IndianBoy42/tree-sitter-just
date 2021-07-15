@@ -18,7 +18,9 @@ module.exports = grammar({
 
     // eol           : NEWLINE
     //               | COMMENT NEWLINE
-    eol: ($) => choice($.NEWLINE, seq($.COMMENT, $.NEWLINE)),
+    eol: ($) => choice($.NEWLINE, $.comment),
+
+    comment: ($) => seq("#", /.*/, $.NEWLINE),
 
     // alias         : 'alias' NAME ':=' NAME
     alias: ($) => seq("alias", $.NAME, ":=", $.NAME),
@@ -119,15 +121,20 @@ module.exports = grammar({
     // recipe        : '@'? NAME parameter* variadic_parameters? ':' dependency* body?
     recipe: ($) =>
       prec.left(
-        0,
+        2,
         seq(
           optional("@"),
           $.NAME,
           repeat($.parameter),
           optional($.variadic_parameters),
           ":",
+          optional(" "),
           repeat($.dependency),
+          $.NEWLINE,
           optional($.body)
+          // optional(" "),
+          // $.NEWLINE,
+          // choice($.body, $.NEWLINE)
         )
       ),
 
@@ -150,14 +157,17 @@ module.exports = grammar({
       choice($.NAME, seq("(", $.NAME, repeat($.expression), ")")),
 
     // body          : INDENT line+ DEDENT
-    body: ($) => seq($.INDENT, repeat1($.line), $.DEDENT),
+    body: ($) => seq($.INDENT, optional($.shebang), repeat1($.line), $.DEDENT),
+    // body: ($) => seq($.INDENT, repeat1($.line), $.DEDENT),
+
+    shebang: ($) => seq("#!", /.*/, $.NEWLINE),
 
     // TODO: how to handle the LINE token
     // line          : LINE (TEXT | interpolation)+ NEWLINE
     //               | NEWLINE
     line: ($) =>
       choice(
-        seq($.LINE, repeat1(choice($.text, $.interpolation)), $.NEWLINE),
+        seq(repeat1(choice($.text, $.interpolation)), $.NEWLINE),
         $.NEWLINE
       ),
 
@@ -169,7 +179,7 @@ module.exports = grammar({
 
     BACKTICK: (_) => /`[^`]*`/,
     INDENTED_BACKTICK: (_) => /```[^(```)]*```/,
-    COMMENT: (_) => /\#([^!].*)?/, // /\#([^!].*)?$/, // FIXME: '$' Regex assertions not supported
+    // COMMENT: (_) => /\#([^!].*)?/, // /\#([^!].*)?$/, // FIXME: '$' Regex assertions not supported
     NAME: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
     RAW_STRING: (_) => /'[^']*'/,
     INDENTED_RAW_STRING: (_) => /'''[^(''')]*'''/,

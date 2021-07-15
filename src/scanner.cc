@@ -1,5 +1,5 @@
+#include "tree_sitter/parser.h"
 #include <stdio.h>
-#include <tree_sitter/parser.h>
 
 #include <algorithm>
 #include <cassert>
@@ -11,126 +11,128 @@
 
 enum TokenType { INDENT, DEDENT, NEWLINE, LINE };
 
-struct ScannerState {
-	uint32_t prev_indent = 0;
+struct Scanner {
+  uint32_t prev_indent = 0;
+  // bool eol;
 };
 
 extern "C" {
 
-// This function should create your scanner object. It will only be called once anytime your
-// language is set on a parser. Often, you will want to allocate memory on the heap and return a
-// pointer to it. If your external scanner doesn’t need to maintain any state, it’s ok to return
-// NULL.
-void *tree_sitter_just_external_scanner_create() { return new ScannerState(); }
+// This function should create your scanner object. It will only be called once
+// anytime your language is set on a parser. Often, you will want to allocate
+// memory on the heap and return a pointer to it. If your external scanner
+// doesn’t need to maintain any state, it’s ok to return NULL.
+void *tree_sitter_just_external_scanner_create() { return new Scanner(); }
 
-// This function should free any memory used by your scanner. It is called once when a parser is
-// deleted or assigned a different language. It receives as an argument the same pointer that was
-// returned from the create function. If your create function didn’t allocate any memory, this
-// function can be a noop.
+// This function should free any memory used by your scanner. It is called once
+// when a parser is deleted or assigned a different language. It receives as an
+// argument the same pointer that was returned from the create function. If your
+// create function didn’t allocate any memory, this function can be a noop.
 void tree_sitter_just_external_scanner_destroy(void *payload) {
-	delete static_cast<ScannerState *>(payload);
+  delete static_cast<Scanner *>(payload);
 }
 
-// Serialize the state of the scanner. This is called when the parser is serialized. It receives as
-// an argument the same pointer that was returned from the create function.
-unsigned tree_sitter_just_external_scanner_serialize(void *payload, char *buffer) {
-	// ...
-	char *start = buffer;
-	const ScannerState *state = static_cast<ScannerState *>(payload);
-	// Convert curr_indent and prev_indent to string and push to buffer
-	auto curr = std::to_string(state->prev_indent);
-	memcpy(buffer, curr.c_str(), curr.size());
-	buffer += curr.size();
-	return buffer - start;
+// Serialize the state of the scanner. This is called when the parser is
+// serialized. It receives as an argument the same pointer that was returned
+// from the create function.
+unsigned tree_sitter_just_external_scanner_serialize(void *payload,
+                                                     char *buffer) {
+  // ...
+  char *start = buffer;
+  const Scanner *state = static_cast<Scanner *>(payload);
+
+  // *buffer++ = state->eol;
+
+  // Convert curr_indent and prev_indent to string and push to buffer
+  auto curr = std::to_string(state->prev_indent);
+  memcpy(buffer, curr.c_str(), curr.size());
+  buffer += curr.size();
+
+  return buffer - start;
 }
 
-// Reconstruct a scanner from the serialized state. This is called when the parser is deserialized.
-void tree_sitter_just_external_scanner_deserialize(void *payload, const char *buffer,
-												   unsigned length) {
-	// ...
-	ScannerState *state = static_cast<ScannerState *>(payload);
-	const char *end = buffer + length;
-	// convert string to prev_indent
-	if (length == 0)
-		state->prev_indent = 0;
-	else
-		state->prev_indent = std::stoi(std::string(buffer, end));
+// Reconstruct a scanner from the serialized state. This is called when the
+// parser is deserialized.
+void tree_sitter_just_external_scanner_deserialize(void *payload,
+                                                   const char *buffer,
+                                                   unsigned length) {
+  // ...
+  Scanner *state = static_cast<Scanner *>(payload);
+  const char *end = buffer + length;
+
+  if (length == 0) {
+    *state = {};
+    return;
+  }
+
+  // state->eol = (Scanner::State)*buffer++;
+  // state->sw = Scanner::State::NONE;
+
+  // convert string to prev_indent
+  state->prev_indent = std::stoi(std::string(buffer, end));
 }
 
-// This function is responsible for recognizing external tokens. It should return true if a token
-// was recognized, and false otherwise.
+// This function is responsible for recognizing external tokens. It should
+// return true if a token was recognized, and false otherwise.
 bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
-											const bool *valid_symbols) {
-	ScannerState *state = static_cast<ScannerState *>(payload);
-	int32_t &lookahead = lexer->lookahead;
-	TSSymbol &result_symbol = lexer->result_symbol;
-	auto advance = [lexer] { lexer->advance(lexer, false); };
-	auto skip = [lexer] { lexer->advance(lexer, true); };
-	void (*mark_end)(TSLexer *) = lexer->mark_end;
-	auto get_column = [lexer] { return lexer->get_column(lexer); };
-	bool (*is_at_included_range_start)(const TSLexer *) = lexer->is_at_included_range_start;
+                                            const bool *valid_symbols) {
+  Scanner *state = static_cast<Scanner *>(payload);
+  int32_t &lookahead = lexer->lookahead;
+  TSSymbol &result_symbol = lexer->result_symbol;
+  auto advance = [lexer] { lexer->advance(lexer, false); };
+  auto skip = [lexer] { lexer->advance(lexer, true); };
+  void (*mark_end)(TSLexer *) = lexer->mark_end;
+  auto get_column = [lexer] { return lexer->get_column(lexer); };
+  bool (*is_at_included_range_start)(const TSLexer *) =
+      lexer->is_at_included_range_start;
 
-	if (state->prev_indent > 0) {
-		state->prev_indent = 0;
-		result_symbol = LINE;
-		return true;
-	}
+  // Handle backslash escaping for newlines
+  if (valid_symbols[NEWLINE]) {
+    bool escape = false;
+    if (lookahead == '\\') {
+      escape = true;
+      skip();
+    }
 
-	bool eol = false;
-	int indent = 0;
-	while (std::iswspace(lookahead)) {
-		switch (lookahead) {
-			case '\n':
-			case '\r':
-				eol = true;
-				indent = 0;
-				skip();
-				break;
+    bool eol = false;
+    while (lookahead == '\n' || lookahead == '\r') {
+      eol = true;
+      skip();
+    }
+    if (eol && !escape) {
+      result_symbol = NEWLINE;
+      return true;
+    }
+  }
 
-			case '\t':
-			case ' ':
-				indent++;
-				skip();
-				break;
+  if (valid_symbols[INDENT] || valid_symbols[DEDENT]) {
+    while (std::iswspace(lookahead)) {
+      switch (lookahead) {
+      case '\n':
+        // state->eol = true;
+        return false;
 
-				// case '#':
-				// 	// Skip past the whole comment
-				// 	while (lookahead && lookahead != '\n') {
-				// 		skip();
-				// 	}
-				// 	skip();
-				// 	indent = 0;
-				// 	break;
+      case '\t':
+      case ' ':
+        skip();
+        break;
+      }
+    }
 
-			default:
-				break;
-		}
-	}
+    auto indent = get_column();
+    if (indent > state->prev_indent && valid_symbols[INDENT] &&
+        state->prev_indent == 0) {
+      result_symbol = INDENT;
+      state->prev_indent = indent;
+      return true;
+    } else if (indent < state->prev_indent && valid_symbols[DEDENT] &&
+               indent == 0) {
+      result_symbol = DEDENT;
+      state->prev_indent = indent;
+      return true;
+    }
+  }
 
-	if (eol) {
-		indent = indent ? get_column() : 0;
-		if (indent != 0 && state->prev_indent == 0) {
-			result_symbol = INDENT;
-			state->prev_indent = indent;
-		} else if (indent == 0 && state->prev_indent != 0) {
-			result_symbol = DEDENT;
-			state->prev_indent = indent;
-		} else if (indent == state->prev_indent && indent > 0) {
-			result_symbol = LINE;
-		}
-		//  else if (indent != state->prev_indent) {
-		// 	// Technically an error, idk what to do
-		// 	return false;
-		// }
-		if (valid_symbols[result_symbol]) {
-			return true;
-		} else if (valid_symbols[NEWLINE]) {
-			// This should be if indent == state->prev_indent
-			result_symbol = NEWLINE;
-			return true;
-		}
-	}
-
-	return false;
+  return false;
 }
 }

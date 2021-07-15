@@ -45,17 +45,25 @@
           "name": "NEWLINE"
         },
         {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "COMMENT"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "NEWLINE"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "comment"
+        }
+      ]
+    },
+    "comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "#"
+        },
+        {
+          "type": "PATTERN",
+          "value": ".*"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "NEWLINE"
         }
       ]
     },
@@ -552,7 +560,7 @@
     },
     "recipe": {
       "type": "PREC_LEFT",
-      "value": 0,
+      "value": 2,
       "content": {
         "type": "SEQ",
         "members": [
@@ -596,11 +604,27 @@
             "value": ":"
           },
           {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": " "
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
             "type": "REPEAT",
             "content": {
               "type": "SYMBOL",
               "name": "dependency"
             }
+          },
+          {
+            "type": "SYMBOL",
+            "name": "NEWLINE"
           },
           {
             "type": "CHOICE",
@@ -744,6 +768,18 @@
           "name": "INDENT"
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "shebang"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "REPEAT1",
           "content": {
             "type": "SYMBOL",
@@ -756,16 +792,29 @@
         }
       ]
     },
+    "shebang": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "#!"
+        },
+        {
+          "type": "PATTERN",
+          "value": ".*"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "NEWLINE"
+        }
+      ]
+    },
     "line": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SEQ",
           "members": [
-            {
-              "type": "SYMBOL",
-              "name": "LINE"
-            },
             {
               "type": "REPEAT1",
               "content": {
@@ -822,10 +871,6 @@
     "INDENTED_BACKTICK": {
       "type": "PATTERN",
       "value": "```[^(```)]*```"
-    },
-    "COMMENT": {
-      "type": "PATTERN",
-      "value": "\\#([^!].*)?"
     },
     "NAME": {
       "type": "PATTERN",

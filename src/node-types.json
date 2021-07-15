@@ -56,6 +56,10 @@
         {
           "type": "line",
           "named": true
+        },
+        {
+          "type": "shebang",
+          "named": true
         }
       ]
     }
@@ -64,6 +68,21 @@
     "type": "boolean",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "comment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "NEWLINE",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "condition",
@@ -104,15 +123,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "COMMENT",
+          "type": "NEWLINE",
           "named": true
         },
         {
-          "type": "NEWLINE",
+          "type": "comment",
           "named": true
         }
       ]
@@ -215,10 +234,6 @@
       "required": true,
       "types": [
         {
-          "type": "LINE",
-          "named": true
-        },
-        {
           "type": "NEWLINE",
           "named": true
         },
@@ -262,6 +277,10 @@
       "types": [
         {
           "type": "NAME",
+          "named": true
+        },
+        {
+          "type": "NEWLINE",
           "named": true
         },
         {
@@ -320,6 +339,21 @@
         },
         {
           "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "shebang",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "NEWLINE",
           "named": true
         }
       ]
@@ -433,7 +467,19 @@
     }
   },
   {
+    "type": " ",
+    "named": false
+  },
+  {
     "type": "!=",
+    "named": false
+  },
+  {
+    "type": "#",
+    "named": false
+  },
+  {
+    "type": "#!",
     "named": false
   },
   {
@@ -485,10 +531,6 @@
     "named": true
   },
   {
-    "type": "COMMENT",
-    "named": true
-  },
-  {
     "type": "DEDENT",
     "named": true
   },
@@ -506,10 +548,6 @@
   },
   {
     "type": "INDENTED_STRING",
-    "named": true
-  },
-  {
-    "type": "LINE",
     "named": true
   },
   {

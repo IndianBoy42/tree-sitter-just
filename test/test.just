@@ -1,57 +1,90 @@
 set shell := ["fish", "-c"]
 set positional-arguments
 
-justrun := "just -d " + inst-script-dir + " -f " + justfile()
+export justrun := "just -d " + inst-script-dir + " -f " + justfile()
+
+########################################################
+## Most config variables below here
+########################################################
 
 to-root := "0"
-stow-package-dir := "packages"
-sysinstalldir := "/usr/local"
-blddir := "~/git-builds"
-inst-script-dir := "~/install-system.sh"
-installdir := if to-root != "0" { sysinstalldir } else {  "$HOME/.local" }
+export stow-package-dir := "packages"
+export sysinstalldir := "/usr/local"
+export blddir := "~/git-builds"
+export inst-script-dir := "~/install-system.sh"
+export installdir := if to-root != "0" { sysinstalldir } else {  "$HOME/.local" }
 
-prefix := installdir + "/" + stow-package-dir
+# The best way to use mold is by prefixing `lets install ...` with `mold --run `
+export LD := "lld" # gold, mold, lld
+export CC :=  "gcc" # gcc-11, clang, clang-12, zig cc, tinycc, zapcc
+# CXX := "g++" # g++-11, clang++, clang++-12, zig c++
+export CXX := replace(replace(replace(CC, "gcc", "g++"), "clang", "clang++"), "cc", "c++")
 
-local-apt-repo := inst-script-dir + "/apt-repo"
-local-tar-repo := inst-script-dir + "/tar-repo"
-local-flatpak-repo := inst-script-dir + "/flatpak-repo"
+static := "0" # TODO: every project needs a different flag for static
+native := "1"
 
-bindir := installdir + "/bin"
-libdir := installdir + "/lib"
-libexecdir := installdir + "/libexec"
-incdir := installdir + "/include"
-sharedir := installdir + "/share"
+use-sccache := "1" # TODO: apply this to c/c++
+use-musl := "1" # Used only for cargo for now
+cargo-bg := "0"
+
+########################################################
+## Most config variables above here
+########################################################
+
+export prefix := installdir + "/" + stow-package-dir
+
+export local-apt-repo := inst-script-dir + "/apt-repo"
+export local-tar-repo := inst-script-dir + "/tar-repo"
+export local-flatpak-repo := inst-script-dir + "/flatpak-repo"
+
+export bindir := installdir + "/bin"
+export libdir := installdir + "/lib"
+export libexecdir := installdir + "/libexec"
+export incdir := installdir + "/include"
+export sharedir := installdir + "/share"
 
 export CMAKE_GENERATOR := "Ninja"
 export CMAKE_BUILD_TYPE := "Release"
 export CMAKE_EXPORT_COMPILE_COMMANDS := "OFF"
+export CMAKE_C_COMPILER := CC
+export CMAKE_CXX_COMPILER := CXX
 
-nprocs := `nproc`
+export nprocs := `nproc`
 
 export MAKEFLAGS := "-j " + nprocs
+# export CARGO_PROFILE_RELEASE_LTO := "true"
 
-compflags := "-O3 -march=native -mtune=native"
-ldflags := "-march=native -mtune=native"
+static_flags := if static != "0" { " -static" } else { "" }
+native_flags := if native != "0" { " -march=native -mtune=native" } else { "" }
+fuse-ld := " -fuse-ld=" + LD  # Only support gold and lld
+# ld-path := "--ld-path=" + `which LD`
+
+# TODO: options for: LTO, static, mold
+compflags := "-O3" + native_flags
+ldflags := fuse-ld + native_flags + static_flags
 export CFLAGS := compflags
+export EXTRA_CFLAGS := compflags
 export CXXFLAGS := compflags
 export CPPFLAGS := CXXFLAGS
+export EXTRA_CPPFLAGS := CXXFLAGS
 export FFLAGS := compflags
 export FCFLAGS := compflags
+export LDFLAGS := ldflags
+export EXTRA_LDFLAGS := ldflags
 
 export CMAKE_C_FLAGS_RELEASE := CFLAGS
 export CMAKE_CXX_FLAGS_RELEASE := CXXFLAGS
-export CMAKE_EXE_LINKER_FLAGS := "-fuse-ld=gold"
-export CMAKE_SHARED_LINKER_FLAGS := CMAKE_EXE_LINKER_FLAGS
+# export CMAKE_EXE_LINKER_FLAGS := ldflags # These don't get passed by enviroment variable
+# export CMAKE_SHARED_LINKER_FLAGS := CMAKE_EXE_LINKER_FLAGS
 
-use-sccache := "1"
+rust_static_flags := if static != "0" { " -C target-feature=+crt-static -C link-self-contained=yes" } else { "" }
+export RUSTFLAGS := "-C link-arg=-fuse-ld=" + LD + " -C target-cpu=native -Z share-generics=y" + rust_static_flags
 export RUSTC_WRAPPER := if use-sccache != "0" { "sccache" } else { "" }
 
-cargo-build-gnu := "x86_64-unknown-linux-gnu"
-cargo-build-musl := "x86_64-unknown-linux-musl"
-use-musl := "1" # Used only for cargo for now
-export CARGO_BUILD_TARGET := if use-musl != "0" { cargo-build-musl } else { "" }
+gnu-target := "x86_64-unknown-linux-gnu"
+musl-target := "x86_64-unknown-linux-musl"
+export CARGO_BUILD_TARGET := if use-musl != "0" { musl-target } else { "" }
 
-cargo-bg := "0"
 cargo-install := if cargo-bg != "0" { "pueue add -- cargo install --force --jobs 1" } else { "cargo install" }# TODO: can use quickinstall
 # cargo-install := "pueue add -- cargo install --force --jobs 1" # TODO: background compile
 
@@ -62,9 +95,13 @@ flatpak-install-local := flatpak-exe + " install --or-update --sideload-repo " +
 flatpak-install-remote := flatpak-exe + " install --or-update flathub"
 flatpak-install := flatpak-install-local
 
-apt-install := "sudo apt install"
+apt-install := "sudo apt-get install"
 
 stow := if to-root != "0" { "sudo stow" } else { "stow" }
+
+#################################################
+# Recipes below here
+#################################################
 
 @_default:
     {{justrun}} --choose --chooser 'fzf --preview="just --show {}"' # --list
@@ -72,11 +109,11 @@ stow := if to-root != "0" { "sudo stow" } else { "stow" }
 edit:
     cd {{inst-script-dir}} && nvim {{justfile()}}
 
+# Open a shell with the environment variables defined above
+sh *args:
+    fish {{args}}
 
-#################################################
 # mkrepo for offlline apt installs
-#################################################
-
 # Install getpkg, mkrepo for creating offline repositories
 getpkg-mkrepo: (mkpackdir "mkrepo")
     #!/usr/bin/env fish
@@ -89,12 +126,10 @@ getpkg-mkrepo: (mkpackdir "mkrepo")
         {{prefix}}/mkrepo/bin/
     {{justrun}} link-pack "mkrepo"
     sudo ./084dd6113931ea5a0fd9-5866e3e50e452b3a97bb3e534d51d2bba14679a3/dependencies.sh
-
 # Add a local repo (created using mkrepo, give the directory containing the Packages.gz)
 add-local-repo dir=local-apt-repo:
     touch /etc/apt/sources.list.d/local-apt-repo.list
     echo "deb [trusted=yes] file:{{dir}} ./" | sudo tee -a /etc/apt/sources.list.d/local-apt-repo.list
-
 getpkg name: 
     getpkg.sh {{name}} {{local-apt-repo}}
 mkrepo: 
@@ -103,7 +138,6 @@ mkrepo:
     mkrepo.sh {{local-apt-repo}}
     gzip -d {{local-apt-repo}}/Packages.gz
 # FIXME: why have to extract Packages??
-
 
 ##############################################333
 # Helpers
@@ -144,13 +178,15 @@ mkblddir name:
     mkdir -p {{blddir}}/{{name}}/build
 
 # Clone or update a git repo (into blddir)
-gitclone url name:
+gitclone url name branch="":
     #!/usr/bin/env fish
     mkdir -p {{blddir}} && cd {{blddir}}
     if test -d {{blddir}}/{{name}}
-        cd {{blddir}}/{{name}} && git pull && git submodule update --init --recursive
+        cd {{blddir}}/{{name}} 
+        git pull && git submodule update --init --recursive \
+        || git checkout {{branch}} # Assume that arguments
     else
-        git clone --filter=blob:none {{url}} {{blddir}}/{{name}} # --filter=tree:0
+        git clone --filter=blob:none {{ if branch == "" { "" } else { "-b " + branch } }} {{url}} {{blddir}}/{{name}} # --filter=tree:0
     end
 
 _tmpdir name:
@@ -165,7 +201,7 @@ _tmpdir name:
 
 # Install a program directory structure using stow
 ins-copy name from: (mkpackdir name)
-    cp -r {{from}}/{{name}}/*/ {{prefix}}/{{name}}/
+    cp -r {{from}}/{{name}}/*/* {{prefix}}/{{name}}/
     #rm -rf /tmp/{{name}} # TODO: should delete?
     chmod +x {{prefix}}/{{name}}/bin/*
     {{justrun}} link-pack {{name}}
@@ -177,7 +213,7 @@ ins-bin name from:
     {{justrun}} ins-copy {{name}} {{from}}
 
 # Download an asset from Github releases (to /tmp/name)
-gh name repo pattern: (_tmpdir name) 
+gh name repo pattern: (_tmpdir name)
     #!/usr/bin/env fish
     if not test -e "/tmp/{{name}}/{{pattern}}"
         cd /tmp/{{name}} && gh release -R {{repo}} download -p '{{pattern}}'
@@ -242,11 +278,13 @@ autotoolsgit name repo pattern: (gitclone name repo)
 
 # CMake build and install a project
 cmake-build from in *options:
-    cmake -DCMAKE_INSTALL_PREFIX=(basename (realpath {{from}})) {{options}} -S {{from}} -B {{in}} ..
+    cmake -DCMAKE_INSTALL_PREFIX="{{prefix}}/"(basename (realpath {{from}})) \
+        -DCMAKE_BUILD_TYPE={{CMAKE_BUILD_TYPE}} \
+        {{options}} -S {{from}} -B {{in}} ..
     cmake --build {{in}}
 
 cmake-install name *options: 
-    {{justrun}} cmake-build "{{blddir}}/{{name}}" "{{blddir}}/{{name}}/build" options
+    {{justrun}} cmake-build "{{blddir}}/{{name}}" "{{blddir}}/{{name}}/build" {{options}}
     cmake --install {{blddir}}/{{name}}/build
 #   ninja
 #   ninja install
@@ -283,9 +321,13 @@ wezterm: (bingh "wezterm" "wez/wezterm" "*.AppImage")
     sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator (which wezterm) 90
 
 # kitty terminal -- pretty graphics in terminal
-kitty: (mkpackdir "kitty")
-    curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{prefix}}/kitty
-    {{justrun}} link-pack "kitty"
+kitty: (mkpackdir "kitty.app")
+    curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{prefix}}
+    {{justrun}} link-pack "kitty.app"
+
+kitty-src: (gitclone "https://github.com/kovidgoyal/kitty" "kitty") (mkpackdir "kitty")
+    {{apt-install}} libdbus-1-dev libxcursor-dev libxrandr-dev libxi-dev libxinerama-dev libgl1-mesa-dev libxkbcommon-x11-dev libfontconfig-dev libx11-xcb-dev liblcms2-dev libpython3-dev
+    cd {{blddir}}/kitty && make
 
 # Zenith -- better top
 zenith: (debgh "zenith" "bvaisvil/zenith" "*amd64.deb")
@@ -352,7 +394,10 @@ nnn:
 tinycc: (gitclone "https://github.com/TinyCC/tinycc.git" "tinycc")
     #!/usr/bin/env -S bash -euxo pipefail
     cd {{blddir}}/tinycc
-    ./configure --prefix={{prefix}}/tinycc --extra-cflags={{compflags}} --extra-ldflags={{ldflags}} --cc=clang-12
+    ./configure --prefix={{prefix}}/tinycc \
+    --extra-cflags={{compflags}} \
+    --extra-ldflags={{ldflags}} \
+    --cc={{CC}}
     make cross
     make install
     {{justrun}} link-pack "tinycc"
@@ -367,12 +412,14 @@ keynav: (gitclone "https://github.com/jordansissel/keynav.git" "keynav") (mkpack
 
 # zig compiler
 zig: (gitclone "https://github.com/ziglang/zig.git" "zig")
-    #!/usr/bin/env -S bash -euxo pipefail
+    #!/usr/bin/env fish
     {{apt-install}} libllvm12 libclang-12-dev liblld-12-dev
-    cd {{blddir}}/zig
-    mkdir -p build && cd build
-    cmake -DZIG_TARGET_MCPU=native -DCMAKE_INSTALL_PREFIX="{{prefix}}/zig/" ..
-    ninja install
+    cmake -DCMAKE_INSTALL_PREFIX="{{prefix}}/zig/" \
+        -DCMAKE_BUILD_TYPE={{CMAKE_BUILD_TYPE}} \
+        -DCMAKE_C_COMPILER=clang-12 -DCMAKE_CXX_COMPILER=clang++-12 \
+        -S {{blddir}}/zig -B {{blddir}}/zig/build
+    and cmake --build {{blddir}}/zig/build
+    and cmake --install {{blddir}}/zig/build
     {{justrun}} link-pack "zig"
 
 # godbolt
@@ -382,17 +429,20 @@ godbolt: (gitclone "https://github.com/compiler-explorer/compiler-explorer.git" 
 # Caching C/C++ compiler for higher compile speed (not updated?)
 zapcc: (gitclone "https://github.com/yrnkrn/zapcc.git" "zapcc")
     read --prompt "Are you sure you wanna build zapcc?"
-    #!/usr/bin/env -S bash -euxo pipefail
-    mkdir -p {{blddir}}/zapcc/build && cd {{blddir}}/zapcc/build
-    cmake -DLLVM_ENABLE_WARNINGS -DLLVM_USE_LINKER=gold -DCMAKE_INSTALL_PREFIX="{{prefix}}/zapcc/" ..
-    ninja install
+    cmake -DLLVM_ENABLE_WARNINGS -DLLVM_USE_LINKER={{LD}} \
+        -DCMAKE_INSTALL_PREFIX="{{prefix}}/zapcc/" \
+        -DCMAKE_BUILD_TYPE={{CMAKE_BUILD_TYPE}} \
+        -S {{blddir}}/zapcc -B {{blddir}}/zapcc/build
+    cmake --install {{blddir}}/zapcc/build
     {{justrun}} link-pack "zapcc"
 
 # google benchmark
 googbench: (gitclone "https://github.com/google/benchmark.git" "googbench")
-    mkdir -p build && cd build
-    cmake .. -DBENCHMARK_DOWNLOAD_DEPENDENCIES=ON -DBENCHMARK_ENABLE_GTEST_TESTS=OFF -DCMAKE_INSTALL_PREFIX={{prefix}}/googbench
-    ninja && ninja install
+    cmake -DBENCHMARK_DOWNLOAD_DEPENDENCIES=ON -DBENCHMARK_ENABLE_GTEST_TESTS=OFF \
+        -DCMAKE_INSTALL_PREFIX={{prefix}}/googbench \
+        -DCMAKE_BUILD_TYPE={{CMAKE_BUILD_TYPE}} \
+        -S {{blddir}}/googbench -B {{blddir}}/googbench/build
+    cmake --install {{blddir}}/googbench/build
     {{justrun}} link-pack "googbench"
 
 # drake
@@ -511,7 +561,8 @@ fzf: (targh "fzf" "junegunn/fzf" "*linux_amd64.tar.gz") (ins-bin "fzf" "/tmp")
     echo "Installed fzf"
 
 # Fast realtime compression/decompression
-zstd: (srcgh "zstd" "facebook/zstd" "*.tar.gz") (mkpackdir "zstd")
+# zstd: (srcgh "zstd" "facebook/zstd" "*.tar.gz") (mkpackdir "zstd")
+zstd: (gitclone "https://github.com/facebook/zstd.git" "zstd") (mkpackdir "zstd")
     cd {{blddir}}/zstd && make
     ln -s {{blddir}}/zstd/zstd {{prefix}}/zstd/bin
     {{justrun}} link-pack "zstd"
@@ -626,7 +677,7 @@ cargo-quickinstall:
 
 # Helper for updating things install via cargo
 cargo-update:
-    CARGO_BUILD_TARGET={{cargo-build-gnu}} {{cargo-install}} cargo-update
+    CARGO_BUILD_TARGET={{gnu-target}} {{cargo-install}} cargo-update
 
 # Shared cache for C/C++/Rust
 sccache:
@@ -655,6 +706,7 @@ ripgrep_all: ripgrep (gitclone "https://github.com/phiresky/ripgrep-all.git" "ri
 # Easy to use TUI for git
 gitui: cargo-install (gitclone "https://github.com/IndianBoy42/gitui.git" "gitui")
     {{cargo-install}} --path {{blddir}}/gitui
+    cp {{blddir}}/gitui/vim_style_key_config.ron ~/.config/gitui/key_config.ron
 
 # Minimal serial terminal/monitor
 serial-monitor: cargo-install (gitclone "https://github.com/IndianBoy42/serial-monitor.git" "serial-monitor")
@@ -666,7 +718,7 @@ indexa: cargo-install (gitclone "https://github.com/mosmeh/indexa.git" "indexa")
 
 # Fast implementation of the tldr standard
 tealdeer: cargo-install
-    CARGO_BUILD_TARGET={{cargo-build-gnu}} {{cargo-install}} $argv[1]
+    CARGO_BUILD_TARGET={{gnu-target}} {{cargo-install}} $argv[1]
     tldr --update
 
 # Manager for long running background shell commands/processes
@@ -703,7 +755,7 @@ broot: cargo-install
 
 cargo-build-tools:
     #!/usr/bin/env fish
-    set -x CARGO_BUILD_TARGET {{cargo-build-gnu}}
+    set -x CARGO_BUILD_TARGET {{gnu-target}}
     {{cargo-install}} cargo-edit 
     {{cargo-install}} cargo-generate 
     {{cargo-install}} cargo-outdated 
@@ -730,7 +782,7 @@ cargo-essentials: cargo-install gitui ripgrep broot tealdeer
 
 cargo-all-gnu: cargo-install tealdeer
     #!/usr/bin/env fish
-    set -x CARGO_BUILD_TARGET {{cargo-build-gnu}}
+    set -x CARGO_BUILD_TARGET {{gnu-target}}
     {{cargo-install}} cargo-edit 
     {{cargo-install}} cargo-generate 
     {{cargo-install}} cargo-outdated 
@@ -916,7 +968,7 @@ docker:
 
 # Update apt sources
 @apt: 
-    sudo apt update > /tmp/aptupdate.log || echo "Not connected to the internet, hope you have a cache"
+    sudo apt-get update > /tmp/aptupdate.log || echo "Not connected to the internet, hope you have a cache"
 
 # Some apt sources
 apt-srcs:
@@ -961,20 +1013,29 @@ smerge:
     {{apt-install}} sublime-merge
 
 # TODO: install in an isolated virutal environment? (use pipx)
-# Install neovim from unstable ppa (also install my lunarvim)
-nvim:
-    sudo add-apt-repository -y ppa:neovim-ppa/unstable
-    apt update
-    {{apt-install}} neovim
+nvim-cfg:
     test -d ~/.config/nvim || https://github.com/IndianBoy42/LunarVim.git ~/.config/nvim
     cd ~/.config/nvim && just install
 
+# Install neovim from unstable ppa (also install my lunarvim)
+nvim-apt:
+    sudo add-apt-repository -y ppa:neovim-ppa/unstable
+    apt update
+    {{apt-install}} neovim
+    {{justrun}} nvim-cfg
+
+nvim-app: (bingh "neovim" "neovim/neovim" "*.appimage")
+    {{justrun}} nvim-cfg
+
 # Compile neovim from source
-nvim-src: (gitclone "https://github.com/neovim/neovim.git" "neovim")
+nvim: (gitclone "https://github.com/neovim/neovim.git" "neovim")
     cd {{blddir}}/neovim \
-    && make CMAKE_BUILD_TYPE=Release CMAKE_INSTALL_PREFIX={{prefix}}/nvim \
-    && make install
+    && make \
+        CMAKE_BUILD_TYPE=Release \
+        CMAKE_INSTALL_PREFIX={{prefix}}/nvim \
+        install
     {{justrun}} link-pack nvim
+    {{justrun}} nvim-cfg
 
 # Pretty GUI for neovim written in rust
 neovide: (gitclone "https://github.com/Kethku/neovide" "neovide")
@@ -986,13 +1047,13 @@ neovide: (gitclone "https://github.com/Kethku/neovide" "neovide")
             libbz2-dev libsndio-dev freeglut3-dev libxmu-dev libxi-dev libsdl2-dev
     end
     cd {{blddir}}/neovide
-    CARGO_BUILD_TARGET={{cargo-build-gnu}} {{cargo-install}} --path .
+    CARGO_BUILD_TARGET={{gnu-target}} {{cargo-install}} --path .
 
 # Selection first modal editor
 kakoune: (gitclone "https://github.com/mawww/kakoune.git" "kakoune") (mkpackdir "kakoune")
     sudo apt install libncursesw5-dev pkg-config
     cd {{blddir}}/kakoune/src\
-    && make \
+    && make CXX={{CXX}} \
     && PREFIX={{prefix}}/kakoune make install
     {{justrun}} link-pack "kakoune"
 
@@ -1077,8 +1138,56 @@ luarocks: (gitclone "git://github.com/luarocks/luarocks.git" "luarocks")
     and make install 
     and {{justrun}} link-pack luarocks
 
+rock +args:
+    type -q luarocks || {{justrun}} luarocks
+    luarocks install {{args}}
+    {{justrun}} link-pack luarocks
+
 lua-format: 
     type -q luarocks || {{justrun}} luarocks
     luarocks install --server=https://luarocks.org/dev luaformatter
     and {{justrun}} link-pack luarocks
-    
+
+# Build a static executable of the mold linker (fast boi)
+mold-stable: (gitclone "https://github.com/rui314/mold.git" "mold" "v0.9.1") (gitclone "https://github.com/oneapi-src/oneTBB.git" "mold/oneTBB" "v2020.3") (mkpackdir "mold")
+    cd {{blddir}}/mold/oneTBB && make extra_inc=big_iron.inc
+    tbb_bindir=(ls -d {{blddir}}/mold/oneTBB/build/linux_intel64_*_release) \
+    cd {{blddir}}/mold && make \
+        PREFIX={{prefix}}/mold \
+        CC=clang-12 CXX=clang++-12 LTO=1 \
+        EXTRA_CPPFLAGS=-IoneTBB/include \
+        EXTRA_LDFLAGS="-fuse-ld=lld -static -L"(ls -d {{blddir}}/mold/oneTBB/build/linux_intel64_*_release) \
+        install
+    {{justrun}} link-pack mold
+
+# Build a static executable of the mold linker (fast boi)
+mold: (gitclone "https://github.com/rui314/mold.git" "mold" "main") (mkpackdir "mold")
+    cd {{blddir}}/mold && make \
+        PREFIX={{prefix}}/mold \
+        CC=clang-12 CXX=clang++-12 LTO=1 \
+        EXTRA_LDFLAGS="-fuse-ld=lld-12 -static" install
+    {{justrun}} link-pack mold
+
+# Use update-alternatives
+alternative name alt="" prio="0": 
+    test -n "{{alt}}" && \
+    sudo update-alternatives --install (which {{name}}) {{name}} (realpath (which {{alt}})) {{prio}} \
+    || true
+    sudo update-alternatives --list {{name}}
+altconfig name:
+    sudo update-alternatives --config {{name}}
+
+jemalloc: (gitclone "https://github.com/jemalloc/jemalloc.git" "jemalloc")
+    #!/usr/bin/env fish
+    cd {{blddir}}/jemalloc
+    ./autogen.sh
+    and ./configure --prefix="{{prefix}}/jemalloc"
+    and make
+    and make install
+    and {{justrun}} link-pack jemalloc
+
+mimalloc: (gitclone "https://github.com/microsoft/mimalloc.git" "mimalloc")
+    #!/usr/bin/env fish
+    cd {{blddir}}/mimalloc
+    {{justrun}} cmake-install mimalloc
+    and {{justrun}} link-pack mimalloc
