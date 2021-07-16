@@ -2,16 +2,27 @@
   {
     "type": "alias",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "NAME",
-          "named": true
-        }
-      ]
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "NAME",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "NAME",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -70,6 +81,44 @@
     "fields": {}
   },
   {
+    "type": "call",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "NAME",
+          "named": true
+        },
+        {
+          "type": "sequence",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "cmd",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "BACKTICK",
+          "named": true
+        },
+        {
+          "type": "INDENTED_BACKTICK",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "comment",
     "named": true,
     "fields": {},
@@ -100,7 +149,7 @@
     }
   },
   {
-    "type": "dependency",
+    "type": "depcall",
     "named": true,
     "fields": {},
     "children": {
@@ -113,6 +162,40 @@
         },
         {
           "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dependencies",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dependency",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dependency",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "NAME",
+          "named": true
+        },
+        {
+          "type": "depcall",
           "named": true
         }
       ]
@@ -155,7 +238,28 @@
   {
     "type": "expression",
     "named": true,
-    "fields": {},
+    "fields": {
+      "else": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "if": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
@@ -268,7 +372,49 @@
     }
   },
   {
+    "type": "parameters",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "parameter",
+          "named": true
+        },
+        {
+          "type": "variadic_parameters",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "recipe",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "NEWLINE",
+          "named": true
+        },
+        {
+          "type": "body",
+          "named": true
+        },
+        {
+          "type": "recipeheader",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "recipeheader",
     "named": true,
     "fields": {},
     "children": {
@@ -280,23 +426,11 @@
           "named": true
         },
         {
-          "type": "NEWLINE",
+          "type": "dependencies",
           "named": true
         },
         {
-          "type": "body",
-          "named": true
-        },
-        {
-          "type": "dependency",
-          "named": true
-        },
-        {
-          "type": "parameter",
-          "named": true
-        },
-        {
-          "type": "variadic_parameters",
+          "type": "parameters",
           "named": true
         }
       ]
@@ -324,21 +458,51 @@
   {
     "type": "setting",
     "named": true,
-    "fields": {},
+    "fields": {
+      "right": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ":=",
+            "named": false
+          },
+          {
+            "type": "boolean",
+            "named": true
+          },
+          {
+            "type": "settinglist",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "boolean",
+          "type": "NAME",
           "named": true
         },
         {
           "type": "eol",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "settinglist",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
         {
-          "type": "string",
+          "type": "stringlist",
           "named": true
         }
       ]
@@ -402,6 +566,21 @@
     }
   },
   {
+    "type": "stringlist",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "text",
     "named": true,
     "fields": {},
@@ -421,27 +600,23 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
-        {
-          "type": "BACKTICK",
-          "named": true
-        },
-        {
-          "type": "INDENTED_BACKTICK",
-          "named": true
-        },
         {
           "type": "NAME",
           "named": true
         },
         {
-          "type": "expression",
+          "type": "call",
           "named": true
         },
         {
-          "type": "sequence",
+          "type": "cmd",
+          "named": true
+        },
+        {
+          "type": "expression",
           "named": true
         },
         {
@@ -583,10 +758,6 @@
     "named": false
   },
   {
-    "type": "dotenv-load",
-    "named": false
-  },
-  {
     "type": "else",
     "named": false
   },
@@ -603,15 +774,7 @@
     "named": false
   },
   {
-    "type": "positional-arguments",
-    "named": false
-  },
-  {
     "type": "set",
-    "named": false
-  },
-  {
-    "type": "shell",
     "named": false
   },
   {

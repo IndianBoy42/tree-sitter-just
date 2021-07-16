@@ -23,7 +23,8 @@ module.exports = grammar({
     comment: ($) => seq("#", /.*/, $.NEWLINE),
 
     // alias         : 'alias' NAME ':=' NAME
-    alias: ($) => seq("alias", $.NAME, ":=", $.NAME),
+    alias: ($) =>
+      seq("alias", field("left", $.NAME), ":=", field("right", $.NAME)),
 
     // assignment    : NAME ':=' expression eol
     assignment: ($) => seq($.NAME, ":=", $.expression, $.eol),
@@ -37,24 +38,26 @@ module.exports = grammar({
     //               | 'set' 'shell' ':=' '[' string (',' string)* ','? ']'
     setting: ($) =>
       choice(
-        seq("set", "dotenv-load", optional($.boolean), $.eol),
-        seq("set", "export", optional($.boolean), $.eol),
-        seq("set", "positional-arguments", optional($.boolean), $.eol),
         seq(
           "set",
-          "shell",
-          ":=",
-          "[",
-          $.string,
-          repeat(seq(",", $.string)),
-          optional(","),
-          "]",
+          $.NAME,
+          field("right", optional(seq(":=", choice($.boolean, $.settinglist)))),
           $.eol
         )
       ),
 
     // boolean       : ':=' ('true' | 'false')
-    boolean: ($) => seq(":=", choice("true", "false")),
+    boolean: ($) => choice("true", "false"),
+
+    settinglist: ($) =>
+      seq(
+        "[",
+        $.stringlist,
+        "]"
+        // seq("[", $.string, repeat(seq(",", $.string)), optional(","), "]")
+      ),
+
+    stringlist: ($) => repeat1(seq($.string, optional(","))),
 
     // expression    : 'if' condition '{' expression '}' 'else' '{' expression '}'
     //               | value '+' expression
@@ -65,11 +68,11 @@ module.exports = grammar({
           "if",
           $.condition,
           "{",
-          $.expression,
+          field("if", $.expression),
           "}",
           "else",
           "{",
-          $.expression,
+          field("else", $.expression),
           "}"
         ),
         seq($.value, "+", $.expression),
@@ -93,15 +96,12 @@ module.exports = grammar({
     value: ($) =>
       prec.left(
         0,
-        choice(
-          seq($.NAME, "(", optional($.sequence), ")"),
-          seq($.BACKTICK),
-          seq($.INDENTED_BACKTICK),
-          seq($.NAME),
-          seq($.string),
-          seq("(", $.expression, ")")
-        )
+        choice($.call, $.cmd, $.NAME, $.string, seq("(", $.expression, ")"))
       ),
+
+    call: ($) => seq($.NAME, "(", optional($.sequence), ")"),
+
+    cmd: ($) => choice(seq($.BACKTICK), seq($.INDENTED_BACKTICK)),
 
     // string        : STRING
     //               | INDENTED_STRING
@@ -119,24 +119,20 @@ module.exports = grammar({
       ),
 
     // recipe        : '@'? NAME parameter* variadic_parameters? ':' dependency* body?
-    recipe: ($) =>
-      prec.left(
-        2,
-        seq(
-          optional("@"),
-          $.NAME,
-          repeat($.parameter),
-          optional($.variadic_parameters),
-          ":",
-          optional(" "),
-          repeat($.dependency),
-          $.NEWLINE,
-          optional($.body)
-          // optional(" "),
-          // $.NEWLINE,
-          // choice($.body, $.NEWLINE)
-        )
+    recipe: ($) => seq($.recipeheader, $.NEWLINE, optional($.body)),
+
+    recipeheader: ($) =>
+      seq(
+        optional("@"),
+        $.NAME,
+        optional($.parameters),
+        ":",
+        optional(" "),
+        optional($.dependencies)
       ),
+
+    parameters: ($) =>
+      seq(repeat1($.parameter), optional($.variadic_parameters)),
 
     // parameter     : '$'? NAME
     //               | '$'? NAME '=' value
@@ -151,18 +147,21 @@ module.exports = grammar({
     variadic_parameters: ($) =>
       choice(seq("*", $.parameter), seq("+", $.parameter)),
 
+    dependencies: ($) => repeat1($.dependency),
+
     // dependency    : NAME
     //               | '(' NAME expression* ')'
-    dependency: ($) =>
-      choice($.NAME, seq("(", $.NAME, repeat($.expression), ")")),
+    dependency: ($) => choice($.NAME, seq("(", $.depcall, ")")),
+
+    depcall: ($) => seq($.NAME, repeat($.expression)),
 
     // body          : INDENT line+ DEDENT
     body: ($) => seq($.INDENT, optional($.shebang), repeat1($.line), $.DEDENT),
     // body: ($) => seq($.INDENT, repeat1($.line), $.DEDENT),
 
+    // FIXME: This is not detected
     shebang: ($) => seq("#!", /.*/, $.NEWLINE),
 
-    // TODO: how to handle the LINE token
     // line          : LINE (TEXT | interpolation)+ NEWLINE
     //               | NEWLINE
     line: ($) =>
@@ -179,12 +178,11 @@ module.exports = grammar({
 
     BACKTICK: (_) => /`[^`]*`/,
     INDENTED_BACKTICK: (_) => /```[^(```)]*```/,
-    // COMMENT: (_) => /\#([^!].*)?/, // /\#([^!].*)?$/, // FIXME: '$' Regex assertions not supported
+    // COMMENT: (_) => /\#([^!].*)?/, // /\#([^!].*)?$/, // FIXME: '$' Regex assertions not supported, could cause misparses
     NAME: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
     RAW_STRING: (_) => /'[^']*'/,
     INDENTED_RAW_STRING: (_) => /'''[^(''')]*'''/,
 
-    // TODO: IDK about these
     STRING: (_) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
     INDENTED_STRING: (_) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes
     TEXT: (_) => /[^\s]+/, //recipe text, only matches in a recipe body

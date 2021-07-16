@@ -76,6 +76,12 @@ void tree_sitter_just_external_scanner_deserialize(void *payload,
 // return true if a token was recognized, and false otherwise.
 bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
                                             const bool *valid_symbols) {
+
+  if (!lexer->lookahead) {
+    lexer->mark_end(lexer);
+    return false;
+  }
+
   Scanner *state = static_cast<Scanner *>(payload);
   int32_t &lookahead = lexer->lookahead;
   TSSymbol &result_symbol = lexer->result_symbol;
