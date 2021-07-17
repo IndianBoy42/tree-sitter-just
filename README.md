@@ -8,7 +8,7 @@ npm run test
 tree-sitter parse test/test.just
 ```
 
-You can try it by adding it to nvim-treesitter using
+You can try the parser by adding it to nvim-treesitter using
 
 ```lua
 local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
@@ -22,13 +22,19 @@ parser_config.just = {
 
 You can use the `nvim-treesitter/playground` plugin [from here](https://github.com/nvim-treesitter/playground), to explore the resulting parse tree.
 
+To use treesitter based highlighting, folds etc. Link the queries folder onto the runtime path of neovim, for example
+
+```sh
+ln -s $PWD/queries/*.scm ~/.config/nvim/queries/just
+```
+
 ## TODO
 
 - [x] Implement a basic parser that is able to understand all features of Justfiles
 - [ ] Why does Treesitter not reparse justfiles??
 - [ ] Implement support for highlighting using `nvim-treesitter` ([reference](https://tree-sitter.github.io/tree-sitter/syntax-highlighting), `highlights.scm`)
   - [x] Write the queries
-  - [ ] Implement  locals queries
+  - [ ] Implement locals queries
 - [x] Implement queries for textobjects compatible with [`nvim-treesitter/nvim-treesitter-textobjects`](https://github.com/nvim-treesitter/nvim-treesitter-textobjects)
   - [x] Write the queries
     - [x] @block.inner|outer (recipe)
@@ -44,3 +50,5 @@ You can use the `nvim-treesitter/playground` plugin [from here](https://github.c
   - [x] Write the queries
 - [ ] Implement support for code folding using `nvim-treesitter` (`folds.scm`)
   - [x] Write the queries
+- [ ] Write Tests
+- [ ] Highlight the fish/bash/etc inside recipes (use tree-sitter injections)
