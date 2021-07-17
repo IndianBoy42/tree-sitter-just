@@ -9,12 +9,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "y"
+    "url": "https://github.com/IndianBoy42/tree-sitter-just"
   },
-  "keywords": [
-    "tree-sitter",
-    "justfiles"
-  ],
+  "keywords": ["tree-sitter", "justfiles", "parser", "lexer"],
   "author": "Anshuman Medhi",
-  "license": "Apache-2.0"
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^2.14.2",
+    "tree-sitter": "^0.19.0"
+  },
+  "devDependencies": {
+    "tree-sitter-cli": "^0.19.3"
+  },
+  "tree-sitter": [
+    {
+      "file-types": ["just"],
+      "highlights": ["queries/highlights.scm"],
+      "injection-regex": "^(just)$",
+      "locals": ["queries/locals.scm"],
+      "scope": "source.just"
+    }
+  ]
 }
