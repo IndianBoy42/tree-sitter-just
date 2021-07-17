@@ -6,9 +6,10 @@
 
 (call (NAME) @function)
 (dependency (NAME) @function)
+(depcall (NAME) @function)
 (recipeheader (NAME) @function)
 
-(dependency (expression) @parameter)
+(depcall (expression) @parameter)
 (parameter) @parameter
 (variadic_parameters) @parameter
 
@@ -24,6 +25,6 @@
 
 ["export" "alias" "set"] @keyword
 
-["@" "==" "!=" "+"] @operator
+["@" "==" "!=" "+" ":="] @operator
 
 [ "(" ")" "[" "]" "{" "}"] @punctuation.bracket

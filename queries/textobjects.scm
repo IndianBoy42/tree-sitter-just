@@ -4,16 +4,20 @@
 (recipe) @function.outer
 (expression 
     if:(expression) @block.inner 
-    else:(expression) @block.inner)
+) 
+(expression 
+    else:(expression) @block.inner
 ) 
 (interpolation (expression) @block.inner) @block.outer
 (settinglist (stringlist) @block.inner) @block.outer
 
-(call (NAME) @call.inner)
-(dependency (NAME) @call.outer)
+(call (NAME) @call.inner) @call.outer
+(dependency (NAME) @call.inner) @call.outer
 (depcall (NAME) @call.inner)
 
-(dependency (expression) @parameter.inner) @parameter.outer
+(dependency) @parameter.outer
+(depcall) @parameter.inner
+(depcall (expression) @parameter.inner) 
 
 (stringlist 
     (string) @parameter.inner
@@ -29,9 +33,13 @@
 
 (expression 
     (condition) @conditional.inner
-    if:(expression) @conditional.inner 
-    else:(expression) @conditional.inner)
 ) @conditional.outer
+(expression 
+    if:(expression) @conditional.inner 
+)
+(expression 
+    else:(expression) @conditional.inner
+)
 
 (item [(alias) (assignment) (export) (setting)]) @statement.outer
 (recipeheader) @statement.outer

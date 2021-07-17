@@ -6,5 +6,6 @@
 
 (call (NAME) @reference.function)
 (dependency (NAME) @reference.function)
+(depcall (NAME) @reference.function)
 (recipeheader (NAME) @definition.function)
 
