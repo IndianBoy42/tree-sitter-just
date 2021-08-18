@@ -2,28 +2,6 @@
 
 WIP: Tree-sitter grammar for Justfiles ([casey/just](https://github.com/casey/just))
 
-For local testing:
-```
-npm run gen
-npm run test
-tree-sitter parse test/test.just
-```
-
-You can try the parser by adding it to nvim-treesitter using
-```lua
-local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-parser_config.just = {
-  install_info = {
-    url = "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
-    files = { "src/parser.c", "src/scanner.cc" },
-    branch = "main",
-  },
-  maintainers = { "@IndianBoy42" },
-}
-```
-
-You can use the `nvim-treesitter/playground` plugin [from here](https://github.com/nvim-treesitter/playground), to explore the resulting parse tree.
-
 To use treesitter based highlighting, folds etc. the queries need to be added to the runtimepath, until I get a PR into `nvim-treesitter/nvim-treesitter` you can install this repo as a plugin using Plug/packer/manual clone etc. This plugin also adds a simple `ftdetect` plugin for detecting 
 
 ```lua
@@ -35,6 +13,32 @@ Plug 'IndianBoy42/tree-sitter-just'
 ```
 git clone https://github.com/IndianBoy42/tree-sitter-just ~/.local/share/nvim/site/pack/tree-sitter-queries/start/tree-sitter-just
 ```
+
+You can then do `require('tree-sitter-just').setup()` to register the parser with tree-sitter. You can then do `TSInstall`/`TSUpdate` as usual to install the parser
+
+You can also add the parser manually using
+```lua
+require("nvim-treesitter.parsers").get_parser_configs().just = {
+  install_info = {
+    url = "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
+    files = { "src/parser.c", "src/scanner.cc" },
+    branch = "main",
+  },
+  maintainers = { "@IndianBoy42" },
+}
+```
+Dont forget to `:TSInstall` after adding this
+
+## Testing
+
+Building locally:
+```
+npm run gen
+npm run test
+tree-sitter parse test/test.just
+```
+
+You can use the `nvim-treesitter/playground` plugin [from here](https://github.com/nvim-treesitter/playground), to explore the resulting parse tree. Use `TSPlaygroundToggle` to view the parse tree, and use `TSHighlightCapturesUnderCursor` to view highlight groups
 
 ## TODO
 
