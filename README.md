@@ -4,19 +4,22 @@ WIP: Tree-sitter grammar for Justfiles ([casey/just](https://github.com/casey/ju
 
 To use treesitter based highlighting, folds etc. the queries need to be added to the runtimepath, until I get a PR into `nvim-treesitter/nvim-treesitter` you can install this repo as a plugin using Plug/packer/manual clone etc. This plugin also adds a simple `ftdetect` plugin for detecting 
 
+Packer:
 ```lua
 use "IndianBoy42/tree-sitter-just"
 ```
+Plug
 ```vimscript
 Plug 'IndianBoy42/tree-sitter-just'
 ```
+Manual
 ```
 git clone https://github.com/IndianBoy42/tree-sitter-just ~/.local/share/nvim/site/pack/tree-sitter-queries/start/tree-sitter-just
 ```
 
 You can then do `require('tree-sitter-just').setup()` to register the parser with tree-sitter. You can then do `TSInstall`/`TSUpdate` as usual to install the parser
 
-You can also add the parser manually using
+You can also add the parser manually using (This is similar to what is done in `require"tree-sitter-just".setup()`)
 ```lua
 require("nvim-treesitter.parsers").get_parser_configs().just = {
   install_info = {
@@ -27,7 +30,7 @@ require("nvim-treesitter.parsers").get_parser_configs().just = {
   maintainers = { "@IndianBoy42" },
 }
 ```
-Dont forget to `:TSInstall` after adding this
+Dont forget to `:TSInstall` after adding this. With this method you do not have to add this repo as a plugin
 
 ## Testing
 
