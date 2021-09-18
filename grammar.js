@@ -5,7 +5,10 @@ module.exports = grammar({
 
   rules: {
     // justfile      : item* EOF
-    source_file: ($) => repeat($.item),
+    source_file: ($) => choice(repeat($.item), $.expression),
+    // $.expression is not really a valid Justfile,
+    // but we do this so that we can parse just expression using this parser.
+    // This is needed for injecting inside interpolations
 
     // item          : recipe
     //               | alias
@@ -19,8 +22,6 @@ module.exports = grammar({
     // eol           : NEWLINE
     //               | COMMENT NEWLINE
     eol: ($) => choice($.NEWLINE, $.comment),
-
-    comment: ($) => seq("#", /.*/, $.NEWLINE),
 
     // alias         : 'alias' NAME ':=' NAME
     alias: ($) =>
@@ -40,8 +41,21 @@ module.exports = grammar({
       choice(
         seq(
           "set",
-          $.NAME,
+          field("name", $.NAME),
           field("right", optional(seq(":=", choice($.boolean, $.settinglist)))),
+          $.eol
+        ),
+        seq(
+          "set",
+          "shell",
+          ":=",
+          "[",
+          // field("lang", $.string),
+          '"',
+          field("lang", $.NAME),
+          '"',
+          repeat(seq(optional(","), $.string)),
+          "]",
           $.eol
         )
       ),
@@ -156,22 +170,43 @@ module.exports = grammar({
     depcall: ($) => seq($.NAME, repeat($.expression)),
 
     // body          : INDENT line+ DEDENT
-    body: ($) => seq($.INDENT, optional($.shebang), repeat1($.line), $.DEDENT),
-    // body: ($) => seq($.INDENT, repeat1($.line), $.DEDENT),
+    body: ($) =>
+      seq(
+        $.INDENT,
+        choice($.shebang_recipe, optional($.recipe_body)),
+        $.DEDENT
+      ),
+    // seq($.INDENT, $.recipebody, $.DEDENT),
 
-    // FIXME: This is not detected
-    shebang: ($) => seq("#!", /.*/, $.NEWLINE),
+    shebang_recipe: ($) => seq($.shebang, $.shebang_body),
+    shebang_body: ($) => repeat1($.line),
 
-    // line          : LINE (TEXT | interpolation)+ NEWLINE
-    //               | NEWLINE
-    line: ($) =>
-      choice(
-        seq(repeat1(choice($.text, $.interpolation)), $.NEWLINE),
+    shebang: ($) =>
+      seq(
+        "#!",
+        choice(
+          seq(/.*\//, field("interpreter", $.TEXT)),
+          seq("/usr/bin/env", field("interpreter", $.TEXT))
+        ),
         $.NEWLINE
       ),
 
-    // TODO: separately parse bash/fish to a good enough extent here
-    text: ($) => $.TEXT,
+    recipe_body: ($) => repeat1($.line),
+
+    line: ($) => choice($.comment, $.recipeline),
+    // line: ($) => choice($.comment, $.recipeline, $.shebang),
+
+    recipeline: ($) =>
+      seq(
+        choice($.interpolation, $.notcomment),
+        repeat(choice($.interpolation, $.notinterpolation)),
+        $.NEWLINE
+      ),
+    notcomment: ($) => /[^#\s{]\S*/,
+    comment: ($) => seq(/#[^!].*/, /.*/, $.NEWLINE),
+
+    // notinterpolation: ($) => /[^{][^{]\S*/,
+    notinterpolation: ($) => /[^\s{][^\s{]\S*/,
 
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),
@@ -185,6 +220,6 @@ module.exports = grammar({
 
     STRING: (_) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
     INDENTED_STRING: (_) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes
-    TEXT: (_) => /[^\s]+/, //recipe text, only matches in a recipe body
+    TEXT: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
   },
 });

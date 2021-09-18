@@ -2,11 +2,20 @@
   "name": "just",
   "rules": {
     "source_file": {
-      "type": "REPEAT",
-      "content": {
-        "type": "SYMBOL",
-        "name": "item"
-      }
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "item"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        }
+      ]
     },
     "item": {
       "type": "CHOICE",
@@ -47,23 +56,6 @@
         {
           "type": "SYMBOL",
           "name": "comment"
-        }
-      ]
-    },
-    "comment": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "#"
-        },
-        {
-          "type": "PATTERN",
-          "value": ".*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "NEWLINE"
         }
       ]
     },
@@ -141,8 +133,12 @@
               "value": "set"
             },
             {
-              "type": "SYMBOL",
-              "name": "NAME"
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "SYMBOL",
+                "name": "NAME"
+              }
             },
             {
               "type": "FIELD",
@@ -177,6 +173,75 @@
                   }
                 ]
               }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "eol"
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "set"
+            },
+            {
+              "type": "STRING",
+              "value": "shell"
+            },
+            {
+              "type": "STRING",
+              "value": ":="
+            },
+            {
+              "type": "STRING",
+              "value": "["
+            },
+            {
+              "type": "STRING",
+              "value": "\""
+            },
+            {
+              "type": "FIELD",
+              "name": "lang",
+              "content": {
+                "type": "SYMBOL",
+                "name": "NAME"
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "\""
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "STRING",
+                        "value": ","
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "STRING",
+              "value": "]"
             },
             {
               "type": "SYMBOL",
@@ -769,19 +834,21 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "shebang"
+              "name": "shebang_recipe"
             },
             {
-              "type": "BLANK"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "recipe_body"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
             }
           ]
-        },
-        {
-          "type": "REPEAT1",
-          "content": {
-            "type": "SYMBOL",
-            "name": "line"
-          }
         },
         {
           "type": "SYMBOL",
@@ -789,12 +856,146 @@
         }
       ]
     },
+    "shebang_recipe": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "shebang"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "shebang_body"
+        }
+      ]
+    },
+    "shebang_body": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "line"
+      }
+    },
     "shebang": {
       "type": "SEQ",
       "members": [
         {
           "type": "STRING",
           "value": "#!"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": ".*\\/"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "interpreter",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "TEXT"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "/usr/bin/env"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "interpreter",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "TEXT"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "NEWLINE"
+        }
+      ]
+    },
+    "recipe_body": {
+      "type": "REPEAT1",
+      "content": {
+        "type": "SYMBOL",
+        "name": "line"
+      }
+    },
+    "line": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "comment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "recipeline"
+        }
+      ]
+    },
+    "recipeline": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "interpolation"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "notcomment"
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "interpolation"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "notinterpolation"
+              }
+            ]
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "NEWLINE"
+        }
+      ]
+    },
+    "notcomment": {
+      "type": "PATTERN",
+      "value": "[^#\\s{]\\S*"
+    },
+    "comment": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "#[^!].*"
         },
         {
           "type": "PATTERN",
@@ -806,43 +1007,9 @@
         }
       ]
     },
-    "line": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SEQ",
-          "members": [
-            {
-              "type": "REPEAT1",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "text"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "interpolation"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "SYMBOL",
-              "name": "NEWLINE"
-            }
-          ]
-        },
-        {
-          "type": "SYMBOL",
-          "name": "NEWLINE"
-        }
-      ]
-    },
-    "text": {
-      "type": "SYMBOL",
-      "name": "TEXT"
+    "notinterpolation": {
+      "type": "PATTERN",
+      "value": "[^\\s{][^\\s{]\\S*"
     },
     "interpolation": {
       "type": "SEQ",
@@ -891,7 +1058,7 @@
     },
     "TEXT": {
       "type": "PATTERN",
-      "value": "[^\\s]+"
+      "value": "\\S+"
     }
   },
   "extras": [

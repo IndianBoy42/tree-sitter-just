@@ -65,11 +65,11 @@
           "named": true
         },
         {
-          "type": "line",
+          "type": "recipe_body",
           "named": true
         },
         {
-          "type": "shebang",
+          "type": "shebang_recipe",
           "named": true
         }
       ]
@@ -334,19 +334,15 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "NEWLINE",
+          "type": "comment",
           "named": true
         },
         {
-          "type": "interpolation",
-          "named": true
-        },
-        {
-          "type": "text",
+          "type": "recipeline",
           "named": true
         }
       ]
@@ -414,6 +410,21 @@
     }
   },
   {
+    "type": "recipe_body",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "recipeheader",
     "named": true,
     "fields": {},
@@ -431,6 +442,33 @@
         },
         {
           "type": "parameters",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "recipeline",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "NEWLINE",
+          "named": true
+        },
+        {
+          "type": "interpolation",
+          "named": true
+        },
+        {
+          "type": "notcomment",
+          "named": true
+        },
+        {
+          "type": "notinterpolation",
           "named": true
         }
       ]
@@ -459,6 +497,26 @@
     "type": "setting",
     "named": true,
     "fields": {
+      "lang": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "NAME",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "NAME",
+            "named": true
+          }
+        ]
+      },
       "right": {
         "multiple": true,
         "required": false,
@@ -483,11 +541,11 @@
       "required": true,
       "types": [
         {
-          "type": "NAME",
+          "type": "eol",
           "named": true
         },
         {
-          "type": "eol",
+          "type": "string",
           "named": true
         }
       ]
@@ -511,13 +569,58 @@
   {
     "type": "shebang",
     "named": true,
-    "fields": {},
+    "fields": {
+      "interpreter": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "TEXT",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": false,
       "required": true,
       "types": [
         {
           "type": "NEWLINE",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "shebang_body",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "shebang_recipe",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "shebang",
+          "named": true
+        },
+        {
+          "type": "shebang_body",
           "named": true
         }
       ]
@@ -531,6 +634,10 @@
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
         {
           "type": "item",
           "named": true
@@ -575,21 +682,6 @@
       "types": [
         {
           "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "text",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "TEXT",
           "named": true
         }
       ]
@@ -650,7 +742,7 @@
     "named": false
   },
   {
-    "type": "#",
+    "type": "\"",
     "named": false
   },
   {
@@ -679,6 +771,10 @@
   },
   {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": "/usr/bin/env",
     "named": false
   },
   {
@@ -774,7 +870,19 @@
     "named": false
   },
   {
+    "type": "notcomment",
+    "named": true
+  },
+  {
+    "type": "notinterpolation",
+    "named": true
+  },
+  {
     "type": "set",
+    "named": false
+  },
+  {
+    "type": "shell",
     "named": false
   },
   {
