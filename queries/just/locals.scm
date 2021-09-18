@@ -1,5 +1,5 @@
-(assignment (NAME) @defintion.variable)
-(alias left:(NAME) @defintion.variable)
+(assignment (NAME) @definition.variable)
+(alias left:(NAME) @definition.variable)
 (alias right:(NAME) @reference.variable)
 (value (NAME) @reference.variable)
 (parameter (NAME) @definition.variable)
