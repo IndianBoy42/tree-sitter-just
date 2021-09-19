@@ -460,15 +460,15 @@
           "named": true
         },
         {
+          "type": "TEXT",
+          "named": true
+        },
+        {
           "type": "interpolation",
           "named": true
         },
         {
           "type": "notcomment",
-          "named": true
-        },
-        {
-          "type": "notinterpolation",
           "named": true
         }
       ]
@@ -634,10 +634,6 @@
       "multiple": true,
       "required": false,
       "types": [
-        {
-          "type": "expression",
-          "named": true
-        },
         {
           "type": "item",
           "named": true
@@ -871,10 +867,6 @@
   },
   {
     "type": "notcomment",
-    "named": true
-  },
-  {
-    "type": "notinterpolation",
     "named": true
   },
   {

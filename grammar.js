@@ -5,7 +5,7 @@ module.exports = grammar({
 
   rules: {
     // justfile      : item* EOF
-    source_file: ($) => choice(repeat($.item), $.expression),
+    source_file: ($) => repeat($.item),
     // $.expression is not really a valid Justfile,
     // but we do this so that we can parse just expression using this parser.
     // This is needed for injecting inside interpolations
@@ -196,13 +196,16 @@ module.exports = grammar({
     line: ($) => choice($.comment, $.recipeline),
     // line: ($) => choice($.comment, $.recipeline, $.shebang),
 
+    // FIXME: detecting interpolation doesn't work
     recipeline: ($) =>
       seq(
-        choice($.interpolation, $.notcomment),
-        repeat(choice($.interpolation, $.notinterpolation)),
+        $.notcomment,
+        // repeat(choice($.interpolation, $.notinterpolation)),
+        repeat(choice($.interpolation, $.TEXT)),
         $.NEWLINE
       ),
-    notcomment: ($) => /[^#\s{]\S*/,
+    // notcomment: ($) => /[^#\s{]\S*/,
+    notcomment: ($) => /[^#\s]\S*/,
     comment: ($) => seq(/#[^!].*/, /.*/, $.NEWLINE),
 
     // notinterpolation: ($) => /[^{][^{]\S*/,

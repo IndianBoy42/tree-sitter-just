@@ -2,20 +2,11 @@
   "name": "just",
   "rules": {
     "source_file": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "item"
-          }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "expression"
-        }
-      ]
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "item"
+      }
     },
     "item": {
       "type": "CHOICE",
@@ -952,17 +943,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "interpolation"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "notcomment"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "notcomment"
         },
         {
           "type": "REPEAT",
@@ -975,7 +957,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "notinterpolation"
+                "name": "TEXT"
               }
             ]
           }
@@ -988,7 +970,7 @@
     },
     "notcomment": {
       "type": "PATTERN",
-      "value": "[^#\\s{]\\S*"
+      "value": "[^#\\s]\\S*"
     },
     "comment": {
       "type": "SEQ",

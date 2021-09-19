@@ -11,4 +11,4 @@
     (item (recipe (body (recipe_body) @content)))
 ) 
 
-(interpolation (expression) @just)
+; (interpolation (expression) @just)
