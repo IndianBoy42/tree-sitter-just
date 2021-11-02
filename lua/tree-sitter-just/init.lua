@@ -34,6 +34,22 @@ function M.setup(arg)
 		},
 		maintainers = { "@IndianBoy42" },
 	}
+	local ok, ft = pcall(require, "filetype")
+	if ok then
+		ft.setup({
+			overrides = {
+				extensions = {
+					just = "just",
+				},
+				literals = {
+					Justfile = "just",
+					justfile = "just",
+					[".Justfile"] = "just",
+					[".justfile"] = "just",
+				},
+			},
+		})
+	end
 end
 
 return M
