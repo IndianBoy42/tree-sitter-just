@@ -98,7 +98,8 @@ module.exports = grammar({
     condition: ($) =>
       choice(
         seq($.expression, "==", $.expression),
-        seq($.expression, "!=", $.expression)
+        seq($.expression, "!=", $.expression),
+        seq($.expression, "=~", $.expression)
       ),
 
     // value         : NAME '(' sequence? ')'
