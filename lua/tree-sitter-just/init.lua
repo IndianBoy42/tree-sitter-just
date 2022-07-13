@@ -28,7 +28,7 @@ function M.setup(arg)
 				"packer",
 				"start",
 				"tree-sitter-just"
-			) or "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
+			) or "https://github.com/steabert/tree-sitter-just", -- local path or git repo
 			files = { "src/parser.c", "src/scanner.cc" },
 			branch = "main",
 		},
