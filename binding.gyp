@@ -12,7 +12,7 @@
         # If your language uses an external scanner, add it here.
       ],
       "cflags_c": [
-        "-std=c99",
+        "-std=c++17",
       ]
     }
   ]
