@@ -39,6 +39,10 @@ require("nvim-treesitter.parsers").get_parser_configs().just = {
 ```
 
 Dont forget to `:TSInstall` after adding this. With this method you do not have to add this repo as a plugin
+If you run into problems relating to C++ 11 features, try including this in your setup (you may have to `brew install gcc@11`):
+```lua
+require"nvim-treesitter.install".compilers = {"gcc-11"}
+```
 
 ## Testing
 
