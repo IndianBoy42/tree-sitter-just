@@ -28,6 +28,7 @@
   },
   "tree-sitter": [
     {
+      "scope": "source.just",
       "file-types": [
         "just",
         ".just",
@@ -38,15 +39,8 @@
         ".JUSTFILE",
         ".Justfile"
       ],
-      "highlights": [
-        "queries/highlights.scm"
-      ],
-      "first-line-regex": "#!\\S*bin\\S*[/ ]just",
       "injection-regex": "^(?i)just(file)?$",
-      "locals": [
-        "queries/locals.scm"
-      ],
-      "scope": "source.just"
+      "first-line-regex": "#!\\S*bin\\S*[/ ]just"
     }
   ]
 }
