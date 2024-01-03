@@ -19,7 +19,7 @@ foo := "abc"
             (STRING))))
       (eol
         (NEWLINE)))))
-        
+
 ================================================================================
 expression
 ================================================================================
@@ -46,9 +46,8 @@ foo := "abc" + 'def'
       (eol
         (NEWLINE)))))
 
-
 ================================================================================
-paths FIXME(paths) XFAIL from path operator
+paths
 ================================================================================
 
 relative := "abc" / 'def'
@@ -67,39 +66,40 @@ combined := "foo" / bar() / baz
       (expression
         (value
           (string
-            (STRING))))
-      (ERROR
-        (INDENT)
-        (UNEXPECTED ')
-        (RAW_STRING))
+            (STRING)))
+        (expression
+          (value
+            (string
+              (RAW_STRING)))))
       (eol
         (NEWLINE))))
   (item
     (assignment
       (NAME)
-      (ERROR
-        (UNEXPECTED '))
       (expression
         (value
-          (NAME)))
-      (ERROR)
+          (cmd
+            (MISSING BACKTICK)))
+        (expression
+          (value
+            (string
+              (STRING)))))
       (eol
         (NEWLINE))))
   (item
     (assignment
       (NAME)
-      (ERROR
+      (expression
         (value
           (string
             (STRING)))
-        (UNEXPECTED ')
-        (value
-          (call
-            (NAME)))
-        (UNEXPECTED '))
-      (expression
-        (value
-          (NAME)))
+        (expression
+          (value
+            (call
+              (NAME)))
+          (expression
+            (value
+              (NAME)))))
       (eol
         (NEWLINE)))))
 
@@ -122,67 +122,67 @@ corge := "foo\"bar"
 --------------------------------------------------------------------------------
 
 (source_file
-    (item
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (STRING))))
       (eol
-        (NEWLINE)))
-    (item
-      (assignment
-        (NAME)
-        (expression
-          (value
-            (string
-              (STRING))))
-        (eol
-          (NEWLINE))))
-    (item
-      (assignment
-        (NAME)
-        (expression
-          (value
-            (string
-              (RAW_STRING))))
-        (eol
-          (NEWLINE))))
-    (item
-      (assignment
-        (NAME)
-        (expression
-          (value
-            (string
-              (STRING))))
-        (eol
-          (NEWLINE))))
-    (item
-      (assignment
-        (NAME)
-        (expression
-          (value
-            (string
-              (INDENTED_STRING))))
-        (eol
-          (NEWLINE))))
-    (item
-      (assignment
-        (NAME)
-        (expression
-          (value
-            (string
-              (INDENTED_RAW_STRING))))
-        (eol
-          (NEWLINE))))
-    (item
-      (assignment
-        (NAME)
-        (ERROR
-          (value
-            (string
-              (STRING))))
-        (expression
-          (value
-            (NAME)))
-        (ERROR)
-        (eol
-          (NEWLINE)))))
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (RAW_STRING))))
+      (eol
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (STRING))))
+      (eol
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (INDENTED_STRING))))
+      (eol
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (INDENTED_RAW_STRING))))
+      (eol
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (ERROR
+        (value
+          (string
+            (STRING))))
+      (expression
+        (value
+          (NAME)))
+      (ERROR)
+      (eol
+        (NEWLINE)))))
 
 ================================================================================
 if
