@@ -170,19 +170,15 @@ corge := "foo\"bar"
             (INDENTED_RAW_STRING))))
       (eol
         (NEWLINE))))
-  (item
-    (assignment
-      (NAME)
-      (ERROR
-        (value
-          (string
-            (STRING))))
-      (expression
-        (value
-          (NAME)))
-      (ERROR)
-      (eol
-        (NEWLINE)))))
+  (ERROR
+    (NAME)
+    (ERROR
+      (value
+        (string
+          (STRING))))
+    (NAME)
+    (INDENT)
+    (UNEXPECTED '\0')))
 
 ================================================================================
 if
@@ -324,12 +320,13 @@ mod bar 'PATH'
       (NEWLINE))))
 
 ================================================================================
-set # FIXME(array): XFAIL arrays
+set
 ================================================================================
 
 set SOME_BOOL
 set FOO := true
 set dotenv-load
+set tempdir := "/tmp/just"
 set shell := ["powershell.exe", "-c"]
 
 --------------------------------------------------------------------------------
@@ -357,10 +354,14 @@ set shell := ["powershell.exe", "-c"]
   (item
     (setting
       (NAME)
-      (ERROR
-        (INDENT)
-        (UNEXPECTED '.')
-        (NAME))
+      (string
+        (STRING))
+      (eol
+        (NEWLINE))))
+  (item
+    (setting
+      (string
+        (STRING))
       (string
         (STRING))
       (eol
