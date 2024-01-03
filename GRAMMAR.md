@@ -71,6 +71,7 @@ expression    : 'if' condition '{' expression '}' 'else' '{' expression '}'
 
 condition     : expression '==' expression
               | expression '!=' expression
+              | expression '=~' expression
 
 value         : NAME '(' sequence? ')'
               | BACKTICK

@@ -95,10 +95,12 @@ module.exports = grammar({
 
     // condition     : expression '==' expression
     //               | expression '!=' expression
+    //               | expression '=~' expression
     condition: ($) =>
       choice(
         seq($.expression, "==", $.expression),
-        seq($.expression, "!=", $.expression)
+        seq($.expression, "!=", $.expression),
+        seq($.expression, "=~", $.expression)
       ),
 
     // value         : NAME '(' sequence? ')'
