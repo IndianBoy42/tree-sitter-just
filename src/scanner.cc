@@ -82,22 +82,35 @@ void skip(TSLexer *lexer) {
   return lexer->advance(lexer, true);
 }
 
+// An EOF works as a dedent
+bool handle_eof(TSLexer *lexer, const bool *valid_symbols) {
+  assert(lexer->eof(lexer));
+  if (valid_symbols[DEDENT]) {
+      lexer->result_symbol = DEDENT;
+      return true;
+  }
+  return false;  
+}
+
 // This function is responsible for recognizing external tokens. It should
 // return true if a token was recognized, and false otherwise.
 bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
                                             const bool *valid_symbols) {
+  Scanner *state = static_cast<Scanner *>(payload);
+  int32_t &lookahead = lexer->lookahead;
+  bool (*eof)(const TSLexer *) = lexer->eof;
+  void (*mark_end)(TSLexer *) = lexer->mark_end;
+  bool (*is_at_included_range_start)(const TSLexer *) =
+      lexer->is_at_included_range_start;
+
+  if (eof(lexer)) {
+      return handle_eof(lexer, valid_symbols);
+  }
 
   if (!lexer->lookahead) {
     lexer->mark_end(lexer);
     return false;
   }
-
-  Scanner *state = static_cast<Scanner *>(payload);
-  int32_t &lookahead = lexer->lookahead;
-  TSSymbol &result_symbol = lexer->result_symbol;
-  void (*mark_end)(TSLexer *) = lexer->mark_end;
-  bool (*is_at_included_range_start)(const TSLexer *) =
-      lexer->is_at_included_range_start;
 
   // Handle backslash escaping for newlines
   if (valid_symbols[NEWLINE]) {
@@ -112,8 +125,9 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
       eol = true;
       skip(lexer);
     }
+
     if (eol && !escape) {
-      result_symbol = NEWLINE;
+      lexer->result_symbol = NEWLINE;
       return true;
     }
   }
@@ -130,22 +144,20 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
         break;
       }
 
-      // if (lexer->eof(lexer)) {
-      //   if (valid_symbols[DEDENT]) {
-      //     return true;
-      //   }
-      // }
+      if (lexer->eof(lexer)) {
+        return handle_eof(lexer, valid_symbols);
+      }
     }
 
     uint32_t indent = lexer->get_column(lexer);
     if (indent > state->prev_indent && valid_symbols[INDENT] &&
         state->prev_indent == 0) {
-      result_symbol = INDENT;
+      lexer->result_symbol = INDENT;
       state->prev_indent = indent;
       return true;
     } else if (indent < state->prev_indent && valid_symbols[DEDENT] &&
                indent == 0) {
-      result_symbol = DEDENT;
+      lexer->result_symbol = DEDENT;
       state->prev_indent = indent;
       return true;
     }
