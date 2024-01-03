@@ -136,10 +136,13 @@ module.exports = grammar({
         seq($.expression, optional(",")),
       ),
 
-    // recipe        : '@'? NAME parameter* variadic_parameters? ':' dependency* body?
-    recipe: ($) => seq($.recipeheader, $.NEWLINE, optional($.body)),
+    attribute: ($) => seq("[", $.NAME, "]", $.eol),
 
-    recipeheader: ($) =>
+    // recipe        : attribute? '@'? NAME parameter* variadic_parameters? ':' dependency* body?
+    recipe: ($) =>
+      seq(optional($.attribute), $.recipe_header, $.NEWLINE, optional($.body)),
+
+    recipe_header: ($) =>
       seq(
         optional("@"),
         $.NAME,

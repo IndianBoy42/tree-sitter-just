@@ -16,7 +16,7 @@ bar:
       (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME))
       (NEWLINE)
       (body
@@ -29,7 +29,7 @@ bar:
         (DEDENT))))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME))
       (NEWLINE)
       (body
@@ -56,7 +56,7 @@ quiet
       (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME))
       (NEWLINE)
       (body
@@ -83,7 +83,7 @@ foo: bar baz
       (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME)
         (dependencies
           (dependency
@@ -118,7 +118,7 @@ baz qux *quux:
       (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME)
         (parameters
           (parameter
@@ -134,7 +134,7 @@ baz qux *quux:
         (DEDENT))))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME)
         (parameters
           (parameter
@@ -167,7 +167,7 @@ foo +bar: baz(bar)
       (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME)
         (parameters
           (parameter
@@ -205,22 +205,23 @@ foo:
   (item
     (eol
       (NEWLINE)))
-  (ERROR
-    (INDENT)
-    (NAME))
-  (item
-    (eol
-      (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (attribute
+        (NAME)
+        (eol
+          (NEWLINE)))
+      (recipe_header
         (NAME))
-      (NEWLINE)))
-  (ERROR
-    (NAME))
-  (item
-    (eol
-      (NEWLINE))))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (DEDENT)))))
 
 ================================================================================
 shebang
@@ -240,7 +241,7 @@ foo:
       (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME))
       (NEWLINE)
       (body
@@ -299,7 +300,7 @@ bar:
       (NEWLINE)))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME))
       (NEWLINE)
       (body
@@ -326,7 +327,7 @@ bar:
         (DEDENT))))
   (item
     (recipe
-      (recipeheader
+      (recipe_header
         (NAME))
       (NEWLINE)
       (body
