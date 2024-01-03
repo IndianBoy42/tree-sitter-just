@@ -4,15 +4,16 @@ on:
   push:
 
 jobs:
-  # FIXME: re-enable once upgrading to the new tree-sitter format
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Install modules
-  #       run: npm install
-  #     - name: Run ESLint
-  #       run: npm run lint
+  deno:
+    name: Deno format and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: "~1.39"
+      - run: deno lint
+      - run: deno fmt --check
 
   test:
     runs-on: ${{ matrix.os }}
@@ -28,3 +29,4 @@ jobs:
       - run: npm install
       - run: npm test
         # FIXME: also parse tests/*.just
+

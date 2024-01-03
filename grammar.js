@@ -43,7 +43,7 @@ module.exports = grammar({
           "set",
           field("name", $.NAME),
           field("right", optional(seq(":=", choice($.boolean, $.settinglist)))),
-          $.eol
+          $.eol,
         ),
         seq(
           "set",
@@ -56,18 +56,18 @@ module.exports = grammar({
           '"',
           repeat(seq(optional(","), $.string)),
           "]",
-          $.eol
-        )
+          $.eol,
+        ),
       ),
 
     // boolean       : ':=' ('true' | 'false')
-    boolean: ($) => choice("true", "false"),
+    boolean: (_) => choice("true", "false"),
 
     settinglist: ($) =>
       seq(
         "[",
         $.stringlist,
-        "]"
+        "]",
         // seq("[", $.string, repeat(seq(",", $.string)), optional(","), "]")
       ),
 
@@ -88,11 +88,11 @@ module.exports = grammar({
           "else",
           "{",
           field("else", $.expression),
-          "}"
+          "}",
         ),
         seq($.value, "+", $.expression),
         seq($.value, "/", $.expression),
-        $.value
+        $.value,
       ),
 
     // condition     : expression '==' expression
@@ -102,7 +102,7 @@ module.exports = grammar({
       choice(
         seq($.expression, "==", $.expression),
         seq($.expression, "!=", $.expression),
-        seq($.expression, "=~", $.expression)
+        seq($.expression, "=~", $.expression),
       ),
 
     // value         : NAME '(' sequence? ')'
@@ -114,7 +114,7 @@ module.exports = grammar({
     value: ($) =>
       prec.left(
         0,
-        choice($.call, $.cmd, $.NAME, $.string, seq("(", $.expression, ")"))
+        choice($.call, $.cmd, $.NAME, $.string, seq("(", $.expression, ")")),
       ),
 
     call: ($) => seq($.NAME, "(", optional($.sequence), ")"),
@@ -133,7 +133,7 @@ module.exports = grammar({
     sequence: ($) =>
       choice(
         seq($.expression, ",", $.sequence),
-        seq($.expression, optional(","))
+        seq($.expression, optional(",")),
       ),
 
     // recipe        : '@'? NAME parameter* variadic_parameters? ':' dependency* body?
@@ -146,7 +146,7 @@ module.exports = grammar({
         optional($.parameters),
         ":",
         optional(" "),
-        optional($.dependencies)
+        optional($.dependencies),
       ),
 
     parameters: ($) =>
@@ -157,7 +157,7 @@ module.exports = grammar({
     parameter: ($) =>
       choice(
         seq(optional("$"), $.NAME),
-        seq(optional("$"), $.NAME, "=", $.value)
+        seq(optional("$"), $.NAME, "=", $.value),
       ),
 
     // variadic_parameters      : '*' parameter
@@ -178,7 +178,7 @@ module.exports = grammar({
       seq(
         $.INDENT,
         choice($.shebang_recipe, optional($.recipe_body)),
-        $.DEDENT
+        $.DEDENT,
       ),
     // seq($.INDENT, $.recipebody, $.DEDENT),
 
@@ -190,9 +190,9 @@ module.exports = grammar({
         "#!",
         choice(
           seq(/.*\//, field("interpreter", $.TEXT)),
-          seq("/usr/bin/env", field("interpreter", $.TEXT))
+          seq("/usr/bin/env", field("interpreter", $.TEXT)),
         ),
-        $.NEWLINE
+        $.NEWLINE,
       ),
 
     recipe_body: ($) => repeat1($.line),
@@ -206,14 +206,14 @@ module.exports = grammar({
         $.notcomment,
         // repeat(choice($.interpolation, $.notinterpolation)),
         repeat(choice($.interpolation, $.TEXT)),
-        $.NEWLINE
+        $.NEWLINE,
       ),
     // notcomment: ($) => /[^#\s{]\S*/,
-    notcomment: ($) => /[^#\s]\S*/,
+    notcomment: (_) => /[^#\s]\S*/,
     comment: ($) => seq(/#[^!].*/, /.*/, $.NEWLINE),
 
     // notinterpolation: ($) => /[^{][^{]\S*/,
-    notinterpolation: ($) => /[^\s{][^\s{]\S*/,
+    notinterpolation: (_) => /[^\s{][^\s{]\S*/,
 
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),

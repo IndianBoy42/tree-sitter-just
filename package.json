@@ -5,8 +5,7 @@
   "main": "grammar.js",
   "scripts": {
     "test": "tree-sitter test",
-    "gen": "tree-sitter generate",
-    "lint": "eslint grammar.js"
+    "gen": "tree-sitter generate"
   },
   "repository": {
     "type": "git",
@@ -25,9 +24,7 @@
     "tree-sitter": "^0.20.6"
   },
   "devDependencies": {
-    "tree-sitter-cli": "^0.20.8",
-    "eslint": "^8.56.0",
-    "eslint-config-google": "^0.14.0"
+    "tree-sitter-cli": "^0.20.8"
   },
   "tree-sitter": [
     {
