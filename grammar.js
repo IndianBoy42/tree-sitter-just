@@ -74,6 +74,7 @@ module.exports = grammar({
     stringlist: ($) => repeat1(seq($.string, optional(","))),
 
     // expression    : 'if' condition '{' expression '}' 'else' '{' expression '}'
+    //               | value '/' expression
     //               | value '+' expression
     //               | value
     expression: ($) =>
@@ -90,6 +91,7 @@ module.exports = grammar({
           "}"
         ),
         seq($.value, "+", $.expression),
+        seq($.value, "/", $.expression),
         $.value
       ),
 

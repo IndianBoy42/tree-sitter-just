@@ -770,6 +770,10 @@
     "named": false
   },
   {
+    "type": "/",
+    "named": false
+  },
+  {
     "type": "/usr/bin/env",
     "named": false
   },
