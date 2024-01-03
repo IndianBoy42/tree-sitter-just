@@ -2,7 +2,7 @@
 
 WIP: Tree-sitter grammar for Justfiles ([casey/just](https://github.com/casey/just))
 
-To use treesitter based highlighting, folds etc. the queries need to be added to the runtimepath, until I get a PR into `nvim-treesitter/nvim-treesitter` you can install this repo as a plugin using Plug/packer/manual clone etc. This plugin also adds a simple `ftdetect` plugin for detecting
+To use treesitter based highlighting, folds etc. the queries need to be added to the runtimepath, until I get a PR into `nvim-treesitter/nvim-treesitter` you can install this repo as a plugin using Plug/packer/manual clone etc. This plugin also adds a simple `ftdetect` plugin for detecting justfiles.
 
 Packer:
 
@@ -38,8 +38,10 @@ require("nvim-treesitter.parsers").get_parser_configs().just = {
 }
 ```
 
-Dont forget to `:TSInstall` after adding this. With this method you do not have to add this repo as a plugin
+Don't forget to `:TSInstall` after adding this. With this method you do not have to add this repo as a plugin.
+
 If you run into problems relating to C++ 11 features, try including this in your setup (you may have to `brew install gcc@11`):
+
 ```lua
 require"nvim-treesitter.install".compilers = {"gcc-11"}
 ```
@@ -81,4 +83,4 @@ You can use the `nvim-treesitter/playground` plugin [from here](https://github.c
   - [x] Write the queries
 - [ ] Write Tests
 - [x] Highlight the fish/bash/etc inside recipes (use tree-sitter injections)
-- [ ] Fix weirdness around trailing whitespace (dont leave trailing whitespace after the recipe header)
+- [ ] Fix weirdness around trailing whitespace (don't leave trailing whitespace after the recipe header)
