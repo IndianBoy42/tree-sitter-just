@@ -1,0 +1,394 @@
+================================================================================
+assignment
+================================================================================
+
+foo := "abc"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (STRING))))
+      (eol
+        (NEWLINE)))))
+        
+================================================================================
+expression
+================================================================================
+
+foo := "abc" + 'def'
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (STRING)))
+        (expression
+          (value
+            (string
+              (RAW_STRING)))))
+      (eol
+        (NEWLINE)))))
+
+
+================================================================================
+paths FIXME(paths) XFAIL from path operator
+================================================================================
+
+relative := "abc" / 'def'
+absolute := / "abc"
+combined := "foo" / bar() / baz
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (string
+            (STRING))))
+      (ERROR
+        (INDENT)
+        (UNEXPECTED ')
+        (RAW_STRING))
+      (eol
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (ERROR
+        (UNEXPECTED '))
+      (expression
+        (value
+          (NAME)))
+      (ERROR)
+      (eol
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (ERROR
+        (value
+          (string
+            (STRING)))
+        (UNEXPECTED ')
+        (value
+          (call
+            (NAME)))
+        (UNEXPECTED '))
+      (expression
+        (value
+          (NAME)))
+      (eol
+        (NEWLINE)))))
+
+================================================================================
+strings FIXME(escapes) XFAIL from escapes
+================================================================================
+
+foo := "a"
+bar := 'b'
+baz := "c
+d"
+qux := """e
+f"""
+quux := '''g
+h
+i
+'''
+corge := "foo\"bar"
+
+--------------------------------------------------------------------------------
+
+(source_file
+    (item
+      (eol
+        (NEWLINE)))
+    (item
+      (assignment
+        (NAME)
+        (expression
+          (value
+            (string
+              (STRING))))
+        (eol
+          (NEWLINE))))
+    (item
+      (assignment
+        (NAME)
+        (expression
+          (value
+            (string
+              (RAW_STRING))))
+        (eol
+          (NEWLINE))))
+    (item
+      (assignment
+        (NAME)
+        (expression
+          (value
+            (string
+              (STRING))))
+        (eol
+          (NEWLINE))))
+    (item
+      (assignment
+        (NAME)
+        (expression
+          (value
+            (string
+              (INDENTED_STRING))))
+        (eol
+          (NEWLINE))))
+    (item
+      (assignment
+        (NAME)
+        (expression
+          (value
+            (string
+              (INDENTED_RAW_STRING))))
+        (eol
+          (NEWLINE))))
+    (item
+      (assignment
+        (NAME)
+        (ERROR
+          (value
+            (string
+              (STRING))))
+        (expression
+          (value
+            (NAME)))
+        (ERROR)
+        (eol
+          (NEWLINE)))))
+
+================================================================================
+if
+================================================================================
+
+foo := if a == "x" {
+  "val"
+} else if "1" != "2" { foo_fn("val") }
+} else { val }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (ERROR
+    (NAME)
+    (condition
+      (expression
+        (value
+          (NAME)))
+      (expression
+        (value
+          (string
+            (STRING)))))
+    (ERROR
+      (expression
+        (value
+          (string
+            (STRING)))))
+    (expression
+      (condition
+        (expression
+          (value
+            (string
+              (STRING))))
+        (expression
+          (value
+            (string
+              (STRING)))))
+      (expression
+        (value
+          (call
+            (NAME)
+            (sequence
+              (expression
+                (value
+                  (string
+                    (STRING))))))))
+      (ERROR
+        (NEWLINE))
+      (expression
+        (value
+          (NAME)))))
+  (item
+    (eol
+      (NEWLINE))))
+
+================================================================================
+function
+================================================================================
+
+foo := some_fn("param1", param2)
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (call
+            (NAME)
+            (sequence
+              (expression
+                (value
+                  (string
+                    (STRING))))
+              (sequence
+                (expression
+                  (value
+                    (NAME))))))))
+      (eol
+        (NEWLINE)))))
+
+================================================================================
+export
+================================================================================
+
+export foo := "abc"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (export
+      (assignment
+        (NAME)
+        (expression
+          (value
+            (string
+              (STRING))))
+        (eol
+          (NEWLINE))))))
+
+================================================================================
+modules FIXME(mod): XFAIL mod support
+================================================================================
+
+mod foo
+mod bar 'PATH'
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (ERROR
+    (NAME)
+    (parameter
+      (NAME))
+    (parameter
+      (NAME))
+    (parameter
+      (NAME))
+    (INDENT)
+    (RAW_STRING))
+  (item
+    (eol
+      (NEWLINE))))
+
+================================================================================
+set # FIXME(array): XFAIL arrays
+================================================================================
+
+set SOME_BOOL
+set FOO := true
+set dotenv-load
+set shell := ["powershell.exe", "-c"]
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (setting
+      (NAME)
+      (eol
+        (NEWLINE))))
+  (item
+    (setting
+      (NAME)
+      (boolean)
+      (eol
+        (NEWLINE))))
+  (item
+    (setting
+      (NAME)
+      (eol
+        (NEWLINE))))
+  (item
+    (setting
+      (NAME)
+      (ERROR
+        (INDENT)
+        (UNEXPECTED '.')
+        (NAME))
+      (string
+        (STRING))
+      (eol
+        (NEWLINE)))))
+
+================================================================================
+comment
+================================================================================
+
+# comment
+foo := bar # + baz
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (eol
+      (comment
+        (NEWLINE))))
+  (item
+    (assignment
+      (NAME)
+      (expression
+        (value
+          (NAME)))
+      (eol
+        (comment
+          (NEWLINE))))))

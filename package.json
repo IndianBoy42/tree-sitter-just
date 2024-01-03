@@ -5,7 +5,8 @@
   "main": "grammar.js",
   "scripts": {
     "test": "tree-sitter test",
-    "gen": "tree-sitter generate"
+    "gen": "tree-sitter generate",
+    "lint": "eslint grammar.js"
   },
   "repository": {
     "type": "git",
@@ -20,21 +21,31 @@
   "author": "Anshuman Medhi",
   "license": "MIT",
   "dependencies": {
-    "nan": "^2.14.2",
-    "tree-sitter": "^0.19.0"
+    "nan": "^2.18.0",
+    "tree-sitter": "^0.20.6"
   },
   "devDependencies": {
-    "tree-sitter-cli": "^0.19.3"
+    "tree-sitter-cli": "^0.20.8",
+    "eslint": "^8.56.0",
+    "eslint-config-google": "^0.14.0"
   },
   "tree-sitter": [
     {
       "file-types": [
-        "just"
+        "just",
+        ".just",
+        "justfile",
+        "JUSTFILE",
+        "Justfile",
+        ".justfile",
+        ".JUSTFILE",
+        ".Justfile"
       ],
       "highlights": [
         "queries/highlights.scm"
       ],
-      "injection-regex": "^(just)$",
+      "first-line-regex": "#!\\S*bin\\S*[/ ]just",
+      "injection-regex": "^(?i)just(file)?$",
       "locals": [
         "queries/locals.scm"
       ],
