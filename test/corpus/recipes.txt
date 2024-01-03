@@ -5,12 +5,28 @@ recipe
 foo:
 	body
 
+bar:
+    body
+
 --------------------------------------------------------------------------------
 
 (source_file
   (item
     (eol
       (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (DEDENT))))
   (item
     (recipe
       (recipeheader
@@ -88,7 +104,10 @@ foo: bar baz
 arguments
 ================================================================================
 
-foo bar *baz:
+foo bar:
+  body
+
+baz qux *quux:
 	body
 
 --------------------------------------------------------------------------------
@@ -97,6 +116,22 @@ foo bar *baz:
   (item
     (eol
       (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME)
+        (parameters
+          (parameter
+            (NAME))))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (DEDENT))))
   (item
     (recipe
       (recipeheader
@@ -187,7 +222,6 @@ foo:
     (eol
       (NEWLINE))))
 
-
 ================================================================================
 shebang
 ================================================================================
@@ -235,4 +269,85 @@ foo:
               (recipeline
                 (notcomment)
                 (NEWLINE)))))
+        (DEDENT)))))
+
+================================================================================
+longer bodies
+================================================================================
+
+foo:
+    body
+
+    more body
+
+    # same body
+    and even more
+
+bar:
+    body
+
+    more body
+
+    # same body
+    and even more
+  
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE)))
+          (line
+            (recipeline
+              (notcomment)
+              (TEXT)
+              (NEWLINE)))
+          (line
+            (comment
+              (NEWLINE)))
+          (line
+            (recipeline
+              (notcomment)
+              (TEXT)
+              (TEXT)
+              (NEWLINE))))
+        (DEDENT))))
+  (item
+    (recipe
+      (recipeheader
+        (NAME))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE)))
+          (line
+            (recipeline
+              (notcomment)
+              (TEXT)
+              (NEWLINE)))
+          (line
+            (comment
+              (NEWLINE)))
+          (line
+            (recipeline
+              (notcomment)
+              (TEXT)
+              (TEXT)
+              (NEWLINE))))
         (DEDENT)))))
