@@ -28,7 +28,7 @@
 
 ["export" "alias" "set"] @keyword
 
-["@" "==" "!=" "+" ":="] @operator
+["@" "==" "!=" "+" ":=" ":"] @operator
 
 [ "(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
 
