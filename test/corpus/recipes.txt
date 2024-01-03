@@ -1,0 +1,238 @@
+================================================================================
+recipe
+================================================================================
+
+foo:
+	body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (MISSING DEDENT)))))
+
+================================================================================
+quiet
+================================================================================
+
+@foo:
+	body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (MISSING DEDENT)))))
+
+================================================================================
+dependencies
+================================================================================
+
+foo: bar baz
+	body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME)
+        (dependencies
+          (dependency
+            (NAME))
+          (dependency
+            (NAME))))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (MISSING DEDENT)))))
+
+================================================================================
+arguments
+================================================================================
+
+foo bar *baz:
+	body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME)
+        (parameters
+          (parameter
+            (NAME))
+          (variadic_parameters
+            (parameter
+              (NAME)))))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (MISSING DEDENT)))))
+
+================================================================================
+dependency expression
+================================================================================
+
+foo +bar: baz(bar)
+	body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME)
+        (parameters
+          (parameter
+            (MISSING NAME))
+          (variadic_parameters
+            (parameter
+              (NAME))))
+        (dependencies
+          (dependency
+            (NAME))
+          (dependency
+            (depcall
+              (NAME)))))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (MISSING DEDENT)))))
+
+================================================================================
+attribute FIXME(attributes): XFAIL no attribute support
+================================================================================
+
+[attribute]
+foo:
+  body
+  
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (ERROR
+    (INDENT)
+    (NAME))
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME))
+      (NEWLINE)))
+  (ERROR
+    (NAME))
+  (item
+    (eol
+      (NEWLINE))))
+
+
+================================================================================
+shebang
+================================================================================
+
+foo:
+  #!/bin/sh
+  if [ -f "foo" ]; then
+    echo "foo {{var}}"
+  fi
+  
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (recipe
+      (recipeheader
+        (NAME))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (shebang_recipe
+          (shebang
+            (TEXT)
+            (NEWLINE))
+          (shebang_body
+            (line
+              (recipeline
+                (notcomment)
+                (TEXT)
+                (TEXT)
+                (TEXT)
+                (TEXT)
+                (TEXT)
+                (NEWLINE)))
+            (line
+              (recipeline
+                (notcomment)
+                (TEXT)
+                (TEXT)
+                (NEWLINE)))
+            (line
+              (recipeline
+                (notcomment)
+                (NEWLINE)))))
+        (DEDENT)))))
