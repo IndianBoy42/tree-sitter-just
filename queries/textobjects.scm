@@ -42,7 +42,7 @@
 )
 
 (item [(alias) (assignment) (export) (setting)]) @statement.outer
-(recipeheader) @statement.outer
+(recipe_header) @statement.outer
 (line) @statement.outer
 
 (comment) @comment.outer

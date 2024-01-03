@@ -8,7 +8,7 @@
 (call (NAME) @function)
 (dependency (NAME) @function)
 (depcall (NAME) @function)
-(recipeheader (NAME) @function)
+(recipe_header (NAME) @function)
 
 (depcall (expression) @parameter)
 (parameter) @parameter
