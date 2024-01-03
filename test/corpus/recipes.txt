@@ -39,7 +39,7 @@ bar:
             (recipeline
               (notcomment)
               (NEWLINE))))
-        (MISSING DEDENT)))))
+        (DEDENT)))))
 
 ================================================================================
 quiet
@@ -66,7 +66,7 @@ quiet
             (recipeline
               (notcomment)
               (NEWLINE))))
-        (MISSING DEDENT)))))
+        (DEDENT)))))
 
 ================================================================================
 dependencies
@@ -98,7 +98,7 @@ foo: bar baz
             (recipeline
               (notcomment)
               (NEWLINE))))
-        (MISSING DEDENT)))))
+        (DEDENT)))))
 
 ================================================================================
 arguments
@@ -150,7 +150,7 @@ baz qux *quux:
             (recipeline
               (notcomment)
               (NEWLINE))))
-        (MISSING DEDENT)))))
+        (DEDENT)))))
 
 ================================================================================
 dependency expression
@@ -189,7 +189,7 @@ foo +bar: baz(bar)
             (recipeline
               (notcomment)
               (NEWLINE))))
-        (MISSING DEDENT)))))
+        (DEDENT)))))
 
 ================================================================================
 attribute FIXME(attributes): XFAIL no attribute support
