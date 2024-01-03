@@ -12,7 +12,7 @@
 enum TokenType { INDENT, DEDENT, NEWLINE, LINE };
 
 struct Scanner {
-  uint32_t prev_indent = 0;
+  uint32_t prev_indent;
   // bool eol;
 };
 
@@ -44,7 +44,7 @@ unsigned tree_sitter_just_external_scanner_serialize(void *payload,
   // *buffer++ = state->eol;
 
   // Convert curr_indent and prev_indent to string and push to buffer
-  auto curr = std::to_string(state->prev_indent);
+  std::string curr = std::to_string(state->prev_indent);
   memcpy(buffer, curr.c_str(), curr.size());
   buffer += curr.size();
 
@@ -61,7 +61,7 @@ void tree_sitter_just_external_scanner_deserialize(void *payload,
   const char *end = buffer + length;
 
   if (length == 0) {
-    *state = {};
+    state->prev_indent = 0;
     return;
   }
 
@@ -70,6 +70,16 @@ void tree_sitter_just_external_scanner_deserialize(void *payload,
 
   // convert string to prev_indent
   state->prev_indent = std::stoi(std::string(buffer, end));
+}
+
+// Continue and include the preceding character in the token
+void advance(TSLexer *lexer) {
+  return lexer->advance(lexer, false);
+}
+
+// Continue and discard the preceding character
+void skip(TSLexer *lexer) {
+  return lexer->advance(lexer, true);
 }
 
 // This function is responsible for recognizing external tokens. It should
@@ -85,10 +95,7 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
   Scanner *state = static_cast<Scanner *>(payload);
   int32_t &lookahead = lexer->lookahead;
   TSSymbol &result_symbol = lexer->result_symbol;
-  auto advance = [lexer] { lexer->advance(lexer, false); };
-  auto skip = [lexer] { lexer->advance(lexer, true); };
   void (*mark_end)(TSLexer *) = lexer->mark_end;
-  auto get_column = [lexer] { return lexer->get_column(lexer); };
   bool (*is_at_included_range_start)(const TSLexer *) =
       lexer->is_at_included_range_start;
 
@@ -97,13 +104,13 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
     bool escape = false;
     if (lookahead == '\\') {
       escape = true;
-      skip();
+      skip(lexer);
     }
 
     bool eol = false;
     while (lookahead == '\n' || lookahead == '\r') {
       eol = true;
-      skip();
+      skip(lexer);
     }
     if (eol && !escape) {
       result_symbol = NEWLINE;
@@ -120,12 +127,12 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
 
       case '\t':
       case ' ':
-        skip();
+        skip(lexer);
         break;
       }
     }
 
-    auto indent = get_column();
+    uint32_t indent = lexer->get_column(lexer);
     if (indent > state->prev_indent && valid_symbols[INDENT] &&
         state->prev_indent == 0) {
       result_symbol = INDENT;
