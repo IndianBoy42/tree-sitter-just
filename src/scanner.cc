@@ -122,7 +122,6 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
     while (std::iswspace(lookahead)) {
       switch (lookahead) {
       case '\n':
-        // state->eol = true;
         return false;
 
       case '\t':
@@ -130,6 +129,12 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
         skip(lexer);
         break;
       }
+
+      // if (lexer->eof(lexer)) {
+      //   if (valid_symbols[DEDENT]) {
+      //     return true;
+      //   }
+      // }
     }
 
     uint32_t indent = lexer->get_column(lexer);
