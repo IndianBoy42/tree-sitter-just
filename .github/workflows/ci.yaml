@@ -26,7 +26,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npm install
+      - run: git tag pre-updates
+      - run: npm install --locked
+      - name: Create generated files
+        shell: bash
+        run: |
+          npm run gen
+
+          failed=false
+          git diff pre-updates --exit-code || failed=true
+
+          if ! [ "$failed" = "false" ]; then
+            echo '::error::Generated files are out of date!'
+            echo '::error::run `npm run gen` and commit the changes'
+            exit "$exitcode"
+          fi
       - run: npm test
         # FIXME: also parse tests/*.just
-
