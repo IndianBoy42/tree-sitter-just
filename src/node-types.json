@@ -520,12 +520,34 @@
     "type": "setting",
     "named": true,
     "fields": {
-      "lang": {
-        "multiple": false,
+      "array": {
+        "multiple": true,
         "required": false,
         "types": [
           {
-            "type": "NAME",
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
+            "named": false
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "array_item": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
             "named": true
           }
         ]
@@ -553,37 +575,18 @@
             "named": true
           },
           {
-            "type": "settinglist",
+            "type": "string",
             "named": true
           }
         ]
       }
     },
     "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "eol",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "settinglist",
-    "named": true,
-    "fields": {},
-    "children": {
       "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "stringlist",
+          "type": "eol",
           "named": true
         }
       ]
@@ -692,21 +695,6 @@
     }
   },
   {
-    "type": "stringlist",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "value",
     "named": true,
     "fields": {},
@@ -758,10 +746,6 @@
   },
   {
     "type": "!=",
-    "named": false
-  },
-  {
-    "type": "\"",
     "named": false
   },
   {

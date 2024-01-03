@@ -1,3 +1,23 @@
+// Main grammar for justfiles
+
+// Comma separated list with at least one item
+function comma_sep1(item) {
+  return seq(item, repeat(seq(",", item)));
+}
+
+// Create an array with the given item as contents
+function array(item) {
+  const array_item = field("array_item", item);
+  return field(
+    "array",
+    seq(
+      "[",
+      optional(seq(comma_sep1(array_item), optional(array_item))),
+      "]",
+    ),
+  );
+}
+
 module.exports = grammar({
   name: "just",
 
@@ -42,36 +62,25 @@ module.exports = grammar({
         seq(
           "set",
           field("name", $.NAME),
-          field("right", optional(seq(":=", choice($.boolean, $.settinglist)))),
+          field(
+            "right",
+            optional(
+              seq(":=", choice($.boolean, $.string, array($.string))),
+            ),
+          ),
           $.eol,
         ),
         seq(
           "set",
           "shell",
           ":=",
-          "[",
-          // field("lang", $.string),
-          '"',
-          field("lang", $.NAME),
-          '"',
-          repeat(seq(optional(","), $.string)),
-          "]",
+          array($.string),
           $.eol,
         ),
       ),
 
     // boolean       : ':=' ('true' | 'false')
     boolean: (_) => choice("true", "false"),
-
-    settinglist: ($) =>
-      seq(
-        "[",
-        $.stringlist,
-        "]",
-        // seq("[", $.string, repeat(seq(",", $.string)), optional(","), "]")
-      ),
-
-    stringlist: ($) => repeat1(seq($.string, optional(","))),
 
     // expression    : 'if' condition '{' expression '}' 'else' '{' expression '}'
     //               | value '/' expression

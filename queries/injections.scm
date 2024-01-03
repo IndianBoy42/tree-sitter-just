@@ -7,7 +7,7 @@
 ) 
 
 (source_file 
-    (item (setting lang:(NAME) @language))
+    ; (item (setting lang:(NAME) @language))
     (item (recipe (body (recipe_body) @content)))
 ) 
 

@@ -9,7 +9,7 @@
     else:(expression) @block.inner
 ) 
 (interpolation (expression) @block.inner) @block.outer
-(settinglist (stringlist) @block.inner) @block.outer
+; (string_array (stringlist) @block.inner) @block.outer
 
 (call (NAME) @call.inner) @call.outer
 (dependency (NAME) @call.inner) @call.outer
@@ -19,14 +19,16 @@
 (depcall) @parameter.inner
 (depcall (expression) @parameter.inner) 
 
-(stringlist 
-    (string) @parameter.inner
-    . ","? @_end
-    (#make-range! "parameter.outer" @parameter.inner @_end)
-)
+; (stringlist 
+;     (string) @parameter.inner
+;     . ","? @_end
+;     (#make-range! "parameter.outer" @parameter.inner @_end)
+; )
 (parameters 
-    [(parameter) 
-    (variadic_parameters)] @parameter.inner
+    [
+        (parameter) 
+        (variadic_parameters)
+    ] @parameter.inner
     . " "? @_end
     (#make-range! "parameter.outer" @parameter.inner @_end)
 )
