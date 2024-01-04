@@ -843,7 +843,7 @@
             "members": [
               {
                 "type": "FIELD",
-                "name": "attribute",
+                "name": "attr_item",
                 "content": {
                   "type": "SYMBOL",
                   "name": "identifier"
@@ -860,7 +860,7 @@
                     },
                     {
                       "type": "FIELD",
-                      "name": "attribute",
+                      "name": "attr_item",
                       "content": {
                         "type": "SYMBOL",
                         "name": "identifier"

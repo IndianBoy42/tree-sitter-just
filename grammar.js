@@ -197,7 +197,7 @@ module.exports = grammar({
     attribute: ($) =>
       seq(
         "[",
-        field("contents", comma_sep1(field("attribute", $.identifier))),
+        field("contents", comma_sep1(field("attr_item", $.identifier))),
         "]",
         $.eol,
       ),

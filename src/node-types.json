@@ -65,7 +65,7 @@
     "type": "attribute",
     "named": true,
     "fields": {
-      "attribute": {
+      "attr_item": {
         "multiple": true,
         "required": true,
         "types": [

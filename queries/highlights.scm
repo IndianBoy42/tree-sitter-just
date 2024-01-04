@@ -42,8 +42,8 @@
 
 
 (attribute
-  attribute: ((identifier) @keyword
-  (#any-of? @keyword
+  attr_item: ((identifier) @attribute
+  (#any-of? @attribute
     "private"
     "allow-duplicate-recipes"
     "dotenv-filename"
@@ -60,7 +60,7 @@
     )))
 
 (attribute
-  attribute: (identifier) @variable)
+  attr_item: (identifier) @variable)
 
 (recipe_header
   recipe_name: (identifier) @function)

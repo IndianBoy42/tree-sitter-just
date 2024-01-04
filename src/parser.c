@@ -759,7 +759,7 @@ enum {
   field_arguments = 1,
   field_array = 2,
   field_array_item = 3,
-  field_attribute = 4,
+  field_attr_item = 4,
   field_braced_body = 5,
   field_contents = 6,
   field_default = 7,
@@ -779,7 +779,7 @@ static const char * const ts_field_names[] = {
   [field_arguments] = "arguments",
   [field_array] = "array",
   [field_array_item] = "array_item",
-  [field_attribute] = "attribute",
+  [field_attr_item] = "attr_item",
   [field_braced_body] = "braced_body",
   [field_contents] = "contents",
   [field_default] = "default",
@@ -864,10 +864,10 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_left, 1},
     {field_right, 3},
   [11] =
-    {field_attribute, 1},
+    {field_attr_item, 1},
   [12] =
-    {field_attribute, 0, .inherited = true},
-    {field_attribute, 1, .inherited = true},
+    {field_attr_item, 0, .inherited = true},
+    {field_attr_item, 1, .inherited = true},
   [14] =
     {field_left, 0},
     {field_right, 2},
@@ -879,8 +879,8 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_right, 2},
     {field_right, 3},
   [21] =
-    {field_attribute, 1},
-    {field_attribute, 2, .inherited = true},
+    {field_attr_item, 1},
+    {field_attr_item, 2, .inherited = true},
     {field_contents, 2},
   [24] =
     {field_braced_body, 2, .inherited = true},

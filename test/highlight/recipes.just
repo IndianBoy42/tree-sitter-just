@@ -49,5 +49,7 @@ grault abc="def":
 #          ^^^^ string
 #               ^ operator
 
-[arguments]
-a:
+# FIXME: can't test these because we can't place comments between
+[private]
+[confirm, no-cd]
+attributes:

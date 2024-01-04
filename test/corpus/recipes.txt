@@ -198,8 +198,6 @@ corge: foo (quux corge + banana)
                 (identifier))))))
       (recipe_body
         (recipe_line
-          (text))
-        (recipe_line
           (text)))))
   (item
     (recipe
