@@ -16,6 +16,8 @@
 (parameter) @parameter
 (variadic_parameters) @parameter
 
+(module (NAME) @namespace)
+
 ["if" "else"] @conditional
 
 (string) @string
@@ -38,7 +40,7 @@
   "set"
 ] @keyword
 
-["@" "==" "!=" "+" ":="] @operator
+["@" "==" "!=" "+" ":=" "*" ":" "/" "?"] @operator
 
 [ "(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
 
