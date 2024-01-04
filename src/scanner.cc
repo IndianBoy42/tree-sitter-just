@@ -1,19 +1,34 @@
 #include "tree_sitter/parser.h"
 #include <stdio.h>
 
-#include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <cwctype>
-#include <iostream>
-#include <string>
-#include <vector>
 
 enum TokenType { INDENT, DEDENT, NEWLINE, LINE };
 
 struct Scanner {
   uint32_t prev_indent;
-  // bool eol;
+
+  Scanner() { prev_indent = 0; }
+
+  // Only ever working on the same platform so we don't need to worry about
+  // endianness.
+  unsigned serialize(char *buf) const {
+    unsigned len = sizeof(Scanner);
+    assert(len < TREE_SITTER_SERIALIZATION_BUFFER_SIZE);
+    memcpy(buf, this, len);
+    return len;
+  }
+
+  void deserialize(const char *buf, unsigned len) {
+    if (len == 0) {
+      prev_indent = 0;
+      return;
+    }
+    assert(len == sizeof(Scanner));
+    memcpy(this, buf, len);
+  }
 };
 
 extern "C" {
@@ -37,18 +52,8 @@ void tree_sitter_just_external_scanner_destroy(void *payload) {
 // from the create function.
 unsigned tree_sitter_just_external_scanner_serialize(void *payload,
                                                      char *buffer) {
-  // ...
-  char *start = buffer;
   const Scanner *state = static_cast<Scanner *>(payload);
-
-  // *buffer++ = state->eol;
-
-  // Convert curr_indent and prev_indent to string and push to buffer
-  std::string curr = std::to_string(state->prev_indent);
-  memcpy(buffer, curr.c_str(), curr.size());
-  buffer += curr.size();
-
-  return buffer - start;
+  return state->serialize(buffer);
 }
 
 // Reconstruct a scanner from the serialized state. This is called when the
@@ -56,40 +61,26 @@ unsigned tree_sitter_just_external_scanner_serialize(void *payload,
 void tree_sitter_just_external_scanner_deserialize(void *payload,
                                                    const char *buffer,
                                                    unsigned length) {
-  // ...
   Scanner *state = static_cast<Scanner *>(payload);
-  const char *end = buffer + length;
-
-  if (length == 0) {
-    state->prev_indent = 0;
-    return;
-  }
-
-  // state->eol = (Scanner::State)*buffer++;
-  // state->sw = Scanner::State::NONE;
-
-  // convert string to prev_indent
-  state->prev_indent = std::stoi(std::string(buffer, end));
+  return state->deserialize(buffer, length);
 }
 
 // Continue and include the preceding character in the token
-void advance(TSLexer *lexer) {
-  return lexer->advance(lexer, false);
-}
+void advance(TSLexer *lexer) { return lexer->advance(lexer, false); }
 
 // Continue and discard the preceding character
-void skip(TSLexer *lexer) {
-  return lexer->advance(lexer, true);
-}
+void skip(TSLexer *lexer) { return lexer->advance(lexer, true); }
 
 // An EOF works as a dedent
 bool handle_eof(TSLexer *lexer, const bool *valid_symbols) {
   assert(lexer->eof(lexer));
+  lexer->mark_end(lexer);
+
   if (valid_symbols[DEDENT]) {
-      lexer->result_symbol = DEDENT;
-      return true;
+    lexer->result_symbol = DEDENT;
+    return true;
   }
-  return false;  
+  return false;
 }
 
 // This function is responsible for recognizing external tokens. It should
@@ -99,17 +90,9 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
   Scanner *state = static_cast<Scanner *>(payload);
   int32_t &lookahead = lexer->lookahead;
   bool (*eof)(const TSLexer *) = lexer->eof;
-  void (*mark_end)(TSLexer *) = lexer->mark_end;
-  bool (*is_at_included_range_start)(const TSLexer *) =
-      lexer->is_at_included_range_start;
 
   if (eof(lexer)) {
-      return handle_eof(lexer, valid_symbols);
-  }
-
-  if (!lexer->lookahead) {
-    lexer->mark_end(lexer);
-    return false;
+    return handle_eof(lexer, valid_symbols);
   }
 
   // Handle backslash escaping for newlines
@@ -133,7 +116,7 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
   }
 
   if (valid_symbols[INDENT] || valid_symbols[DEDENT]) {
-    while (std::iswspace(lookahead)) {
+    while (!lexer->eof(lexer) && std::iswspace(lookahead)) {
       switch (lookahead) {
       case '\n':
         return false;
@@ -143,10 +126,10 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
         skip(lexer);
         break;
       }
+    }
 
-      if (lexer->eof(lexer)) {
-        return handle_eof(lexer, valid_symbols);
-      }
+    if (lexer->eof(lexer)) {
+      return handle_eof(lexer, valid_symbols);
     }
 
     uint32_t indent = lexer->get_column(lexer);
