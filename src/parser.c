@@ -766,7 +766,7 @@ enum {
   field_expression = 8,
   field_kleene = 9,
   field_left = 10,
-  field_modname = 11,
+  field_mod_name = 11,
   field_name = 12,
   field_param = 13,
   field_recipe = 14,
@@ -786,7 +786,7 @@ static const char * const ts_field_names[] = {
   [field_expression] = "expression",
   [field_kleene] = "kleene",
   [field_left] = "left",
-  [field_modname] = "modname",
+  [field_mod_name] = "mod_name",
   [field_name] = "name",
   [field_param] = "param",
   [field_recipe] = "recipe",
@@ -843,13 +843,13 @@ static const TSFieldMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
   [0] =
-    {field_modname, 1},
+    {field_mod_name, 1},
   [1] =
     {field_recipe_name, 0},
   [2] =
     {field_param, 0},
   [3] =
-    {field_modname, 2},
+    {field_mod_name, 2},
   [4] =
     {field_left, 1},
   [5] =
@@ -896,8 +896,8 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
   [30] =
     {field_contents, 1},
   [31] =
-    {field_array, 3},
-    {field_array, 4},
+    {field_right, 3},
+    {field_right, 4},
   [33] =
     {field_array, 3},
     {field_array, 4},
@@ -921,9 +921,9 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
   [47] =
     {field_array_item, 1},
   [48] =
-    {field_array, 3},
-    {field_array, 5},
     {field_array_item, 4},
+    {field_right, 3},
+    {field_right, 5},
   [51] =
     {field_array_item, 0, .inherited = true},
     {field_array_item, 1, .inherited = true},
@@ -942,16 +942,16 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_braced_body, 0, .inherited = true},
     {field_braced_body, 1, .inherited = true},
   [63] =
-    {field_array, 3},
-    {field_array, 6},
     {field_array_item, 4},
     {field_array_item, 5},
+    {field_right, 3},
+    {field_right, 6},
   [67] =
-    {field_array, 3},
-    {field_array, 6},
     {field_array_item, 4},
     {field_array_item, 5, .inherited = true},
     {field_contents, 5},
+    {field_right, 3},
+    {field_right, 6},
   [72] =
     {field_array, 3},
     {field_array, 6},
@@ -972,12 +972,12 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_braced_body, 3, .inherited = true},
     {field_braced_body, 5, .inherited = true},
   [88] =
-    {field_array, 3},
-    {field_array, 7},
     {field_array_item, 4},
     {field_array_item, 5, .inherited = true},
     {field_array_item, 6},
     {field_contents, 5},
+    {field_right, 3},
+    {field_right, 7},
   [94] =
     {field_array, 3},
     {field_array, 7},

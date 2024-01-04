@@ -89,7 +89,7 @@ module.exports = grammar({
       seq(
         "mod",
         optional("?"),
-        field("modname", $.identifier),
+        field("mod_name", $.identifier),
         optional($.string),
       ),
 
@@ -114,7 +114,10 @@ module.exports = grammar({
           "set",
           "shell",
           ":=",
-          array($.string),
+          field(
+            "right",
+            array($.string),
+          ),
           $.eol,
         ),
       ),
