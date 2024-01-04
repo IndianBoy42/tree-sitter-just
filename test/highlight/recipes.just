@@ -19,14 +19,14 @@ baz: foo bar
 
 qux var1:
 # <- function
-#   ^^^ variable
+#   ^^^ variable.parameter
 #       ^ operator
 
 quux var *var2:
 # <- function
-#    ^^^ variable
+#    ^^^ variable.parameter
 #        ^ operator
-#          ^^^ variable
+#          ^^^ variable.parameter
 #             ^ operator
 
 # This is a good test of locals.scm
@@ -34,7 +34,7 @@ quux var *var2:
 corge +quux: baz (quux quux)
 # <- function
 #     ^ operator
-#      ^^^^ variable
+#      ^^^^ variable.parameter
 #          ^ operator
 #            ^^^ function
 #                ^ punctuation.bracket
@@ -42,7 +42,12 @@ corge +quux: baz (quux quux)
 #                          ^ punctuation.bracket
 #                 FIXME  function
 
-osdioj: a
+grault abc="def":
+# <- function
+#      ^^^ variable.parameter
+#         ^ operator
+#          ^^^^ string
+#               ^ operator
 
-[private]
+[arguments]
 a:

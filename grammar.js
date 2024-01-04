@@ -27,7 +27,6 @@ module.exports = grammar({
   inline: (
     $,
   ) => [
-    $._dependency_with_args,
     $._expression_braced,
     $._expression_recurse,
   ],
@@ -86,7 +85,13 @@ module.exports = grammar({
     import: ($) => seq("import", optional("?"), $.string),
 
     // module        : 'mod' '?'? string?
-    module: ($) => seq("mod", optional("?"), $.identifier, optional($.string)),
+    module: ($) =>
+      seq(
+        "mod",
+        optional("?"),
+        field("modname", $.identifier),
+        optional($.string),
+      ),
 
     // setting       : 'set' 'dotenv-load' boolean?
     //               | 'set' 'export' boolean?
@@ -189,20 +194,13 @@ module.exports = grammar({
     //               | expression ','?
     sequence: ($) => comma_sep1($.expression),
 
-    // string        : STRING
-    //               | INDENTED_STRING
-    //               | RAW_STRING
-    //               | INDENTED_RAW_STRING
-    string: ($) =>
-      choice(
-        $.basic_string,
-        $.basic_string_indented,
-        $.raw_string,
-        $.raw_string_indented,
-      ),
-
     attribute: ($) =>
-      seq("[", field("contents", comma_sep1($.identifier)), "]", $.eol),
+      seq(
+        "[",
+        field("contents", comma_sep1(field("attribute", $.identifier))),
+        "]",
+        $.eol,
+      ),
 
     // A complete recipe
     // recipe        : attribute? '@'? NAME parameter* variadic_parameters? ':' dependency* body?
@@ -217,7 +215,7 @@ module.exports = grammar({
     recipe_header: ($) =>
       seq(
         optional("@"),
-        $.identifier,
+        field("recipe_name", $.identifier),
         optional($.parameters),
         ":",
         repeat($.dependency),
@@ -226,6 +224,7 @@ module.exports = grammar({
     parameters: ($) =>
       seq(repeat($.parameter), choice($.parameter, $.variadic_parameter)),
 
+    // FIXME: do we really have leading `$`s here?`
     // parameter     : '$'? NAME
     //               | '$'? NAME '=' value
     parameter: ($) =>
@@ -247,14 +246,16 @@ module.exports = grammar({
     dependency: ($) =>
       choice(
         field("recipe", $.identifier),
-        field("call", seq("(", $._dependency_with_args, ")")),
+        $.dependency_expression,
       ),
 
     // contents of `(recipe expression)`
-    _dependency_with_args: ($) =>
+    dependency_expression: ($) =>
       seq(
+        "(",
         field("recipe", $.identifier),
         repeat(field("expression", $.expression)),
+        ")",
       ),
 
     // body          : INDENT line+ DEDENT
@@ -287,8 +288,18 @@ module.exports = grammar({
 
     identifier: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
 
-    backticked: (_) => seq("`", repeat(/./), "`"),
-    indented_backticked: (_) => seq("```", repeat(/./), "```"),
+    // string        : STRING
+    //               | INDENTED_STRING
+    //               | RAW_STRING
+    //               | INDENTED_RAW_STRING
+    string: ($) =>
+      choice(
+        $.basic_string,
+        $.basic_string_indented,
+        $.raw_string,
+        $.raw_string_indented,
+      ),
+
     raw_string: (_) => /'[^']*'/,
     raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
     basic_string: ($) =>
@@ -296,6 +307,10 @@ module.exports = grammar({
     basic_string_indented: ($) =>
       seq('"""', repeat(choice($.string_escape, /[^\\"]+/)), '"""'),
     string_escape: (_) => /\\[nrt"\\]/,
+
+    backticked: (_) => seq("`", repeat(/./), "`"),
+    indented_backticked: (_) => seq("```", repeat(/./), "```"),
+
     text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
     // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
   },
