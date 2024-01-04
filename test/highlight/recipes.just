@@ -1,17 +1,19 @@
+#!/use/bin/env just
+
 foo:
 # <- function
 #  ^ operator
-	body
+	echo foo
 
 @bar:
 # <- operator
 # ^ function
 #   ^ operator
-	body
+	echo bar
 
-# baz: foo bar
-# # <- function
-# #  ^ operator
-# #     ^ function
-# #          ^ function
-# 	body
+baz: foo bar
+# <- function
+#  ^ operator
+#     ^ function
+#          ^ function
+	echo baz
