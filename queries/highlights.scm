@@ -68,6 +68,7 @@
   param: (identifier) @variable.parameter
   "="? @operator)
 
+(dependencies "&&" @operator)
 (dependency
   recipe: (identifier) @function)
 (dependency_expression
@@ -92,7 +93,8 @@
   "set"
 ] @keyword
 
-; exclude `=` since it is only an operator in parameters (matching covered there)
+; exclude `=` and `&&` since they are valid in more normal scopes
+; (matching is covered in their parent nodes)
 ["@" "==" "!=" "+" ":=" "*" ":" "/" "?"] @operator
 
 ["(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket

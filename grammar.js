@@ -221,7 +221,7 @@ module.exports = grammar({
         field("recipe_name", $.identifier),
         optional($.parameters),
         ":",
-        repeat($.dependency),
+        optional($.dependencies),
       ),
 
     parameters: ($) =>
@@ -242,7 +242,8 @@ module.exports = grammar({
     variadic_parameter: ($) =>
       seq(field("kleene", choice("*", "+")), $.parameter),
 
-    dependencies: ($) => repeat1($.dependency),
+    dependencies: ($) =>
+      prec.left(seq($.dependency, repeat(seq(optional("&&"), $.dependencies)))),
 
     // dependency    : NAME
     //               | '(' NAME expression* ')'

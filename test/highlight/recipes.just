@@ -49,6 +49,33 @@ grault abc="def":
 #          ^^^^ string
 #               ^ operator
 
+garply: foo && bar
+# <- function
+#     ^ operator
+#       ^^^ function
+#           ^^ operator
+#              ^^^ function
+
+waldo a="b": foo bar && baz
+# <- function
+#     ^ variable.parameter
+#      ^ operator
+#       ^^^ string
+#          ^ operator
+#            ^^^ function
+#                ^^^ function
+#                    ^^ operator
+#                       ^^^ function
+
+fred: garply && (waldo "x")
+# <- function
+#     ^^^^^^ function
+#            ^^ operator
+#               ^ punctuation.bracket
+#                 ^^^^ function
+#                      ^^^ string
+#                         ^ punctuation.bracket
+
 # FIXME: can't test these because we can't place comments between
 [private]
 [confirm, no-cd]
