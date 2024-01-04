@@ -11,9 +11,9 @@
   left: (identifier) @variable)
 
 (module
-  modname: (identifier) @namespace)
+  mod_name: (identifier) @namespace)
 
-(setting "shell" @keyword)
+; highlight known settings (filtering does not always work)
 (setting
   left: ((identifier) @keyword
   (#any-of? @keyword
@@ -40,7 +40,7 @@
 (function_call
   name: (identifier) @function)
 
-
+; highlight known attributes (filtering does not always work)
 (attribute
   attr_item: ((identifier) @attribute
   (#any-of? @attribute
@@ -59,12 +59,10 @@
     "windows-shell"
     )))
 
-(attribute
-  attr_item: (identifier) @variable)
-
 (recipe_header
   recipe_name: (identifier) @function)
 
+; recipe argument specification
 ; pattern includes variadic_parameter
 (parameter
   param: (identifier) @variable.parameter
@@ -75,6 +73,7 @@
 (dependency_expression
   recipe: (identifier) @function)
 
+; handle escape sequences
 (string (_ (string_escape) @constant.character.escape))
 (string) @string
 
@@ -93,6 +92,7 @@
   "set"
 ] @keyword
 
+; exclude `=` since it is only an operator in parameters (matching covered there)
 ["@" "==" "!=" "+" ":=" "*" ":" "/" "?"] @operator
 
 ["(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket

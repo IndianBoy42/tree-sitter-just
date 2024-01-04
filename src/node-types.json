@@ -415,7 +415,7 @@
     "type": "module",
     "named": true,
     "fields": {
-      "modname": {
+      "mod_name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -661,6 +661,14 @@
         "types": [
           {
             "type": ":=",
+            "named": false
+          },
+          {
+            "type": "[",
+            "named": false
+          },
+          {
+            "type": "]",
             "named": false
           },
           {
