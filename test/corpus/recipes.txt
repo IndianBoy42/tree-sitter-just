@@ -137,7 +137,16 @@ corge *grault:
 dependency call
 ================================================================================
 
-foo +bar: baz(bar)
+foo +bar: baz (bar)
+	body
+
+qux bar: (quux)
+	body
+
+quux bar: (quux corge)
+	body
+
+corge: foo (quux corge + banana)
 	body
 
 --------------------------------------------------------------------------------
@@ -156,7 +165,54 @@ foo +bar: baz(bar)
         (dependency
           (identifier))
         (dependency
-          (identifier)))
+          (dependency_expression
+            (identifier))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (parameters
+          (parameter
+            (identifier)))
+        (dependency
+          (dependency_expression
+            (identifier))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (parameters
+          (parameter
+            (identifier)))
+        (dependency
+          (dependency_expression
+            (identifier)
+            (expression
+              (value
+                (identifier))))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (dependency
+          (identifier))
+        (dependency
+          (dependency_expression
+            (identifier)
+            (expression
+              (value
+                (identifier))
+              (value
+                (identifier))))))
       (recipe_body
         (recipe_line
           (text)))))

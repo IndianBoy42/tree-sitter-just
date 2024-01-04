@@ -60,6 +60,25 @@ tree-sitter parse test/test.just
 
 You can use the `nvim-treesitter/playground` plugin [from here](https://github.com/nvim-treesitter/playground), to explore the resulting parse tree. Use `TSPlaygroundToggle` to view the parse tree, and use `TSHighlightCapturesUnderCursor` to view highlight groups
 
+## Quirks of Just
+
+Just currently doesn't seem to support comments between attributes or within if
+statements, so we do not either.
+
+```just
+[private]
+# hello!
+[no-cd]
+foo:
+```
+
+```just
+foo := if true {
+  # nope!
+  "abcd"
+}
+```
+
 ## TODO
 
 - [x] Implement a basic parser that is able to understand all features of Justfiles

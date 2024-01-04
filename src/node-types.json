@@ -65,9 +65,19 @@
     "type": "attribute",
     "named": true,
     "fields": {
-      "contents": {
+      "attr_item": {
         "multiple": true,
         "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "contents": {
+        "multiple": true,
+        "required": false,
         "types": [
           {
             "type": ",",
@@ -174,28 +184,32 @@
     "type": "dependency",
     "named": true,
     "fields": {
-      "call": {
-        "multiple": true,
+      "recipe": {
+        "multiple": false,
         "required": false,
         "types": [
-          {
-            "type": "(",
-            "named": false
-          },
-          {
-            "type": ")",
-            "named": false
-          },
-          {
-            "type": "expression",
-            "named": true
-          },
           {
             "type": "identifier",
             "named": true
           }
         ]
-      },
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "dependency_expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dependency_expression",
+    "named": true,
+    "fields": {
       "expression": {
         "multiple": true,
         "required": false,
@@ -400,15 +414,22 @@
   {
     "type": "module",
     "named": true,
-    "fields": {},
+    "fields": {
+      "modname": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
-        {
-          "type": "identifier",
-          "named": true
-        },
         {
           "type": "string",
           "named": true
@@ -512,17 +533,24 @@
   {
     "type": "recipe_header",
     "named": true,
-    "fields": {},
+    "fields": {
+      "recipe_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "dependency",
-          "named": true
-        },
-        {
-          "type": "identifier",
           "named": true
         },
         {

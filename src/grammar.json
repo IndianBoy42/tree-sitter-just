@@ -192,8 +192,12 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "identifier"
+          "type": "FIELD",
+          "name": "modname",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
         },
         {
           "type": "CHOICE",
@@ -824,27 +828,6 @@
         }
       ]
     },
-    "string": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "basic_string"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "basic_string_indented"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "raw_string"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "raw_string_indented"
-        }
-      ]
-    },
     "attribute": {
       "type": "SEQ",
       "members": [
@@ -859,8 +842,12 @@
             "type": "SEQ",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "identifier"
+                "type": "FIELD",
+                "name": "attr_item",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
               },
               {
                 "type": "REPEAT",
@@ -872,8 +859,12 @@
                       "value": ","
                     },
                     {
-                      "type": "SYMBOL",
-                      "name": "identifier"
+                      "type": "FIELD",
+                      "name": "attr_item",
+                      "content": {
+                        "type": "SYMBOL",
+                        "name": "identifier"
+                      }
                     }
                   ]
                 }
@@ -939,8 +930,12 @@
           ]
         },
         {
-          "type": "SYMBOL",
-          "name": "identifier"
+          "type": "FIELD",
+          "name": "recipe_name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
         },
         {
           "type": "CHOICE",
@@ -1087,31 +1082,18 @@
           }
         },
         {
-          "type": "FIELD",
-          "name": "call",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "("
-              },
-              {
-                "type": "SYMBOL",
-                "name": "_dependency_with_args"
-              },
-              {
-                "type": "STRING",
-                "value": ")"
-              }
-            ]
-          }
+          "type": "SYMBOL",
+          "name": "dependency_expression"
         }
       ]
     },
-    "_dependency_with_args": {
+    "dependency_expression": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "STRING",
+          "value": "("
+        },
         {
           "type": "FIELD",
           "name": "recipe",
@@ -1130,6 +1112,10 @@
               "name": "expression"
             }
           }
+        },
+        {
+          "type": "STRING",
+          "value": ")"
         }
       ]
     },
@@ -1283,43 +1269,24 @@
       "type": "PATTERN",
       "value": "[a-zA-Z_][a-zA-Z0-9_-]*"
     },
-    "backticked": {
-      "type": "SEQ",
+    "string": {
+      "type": "CHOICE",
       "members": [
         {
-          "type": "STRING",
-          "value": "`"
+          "type": "SYMBOL",
+          "name": "basic_string"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "PATTERN",
-            "value": "."
-          }
+          "type": "SYMBOL",
+          "name": "basic_string_indented"
         },
         {
-          "type": "STRING",
-          "value": "`"
-        }
-      ]
-    },
-    "indented_backticked": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "```"
+          "type": "SYMBOL",
+          "name": "raw_string"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "PATTERN",
-            "value": "."
-          }
-        },
-        {
-          "type": "STRING",
-          "value": "```"
+          "type": "SYMBOL",
+          "name": "raw_string_indented"
         }
       ]
     },
@@ -1409,6 +1376,46 @@
       "type": "PATTERN",
       "value": "\\\\[nrt\"\\\\]"
     },
+    "backticked": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "`"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "."
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "`"
+        }
+      ]
+    },
+    "indented_backticked": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "```"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "PATTERN",
+            "value": "."
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "```"
+        }
+      ]
+    },
     "text": {
       "type": "PATTERN",
       "value": ".+"
@@ -1437,7 +1444,6 @@
     }
   ],
   "inline": [
-    "_dependency_with_args",
     "ReferenceError",
     "_expression_recurse"
   ],

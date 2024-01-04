@@ -5,13 +5,13 @@
 (shebang) @comment
 
 (alias
-  left: (identifier) @variable
-)
+  left: (identifier) @variable)
 
 (assignment
   left: (identifier) @variable)
 
-(module (identifier) @namespace)
+(module
+  modname: (identifier) @namespace)
 
 (setting "shell" @keyword)
 (setting
@@ -36,32 +36,47 @@
 ["if" "else"] @keyword.control.conditional
 
 (value (identifier) @variable)
-; (call (identifier) @function)
-
-
-; ([parameter varidic_parameter]
-   ; (identifier) @variable)
-(parameter (identifier) @variable)
-(variadic_parameter (parameter (identifier)) @variable)
 
 (function_call
   name: (identifier) @function)
 
 
+(attribute
+  attr_item: ((identifier) @attribute
+  (#any-of? @attribute
+    "private"
+    "allow-duplicate-recipes"
+    "dotenv-filename"
+    "dotenv-load"
+    "dotenv-path"
+    "export"
+    "fallback"
+    "ignore-comments"
+    "positional-arguments"
+    "shell"
+    "tempdi"
+    "windows-powershell"
+    "windows-shell"
+    )))
+
+(attribute
+  attr_item: (identifier) @variable)
+
+(recipe_header
+  recipe_name: (identifier) @function)
+
+; pattern includes variadic_parameter
+(parameter
+  param: (identifier) @variable.parameter
+  "="? @operator)
 
 (dependency
-  recipe: (identifier) @function
-  expression: (expression)* @parameter)
-  
-(recipe_header (identifier) @function)
-
-; FIXME: what's up with $identifier params
-(parameter) @variable.parameter
-
+  recipe: (identifier) @function)
+(dependency_expression
+  recipe: (identifier) @function)
 
 (string (_ (string_escape) @constant.character.escape))
 (string) @string
-
 
 (comment) @comment.line
 
