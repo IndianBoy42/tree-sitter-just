@@ -12,34 +12,23 @@ bar:
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT))))
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
   (item
     (recipe
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
 
 ================================================================================
 quiet
@@ -52,21 +41,16 @@ quiet
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
 
 ================================================================================
 dependencies
@@ -79,26 +63,20 @@ foo: bar baz
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (recipe_header
-        (NAME)
-        (dependencies
-          (dependency
-            (NAME))
-          (dependency
-            (NAME))))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+        (identifier)
+        (dependency
+          (identifier))
+        (dependency
+          (identifier)))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
 
 ================================================================================
 arguments
@@ -110,50 +88,53 @@ foo bar:
 baz qux *quux:
 	body
 
+corge *grault:
+  body
+
 --------------------------------------------------------------------------------
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (recipe_header
-        (NAME)
+        (identifier)
         (parameters
           (parameter
-            (NAME))))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT))))
+            (identifier))))
+      (recipe_body
+        (recipe_line
+          (text)))))
   (item
     (recipe
       (recipe_header
-        (NAME)
+        (identifier)
         (parameters
           (parameter
-            (NAME))
-          (variadic_parameters
+            (identifier))
+          (variadic_parameter
             (parameter
-              (NAME)))))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+              (identifier)))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (parameters
+          (variadic_parameter
+            (parameter
+              (identifier)))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
 
 ================================================================================
-dependency expression
+dependency call
 ================================================================================
 
 foo +bar: baz(bar)
@@ -163,33 +144,24 @@ foo +bar: baz(bar)
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (recipe_header
-        (NAME)
+        (identifier)
         (parameters
-          (parameter
-            (MISSING NAME))
-          (variadic_parameters
+          (variadic_parameter
             (parameter
-              (NAME))))
-        (dependencies
-          (dependency
-            (NAME))
-          (dependency
-            (depcall
-              (NAME)))))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+              (identifier))))
+        (dependency
+          (identifier))
+        (dependency
+          (identifier)))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
 
 ================================================================================
 attribute
@@ -203,25 +175,76 @@ foo:
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (attribute
-        (NAME)
-        (eol
-          (NEWLINE)))
+        (identifier)
+        (eol))
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
+
+================================================================================
+stacked attributes
+================================================================================
+
+[attr1]
+[attr2]
+foo:
+  body
+  
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (recipe
+      (attribute
+        (identifier)
+        (eol))
+      (attribute
+        (identifier)
+        (eol))
+      (recipe_header
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
+
+================================================================================
+sequence attributes
+================================================================================
+
+[attr1, attr2]
+foo:
+  body
+  
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (recipe
+      (attribute
+        (identifier)
+        (identifier)
+        (eol))
+      (recipe_header
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
 
 ================================================================================
 body shebang
@@ -237,39 +260,21 @@ foo:
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (comment
-              (NEWLINE)))
-          (line
-            (recipeline
-              (notcomment)
-              (TEXT)
-              (TEXT)
-              (TEXT)
-              (TEXT)
-              (TEXT)
-              (NEWLINE)))
-          (line
-            (recipeline
-              (notcomment)
-              (TEXT)
-              (TEXT)
-              (NEWLINE)))
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+        (identifier))
+      (recipe_body
+        (shebang)
+        (recipe_line
+          (text))
+        (recipe_line
+          (text))
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
 
 ================================================================================
 longer bodies
@@ -295,59 +300,32 @@ bar:
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (recipe
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE)))
-          (line
-            (recipeline
-              (notcomment)
-              (TEXT)
-              (NEWLINE)))
-          (line
-            (comment
-              (NEWLINE)))
-          (line
-            (recipeline
-              (notcomment)
-              (TEXT)
-              (TEXT)
-              (NEWLINE))))
-        (DEDENT))))
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text))
+        (recipe_line
+          (text))
+        (recipe_line
+          (text))
+        (recipe_line
+          (text)))))
   (item
     (recipe
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE)))
-          (line
-            (recipeline
-              (notcomment)
-              (TEXT)
-              (NEWLINE)))
-          (line
-            (comment
-              (NEWLINE)))
-          (line
-            (recipeline
-              (notcomment)
-              (TEXT)
-              (TEXT)
-              (NEWLINE))))
-        (DEDENT)))))
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text))
+        (recipe_line
+          (text))
+        (recipe_line
+          (text))
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))

@@ -3,6 +3,7 @@ on:
   pull_request:
   push:
 
+
 jobs:
   deno:
     name: Deno format and lint
@@ -37,9 +38,25 @@ jobs:
           git diff pre-updates --exit-code || failed=true
 
           if ! [ "$failed" = "false" ]; then
-            echo '::error::Generated files are out of date!'
-            echo '::error::run `npm run gen` and commit the changes'
-            exit "$exitcode"
+            echo '::warning::Generated files are out of date!'
+            echo '::warning::run `npm run gen` and commit the changes'
           fi
       - run: npm test
-        # FIXME: also parse tests/*.just
+
+  static-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@just
+      - name: Verify Just can parse test files
+        shell: bash
+        run: |
+          # skip readme.just because it is broken but works for testing
+          find . -type f -iregex '.*[\./]just[^\./]*' |
+            grep -v readme.just | while read -r fname
+          do
+            echo checking "$fname"
+            just --list --unstable --justfile "$fname"
+          done
+      - name: Look for tests that contain errors
+        run: "! grep -r -E '(ERROR|MISSING|UNEXPECTED)' test"

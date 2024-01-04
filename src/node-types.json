@@ -8,7 +8,7 @@
         "required": true,
         "types": [
           {
-            "type": "NAME",
+            "type": "identifier",
             "named": true
           }
         ]
@@ -18,7 +18,7 @@
         "required": true,
         "types": [
           {
-            "type": "NAME",
+            "type": "identifier",
             "named": true
           }
         ]
@@ -28,21 +28,34 @@
   {
     "type": "assignment",
     "named": true,
-    "fields": {},
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "NAME",
-          "named": true
-        },
-        {
           "type": "eol",
-          "named": true
-        },
-        {
-          "type": "expression",
           "named": true
         }
       ]
@@ -51,15 +64,26 @@
   {
     "type": "attribute",
     "named": true,
-    "fields": {},
+    "fields": {
+      "contents": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
-        {
-          "type": "NAME",
-          "named": true
-        },
         {
           "type": "eol",
           "named": true
@@ -68,27 +92,35 @@
     }
   },
   {
-    "type": "body",
+    "type": "backticked",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "basic_string",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
-          "type": "DEDENT",
+          "type": "string_escape",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "basic_string_indented",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
         {
-          "type": "INDENT",
-          "named": true
-        },
-        {
-          "type": "recipe_body",
-          "named": true
-        },
-        {
-          "type": "shebang_recipe",
+          "type": "string_escape",
           "named": true
         }
       ]
@@ -100,26 +132,7 @@
     "fields": {}
   },
   {
-    "type": "call",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "NAME",
-          "named": true
-        },
-        {
-          "type": "sequence",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "cmd",
+    "type": "command",
     "named": true,
     "fields": {},
     "children": {
@@ -127,11 +140,11 @@
       "required": true,
       "types": [
         {
-          "type": "BACKTICK",
+          "type": "backticked",
           "named": true
         },
         {
-          "type": "INDENTED_BACKTICK",
+          "type": "indented_backticked",
           "named": true
         }
       ]
@@ -140,17 +153,7 @@
   {
     "type": "comment",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "NEWLINE",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "condition",
@@ -168,56 +171,51 @@
     }
   },
   {
-    "type": "depcall",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "NAME",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "dependencies",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "dependency",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "dependency",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "NAME",
-          "named": true
-        },
-        {
-          "type": "depcall",
-          "named": true
-        }
-      ]
+    "fields": {
+      "call": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "(",
+            "named": false
+          },
+          {
+            "type": ")",
+            "named": false
+          },
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "expression": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "recipe": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -226,12 +224,8 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
-        {
-          "type": "NEWLINE",
-          "named": true
-        },
         {
           "type": "comment",
           "named": true
@@ -257,20 +251,55 @@
   {
     "type": "expression",
     "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "if_expression",
+          "named": true
+        },
+        {
+          "type": "value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "function_call",
+    "named": true,
     "fields": {
-      "else": {
+      "arguments": {
         "multiple": false,
         "required": false,
         "types": [
           {
-            "type": "expression",
+            "type": "sequence",
             "named": true
           }
         ]
       },
-      "if": {
+      "name": {
         "multiple": false,
-        "required": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "if_expression",
+    "named": true,
+    "fields": {
+      "braced_body": {
+        "multiple": true,
+        "required": true,
         "types": [
           {
             "type": "expression",
@@ -285,14 +314,6 @@
       "types": [
         {
           "type": "condition",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "value",
           "named": true
         }
       ]
@@ -312,6 +333,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "indented_backticked",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "interpolation",
@@ -372,25 +398,6 @@
     }
   },
   {
-    "type": "line",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
-        },
-        {
-          "type": "recipeline",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "module",
     "named": true,
     "fields": {},
@@ -399,7 +406,7 @@
       "required": true,
       "types": [
         {
-          "type": "NAME",
+          "type": "identifier",
           "named": true
         },
         {
@@ -412,20 +419,27 @@
   {
     "type": "parameter",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "NAME",
-          "named": true
-        },
-        {
-          "type": "value",
-          "named": true
-        }
-      ]
+    "fields": {
+      "default": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "value",
+            "named": true
+          }
+        ]
+      },
+      "param": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -441,11 +455,16 @@
           "named": true
         },
         {
-          "type": "variadic_parameters",
+          "type": "variadic_parameter",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "raw_string_indented",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "recipe",
@@ -456,15 +475,11 @@
       "required": true,
       "types": [
         {
-          "type": "NEWLINE",
-          "named": true
-        },
-        {
           "type": "attribute",
           "named": true
         },
         {
-          "type": "body",
+          "type": "recipe_body",
           "named": true
         },
         {
@@ -477,16 +492,21 @@
   {
     "type": "recipe_body",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "line",
-          "named": true
-        }
-      ]
+    "fields": {
+      "contents": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "recipe_line",
+            "named": true
+          },
+          {
+            "type": "shebang",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -498,11 +518,11 @@
       "required": true,
       "types": [
         {
-          "type": "NAME",
+          "type": "dependency",
           "named": true
         },
         {
-          "type": "dependencies",
+          "type": "identifier",
           "named": true
         },
         {
@@ -513,31 +533,32 @@
     }
   },
   {
-    "type": "recipeline",
+    "type": "recipe_line",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
-        {
-          "type": "NEWLINE",
-          "named": true
-        },
-        {
-          "type": "TEXT",
-          "named": true
-        },
         {
           "type": "interpolation",
           "named": true
         },
         {
-          "type": "notcomment",
+          "type": "recipe_line_prefix",
+          "named": true
+        },
+        {
+          "type": "text",
           "named": true
         }
       ]
     }
+  },
+  {
+    "type": "recipe_line_prefix",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "sequence",
@@ -549,10 +570,6 @@
       "types": [
         {
           "type": "expression",
-          "named": true
-        },
-        {
-          "type": "sequence",
           "named": true
         }
       ]
@@ -567,20 +584,12 @@
         "required": false,
         "types": [
           {
-            "type": ",",
-            "named": false
-          },
-          {
             "type": "[",
             "named": false
           },
           {
             "type": "]",
             "named": false
-          },
-          {
-            "type": "string",
-            "named": true
           }
         ]
       },
@@ -594,12 +603,26 @@
           }
         ]
       },
-      "name": {
+      "contents": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "left": {
         "multiple": false,
         "required": false,
         "types": [
           {
-            "type": "NAME",
+            "type": "identifier",
             "named": true
           }
         ]
@@ -637,51 +660,7 @@
   {
     "type": "shebang",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "NEWLINE",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "shebang_body",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "line",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "shebang_recipe",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "shebang",
-          "named": true
-        },
-        {
-          "type": "shebang_body",
-          "named": true
-        }
-      ]
-    }
+    "fields": {}
   },
   {
     "type": "source_file",
@@ -711,19 +690,19 @@
       "required": true,
       "types": [
         {
-          "type": "INDENTED_RAW_STRING",
+          "type": "basic_string",
           "named": true
         },
         {
-          "type": "INDENTED_STRING",
+          "type": "basic_string_indented",
           "named": true
         },
         {
-          "type": "RAW_STRING",
+          "type": "raw_string",
           "named": true
         },
         {
-          "type": "STRING",
+          "type": "raw_string_indented",
           "named": true
         }
       ]
@@ -738,19 +717,19 @@
       "required": true,
       "types": [
         {
-          "type": "NAME",
-          "named": true
-        },
-        {
-          "type": "call",
-          "named": true
-        },
-        {
-          "type": "cmd",
+          "type": "command",
           "named": true
         },
         {
           "type": "expression",
+          "named": true
+        },
+        {
+          "type": "function_call",
+          "named": true
+        },
+        {
+          "type": "identifier",
           "named": true
         },
         {
@@ -761,9 +740,24 @@
     }
   },
   {
-    "type": "variadic_parameters",
+    "type": "variadic_parameter",
     "named": true,
-    "fields": {},
+    "fields": {
+      "kleene": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "*",
+            "named": false
+          },
+          {
+            "type": "+",
+            "named": false
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": false,
       "required": true,
@@ -776,19 +770,23 @@
     }
   },
   {
-    "type": " ",
-    "named": false
-  },
-  {
     "type": "!=",
     "named": false
   },
   {
-    "type": "#!",
+    "type": "\"",
+    "named": false
+  },
+  {
+    "type": "\"\"\"",
     "named": false
   },
   {
     "type": "$",
+    "named": false
+  },
+  {
+    "type": "'''",
     "named": false
   },
   {
@@ -809,6 +807,14 @@
   },
   {
     "type": ",",
+    "named": false
+  },
+  {
+    "type": "-",
+    "named": false
+  },
+  {
+    "type": "-@",
     "named": false
   },
   {
@@ -844,48 +850,8 @@
     "named": false
   },
   {
-    "type": "BACKTICK",
-    "named": true
-  },
-  {
-    "type": "DEDENT",
-    "named": true
-  },
-  {
-    "type": "INDENT",
-    "named": true
-  },
-  {
-    "type": "INDENTED_BACKTICK",
-    "named": true
-  },
-  {
-    "type": "INDENTED_RAW_STRING",
-    "named": true
-  },
-  {
-    "type": "INDENTED_STRING",
-    "named": true
-  },
-  {
-    "type": "NAME",
-    "named": true
-  },
-  {
-    "type": "NEWLINE",
-    "named": true
-  },
-  {
-    "type": "RAW_STRING",
-    "named": true
-  },
-  {
-    "type": "STRING",
-    "named": true
-  },
-  {
-    "type": "TEXT",
-    "named": true
+    "type": "@-",
+    "named": false
   },
   {
     "type": "[",
@@ -893,6 +859,14 @@
   },
   {
     "type": "]",
+    "named": false
+  },
+  {
+    "type": "`",
+    "named": false
+  },
+  {
+    "type": "```",
     "named": false
   },
   {
@@ -912,6 +886,10 @@
     "named": false
   },
   {
+    "type": "identifier",
+    "named": true
+  },
+  {
     "type": "if",
     "named": false
   },
@@ -924,7 +902,7 @@
     "named": false
   },
   {
-    "type": "notcomment",
+    "type": "raw_string",
     "named": true
   },
   {
@@ -934,6 +912,14 @@
   {
     "type": "shell",
     "named": false
+  },
+  {
+    "type": "string_escape",
+    "named": true
+  },
+  {
+    "type": "text",
+    "named": true
   },
   {
     "type": "true",

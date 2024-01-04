@@ -4,7 +4,7 @@
   "description": "Treesitter grammar for Justfiles (casey/just)",
   "main": "grammar.js",
   "scripts": {
-    "test": "tree-sitter test",
+    "test": "npm run gen && tree-sitter test",
     "gen": "tree-sitter generate"
   },
   "repository": {
