@@ -181,6 +181,25 @@
     }
   },
   {
+    "type": "dependencies",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "dependencies",
+          "named": true
+        },
+        {
+          "type": "dependency",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "dependency",
     "named": true,
     "fields": {
@@ -550,7 +569,7 @@
       "required": false,
       "types": [
         {
-          "type": "dependency",
+          "type": "dependencies",
           "named": true
         },
         {
@@ -819,6 +838,10 @@
   },
   {
     "type": "$",
+    "named": false
+  },
+  {
+    "type": "&&",
     "named": false
   },
   {

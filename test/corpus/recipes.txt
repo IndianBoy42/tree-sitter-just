@@ -68,10 +68,12 @@ foo: bar baz
     (recipe
       (recipe_header
         (identifier)
-        (dependency
-          (identifier))
-        (dependency
-          (identifier)))
+        (dependencies
+          (dependency
+            (identifier))
+          (dependencies
+            (dependency
+              (identifier)))))
       (recipe_body
         (recipe_line
           (text)))))
@@ -162,11 +164,13 @@ corge: foo (quux corge + banana)
           (variadic_parameter
             (parameter
               (identifier))))
-        (dependency
-          (identifier))
-        (dependency
-          (dependency_expression
-            (identifier))))
+        (dependencies
+          (dependency
+            (identifier))
+          (dependencies
+            (dependency
+              (dependency_expression
+                (identifier))))))
       (recipe_body
         (recipe_line
           (text)))))
@@ -177,9 +181,10 @@ corge: foo (quux corge + banana)
         (parameters
           (parameter
             (identifier)))
-        (dependency
-          (dependency_expression
-            (identifier))))
+        (dependencies
+          (dependency
+            (dependency_expression
+              (identifier)))))
       (recipe_body
         (recipe_line
           (text)))))
@@ -190,12 +195,13 @@ corge: foo (quux corge + banana)
         (parameters
           (parameter
             (identifier)))
-        (dependency
-          (dependency_expression
-            (identifier)
-            (expression
-              (value
-                (identifier))))))
+        (dependencies
+          (dependency
+            (dependency_expression
+              (identifier)
+              (expression
+                (value
+                  (identifier)))))))
       (recipe_body
         (recipe_line
           (text)))))
@@ -203,16 +209,92 @@ corge: foo (quux corge + banana)
     (recipe
       (recipe_header
         (identifier)
-        (dependency
-          (identifier))
-        (dependency
-          (dependency_expression
+        (dependencies
+          (dependency
+            (identifier))
+          (dependencies
+            (dependency
+              (dependency_expression
+                (identifier)
+                (expression
+                  (value
+                    (identifier))
+                  (value
+                    (identifier))))))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))
+
+================================================================================
+subsequent dependencies
+================================================================================
+
+foo: bar && baz
+  body
+
+bar a="b": foo bar && baz
+  body
+
+baz: foo && (bar "x")
+  body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (dependencies
+          (dependency
+            (identifier))
+          (dependencies
+            (dependency
+              (identifier)))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (parameters
+          (parameter
             (identifier)
-            (expression
-              (value
-                (identifier))
-              (value
-                (identifier))))))
+            (value
+              (string
+                (basic_string)))))
+        (dependencies
+          (dependency
+            (identifier))
+          (dependencies
+            (dependency
+              (identifier)))
+          (dependencies
+            (dependency
+              (identifier)))))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (dependencies
+          (dependency
+            (identifier))
+          (dependencies
+            (dependency
+              (dependency_expression
+                (identifier)
+                (expression
+                  (value
+                    (string
+                      (basic_string)))))))))
       (recipe_body
         (recipe_line
           (text)))))
