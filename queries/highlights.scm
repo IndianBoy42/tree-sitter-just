@@ -24,11 +24,12 @@
 
 ; (interpolation) @string
 
-(shebang interpreter:(TEXT) @keyword ) @comment
+; FIXME: interpreter
+; (shebang interpreter:(TEXT) @keyword ) @comment
 
 ["export" "alias" "set"] @keyword
 
-["@" "==" "!=" "+" ":="] @operator
+["@" "==" "!=" "+" ":=" ":"] @operator
 
 [ "(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
 

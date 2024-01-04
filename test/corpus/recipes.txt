@@ -224,7 +224,7 @@ foo:
         (DEDENT)))))
 
 ================================================================================
-shebang
+body shebang
 ================================================================================
 
 foo:
@@ -246,30 +246,29 @@ foo:
       (NEWLINE)
       (body
         (INDENT)
-        (shebang_recipe
-          (shebang
-            (TEXT)
-            (NEWLINE))
-          (shebang_body
-            (line
-              (recipeline
-                (notcomment)
-                (TEXT)
-                (TEXT)
-                (TEXT)
-                (TEXT)
-                (TEXT)
-                (NEWLINE)))
-            (line
-              (recipeline
-                (notcomment)
-                (TEXT)
-                (TEXT)
-                (NEWLINE)))
-            (line
-              (recipeline
-                (notcomment)
-                (NEWLINE)))))
+        (recipe_body
+          (line
+            (comment
+              (NEWLINE)))
+          (line
+            (recipeline
+              (notcomment)
+              (TEXT)
+              (TEXT)
+              (TEXT)
+              (TEXT)
+              (TEXT)
+              (NEWLINE)))
+          (line
+            (recipeline
+              (notcomment)
+              (TEXT)
+              (TEXT)
+              (NEWLINE)))
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
         (DEDENT)))))
 
 ================================================================================
