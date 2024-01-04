@@ -293,11 +293,11 @@ export foo := "abc"
           (NEWLINE))))))
 
 ================================================================================
-modules FIXME(mod): XFAIL mod support
+import
 ================================================================================
 
-mod foo
-mod bar 'PATH'
+import 'foo/bar.just'
+import? 'baz.just'
 
 --------------------------------------------------------------------------------
 
@@ -305,16 +305,61 @@ mod bar 'PATH'
   (item
     (eol
       (NEWLINE)))
-  (ERROR
-    (NAME)
-    (parameter
-      (NAME))
-    (parameter
-      (NAME))
-    (parameter
-      (NAME))
-    (INDENT)
-    (RAW_STRING))
+  (item
+    (import
+      (string
+        (RAW_STRING))))
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (import
+      (string
+        (RAW_STRING))))
+  (item
+    (eol
+      (NEWLINE))))
+
+================================================================================
+modules
+================================================================================
+
+mod foo
+mod bar 'PATH'
+mod? baz
+mod? qux "PATH"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (module
+      (NAME)))
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (module
+      (NAME)
+      (string
+        (RAW_STRING))))
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (module
+      (NAME)))
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (module
+      (NAME)
+      (string
+        (STRING))))
   (item
     (eol
       (NEWLINE))))
