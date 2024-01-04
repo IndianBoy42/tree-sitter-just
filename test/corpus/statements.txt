@@ -393,3 +393,36 @@ foo := bar # + baz
       (eol
         (comment
           (NEWLINE))))))
+
+================================================================================
+shebang
+================================================================================
+
+#!/usr/bin/env just
+
+foo:
+  body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol
+      (NEWLINE)))
+  (item
+    (eol
+      (comment
+        (NEWLINE))))
+  (item
+    (recipe
+      (recipe_header
+        (NAME))
+      (NEWLINE)
+      (body
+        (INDENT)
+        (recipe_body
+          (line
+            (recipeline
+              (notcomment)
+              (NEWLINE))))
+        (DEDENT)))))

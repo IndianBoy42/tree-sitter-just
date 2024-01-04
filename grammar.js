@@ -25,10 +25,7 @@ module.exports = grammar({
 
   rules: {
     // justfile      : item* EOF
-    source_file: ($) => repeat($.item),
-    // $.expression is not really a valid Justfile,
-    // but we do this so that we can parse just expression using this parser.
-    // This is needed for injecting inside interpolations
+    source_file: ($) => seq(optional($.shebang), repeat($.item)),
 
     // item          : recipe
     //               | alias
@@ -200,10 +197,11 @@ module.exports = grammar({
     shebang: ($) =>
       seq(
         "#!",
-        choice(
-          seq(/.*\//, field("interpreter", $.TEXT)),
-          seq("/usr/bin/env", field("interpreter", $.TEXT)),
-        ),
+        /.*/,
+        // choice(
+        //   seq(/.*\//, field("interpreter", $.TEXT)),
+        //   seq("/usr/bin/env", field("interpreter", $.TEXT)),
+        // ),
         $.NEWLINE,
       ),
 
@@ -222,7 +220,7 @@ module.exports = grammar({
       ),
     // notcomment: ($) => /[^#\s{]\S*/,
     notcomment: (_) => /[^#\s]\S*/,
-    comment: ($) => seq(/#[^!].*/, /.*/, $.NEWLINE),
+    comment: ($) => seq(/#.*/, $.NEWLINE),
 
     // notinterpolation: ($) => /[^{][^{]\S*/,
     notinterpolation: (_) => /[^\s{][^\s{]\S*/,

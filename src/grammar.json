@@ -2,11 +2,28 @@
   "name": "just",
   "rules": {
     "source_file": {
-      "type": "REPEAT",
-      "content": {
-        "type": "SYMBOL",
-        "name": "item"
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "shebang"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "item"
+          }
+        }
+      ]
     },
     "item": {
       "type": "CHOICE",
@@ -1011,43 +1028,8 @@
           "value": "#!"
         },
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "PATTERN",
-                  "value": ".*\\/"
-                },
-                {
-                  "type": "FIELD",
-                  "name": "interpreter",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "TEXT"
-                  }
-                }
-              ]
-            },
-            {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "/usr/bin/env"
-                },
-                {
-                  "type": "FIELD",
-                  "name": "interpreter",
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "TEXT"
-                  }
-                }
-              ]
-            }
-          ]
+          "type": "PATTERN",
+          "value": ".*"
         },
         {
           "type": "SYMBOL",
@@ -1113,11 +1095,7 @@
       "members": [
         {
           "type": "PATTERN",
-          "value": "#[^!].*"
-        },
-        {
-          "type": "PATTERN",
-          "value": ".*"
+          "value": "#.*"
         },
         {
           "type": "SYMBOL",
