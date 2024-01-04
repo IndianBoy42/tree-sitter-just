@@ -31,10 +31,21 @@ module.exports = grammar({
     //               | alias
     //               | assignment
     //               | export
+    //               | import
+    //               | module
     //               | setting
     //               | eol
     item: ($) =>
-      choice($.recipe, $.alias, $.assignment, $.export, $.setting, $.eol),
+      choice(
+        $.recipe,
+        $.alias,
+        $.assignment,
+        $.export,
+        $.import,
+        $.module,
+        $.setting,
+        $.eol,
+      ),
 
     // eol           : NEWLINE
     //               | COMMENT NEWLINE
@@ -49,6 +60,12 @@ module.exports = grammar({
 
     // export        : 'export' assignment
     export: ($) => seq("export", $.assignment),
+
+    // import        : 'import' '?'? string?
+    import: ($) => seq("import", optional("?"), $.string),
+
+    // module        : 'mod' '?'? string?
+    module: ($) => seq("mod", optional("?"), $.NAME, optional($.string)),
 
     // setting       : 'set' 'dotenv-load' boolean?
     //               | 'set' 'export' boolean?

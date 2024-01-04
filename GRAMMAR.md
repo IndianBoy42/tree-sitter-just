@@ -46,6 +46,8 @@ item          : recipe
               | alias
               | assignment
               | export
+              | import
+              | module
               | setting
               | eol
 
@@ -62,6 +64,10 @@ setting       : 'set' 'dotenv-load' boolean?
               | 'set' 'export' boolean?
               | 'set' 'positional-arguments' boolean?
               | 'set' 'shell' ':=' '[' string (',' string)* ','? ']'
+
+import        : 'import' '?'? string?
+
+module        : 'mod' '?'? NAME string?
 
 boolean       : ':=' ('true' | 'false')
 

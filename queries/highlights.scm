@@ -1,3 +1,5 @@
+; This file specifies how matched syntax patterns should be highlighted
+
 (assignment (NAME) @variable)
 (alias (NAME) @variable)
 (value (NAME) @variable)
@@ -28,9 +30,15 @@
 ; FIXME: interpreter
 ; (shebang interpreter:(TEXT) @keyword ) @comment
 
-["export" "alias" "set"] @keyword
+[
+  "alias" 
+  "export"
+  "import"
+  "mod"
+  "set"
+] @keyword
 
-["@" "==" "!=" "+" ":=" ":"] @operator
+["@" "==" "!=" "+" ":="] @operator
 
 [ "(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
 
