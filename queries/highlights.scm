@@ -20,6 +20,7 @@
 
 (boolean ["true" "false"]) @boolean
 
+(shebang) @comment
 (comment) @comment
 
 ; (interpolation) @string
