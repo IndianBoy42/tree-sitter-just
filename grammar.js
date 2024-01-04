@@ -12,7 +12,10 @@ function array(item) {
     "array",
     seq(
       "[",
-      optional(seq(comma_sep1(array_item), optional(array_item))),
+      field(
+        "contents",
+        optional(seq(comma_sep1(array_item), optional(array_item))),
+      ),
       "]",
     ),
   );
@@ -20,8 +23,15 @@ function array(item) {
 
 module.exports = grammar({
   name: "just",
-
-  externals: ($) => [$.INDENT, $.DEDENT, $.NEWLINE, $.LINE],
+  externals: ($) => [$._indent, $._dedent, $._newline],
+  inline: (
+    $,
+  ) => [
+    $._dependency_with_args,
+    $._expression_braced,
+    $._expression_recurse,
+  ],
+  word: ($) => $.identifier,
 
   rules: {
     // justfile      : item* EOF
@@ -49,14 +59,25 @@ module.exports = grammar({
 
     // eol           : NEWLINE
     //               | COMMENT NEWLINE
-    eol: ($) => choice($.NEWLINE, $.comment),
+    eol: ($) => choice($._newline, $.comment),
 
     // alias         : 'alias' NAME ':=' NAME
     alias: ($) =>
-      seq("alias", field("left", $.NAME), ":=", field("right", $.NAME)),
+      seq(
+        "alias",
+        field("left", $.identifier),
+        ":=",
+        field("right", $.identifier),
+      ),
 
     // assignment    : NAME ':=' expression eol
-    assignment: ($) => seq($.NAME, ":=", $.expression, $.eol),
+    assignment: ($) =>
+      seq(
+        field("left", $.identifier),
+        ":=",
+        field("right", $.expression),
+        $.eol,
+      ),
 
     // export        : 'export' assignment
     export: ($) => seq("export", $.assignment),
@@ -65,7 +86,7 @@ module.exports = grammar({
     import: ($) => seq("import", optional("?"), $.string),
 
     // module        : 'mod' '?'? string?
-    module: ($) => seq("mod", optional("?"), $.NAME, optional($.string)),
+    module: ($) => seq("mod", optional("?"), $.identifier, optional($.string)),
 
     // setting       : 'set' 'dotenv-load' boolean?
     //               | 'set' 'export' boolean?
@@ -75,7 +96,7 @@ module.exports = grammar({
       choice(
         seq(
           "set",
-          field("name", $.NAME),
+          field("left", $.identifier),
           field(
             "right",
             optional(
@@ -100,23 +121,30 @@ module.exports = grammar({
     //               | value '/' expression
     //               | value '+' expression
     //               | value
-    expression: ($) =>
+    expression: ($) => seq(optional("/"), $._expression_inner),
+
+    _expression_inner: ($) =>
       choice(
-        seq(
-          "if",
-          $.condition,
-          "{",
-          field("if", $.expression),
-          "}",
-          "else",
-          "{",
-          field("else", $.expression),
-          "}",
-        ),
-        seq($.value, "+", $.expression),
-        seq($.value, "/", $.expression),
+        $.if_expression,
+        prec.left(2, seq($._expression_recurse, "+", $._expression_recurse)),
+        prec.left(1, seq($._expression_recurse, "/", $._expression_recurse)),
         $.value,
       ),
+
+    // We can't mark `_expression_inner` inline because it causes an infinite
+    // loop at generation, so we just alias it.
+    _expression_recurse: ($) => alias($._expression_inner, "expression"),
+
+    if_expression: ($) =>
+      seq(
+        "if",
+        $.condition,
+        $._braced_expr,
+        repeat(seq("else", "if", $.condition, $._braced_expr)),
+        optional(seq("else", $._braced_expr)),
+      ),
+
+    _braced_expr: ($) => seq("{", field("braced_body", $.expression), "}"),
 
     // condition     : expression '==' expression
     //               | expression '!=' expression
@@ -126,6 +154,8 @@ module.exports = grammar({
         seq($.expression, "==", $.expression),
         seq($.expression, "!=", $.expression),
         seq($.expression, "=~", $.expression),
+        // verify whether this is valid
+        $.expression,
       ),
 
     // value         : NAME '(' sequence? ')'
@@ -136,108 +166,118 @@ module.exports = grammar({
     //               | '(' expression ')'
     value: ($) =>
       prec.left(
-        0,
-        choice($.call, $.cmd, $.NAME, $.string, seq("(", $.expression, ")")),
+        choice(
+          $.function_call,
+          $.command,
+          $.identifier,
+          $.string,
+          seq("(", $.expression, ")"),
+        ),
       ),
 
-    call: ($) => seq($.NAME, "(", optional($.sequence), ")"),
+    function_call: ($) =>
+      seq(
+        field("name", $.identifier),
+        "(",
+        field("arguments", optional($.sequence)),
+        ")",
+      ),
 
-    cmd: ($) => choice(seq($.BACKTICK), seq($.INDENTED_BACKTICK)),
+    command: ($) => choice(seq($.backticked), seq($.indented_backticked)),
+
+    // sequence      : expression ',' sequence
+    //               | expression ','?
+    sequence: ($) => comma_sep1($.expression),
 
     // string        : STRING
     //               | INDENTED_STRING
     //               | RAW_STRING
     //               | INDENTED_RAW_STRING
     string: ($) =>
-      choice($.STRING, $.INDENTED_STRING, $.RAW_STRING, $.INDENTED_RAW_STRING),
-
-    // sequence      : expression ',' sequence
-    //               | expression ','?
-    sequence: ($) =>
       choice(
-        seq($.expression, ",", $.sequence),
-        seq($.expression, optional(",")),
+        $.basic_string,
+        $.basic_string_indented,
+        $.raw_string,
+        $.raw_string_indented,
       ),
 
-    attribute: ($) => seq("[", $.NAME, "]", $.eol),
+    attribute: ($) =>
+      seq("[", field("contents", comma_sep1($.identifier)), "]", $.eol),
 
+    // A complete recipe
     // recipe        : attribute? '@'? NAME parameter* variadic_parameters? ':' dependency* body?
     recipe: ($) =>
-      seq(optional($.attribute), $.recipe_header, $.NEWLINE, optional($.body)),
+      seq(
+        repeat($.attribute),
+        $.recipe_header,
+        $._newline,
+        optional($.recipe_body),
+      ),
 
     recipe_header: ($) =>
       seq(
         optional("@"),
-        $.NAME,
+        $.identifier,
         optional($.parameters),
         ":",
-        optional(" "),
-        optional($.dependencies),
+        repeat($.dependency),
       ),
 
     parameters: ($) =>
-      seq(repeat1($.parameter), optional($.variadic_parameters)),
+      seq(repeat($.parameter), choice($.parameter, $.variadic_parameter)),
 
     // parameter     : '$'? NAME
     //               | '$'? NAME '=' value
     parameter: ($) =>
-      choice(
-        seq(optional("$"), $.NAME),
-        seq(optional("$"), $.NAME, "=", $.value),
+      seq(
+        optional("$"),
+        field("param", $.identifier),
+        optional(seq("=", field("default", $.value))),
       ),
 
     // variadic_parameters      : '*' parameter
     //               | '+' parameter
-    variadic_parameters: ($) =>
-      choice(seq("*", $.parameter), seq("+", $.parameter)),
+    variadic_parameter: ($) =>
+      seq(field("kleene", choice("*", "+")), $.parameter),
 
     dependencies: ($) => repeat1($.dependency),
 
     // dependency    : NAME
     //               | '(' NAME expression* ')'
-    dependency: ($) => choice($.NAME, seq("(", $.depcall, ")")),
+    dependency: ($) =>
+      choice(
+        field("recipe", $.identifier),
+        field("call", seq("(", $._dependency_with_args, ")")),
+      ),
 
-    depcall: ($) => seq($.NAME, repeat($.expression)),
+    // contents of `(recipe expression)`
+    _dependency_with_args: ($) =>
+      seq(
+        field("recipe", $.identifier),
+        repeat(field("expression", $.expression)),
+      ),
 
     // body          : INDENT line+ DEDENT
-    body: ($) =>
+    recipe_body: ($) =>
       seq(
-        $.INDENT,
-        choice($.shebang_recipe, optional($.recipe_body)),
-        $.DEDENT,
-      ),
-    // seq($.INDENT, $.recipebody, $.DEDENT),
-
-    shebang_recipe: ($) => seq($.shebang, $.shebang_body),
-    shebang_body: ($) => repeat1($.line),
-
-    shebang: ($) =>
-      seq(
-        "#!",
-        /.*/,
-        // choice(
-        //   seq(/.*\//, field("interpreter", $.TEXT)),
-        //   seq("/usr/bin/env", field("interpreter", $.TEXT)),
-        // ),
-        $.NEWLINE,
+        $._indent,
+        field("contents", seq(optional($.shebang), repeat($.recipe_line))),
+        $._dedent,
       ),
 
-    recipe_body: ($) => repeat1($.line),
-
-    line: ($) => choice($.comment, $.recipeline),
-    // line: ($) => choice($.comment, $.recipeline, $.shebang),
-
-    // FIXME: detecting interpolation doesn't work
-    recipeline: ($) =>
+    recipe_line: ($) =>
       seq(
-        $.notcomment,
-        // repeat(choice($.interpolation, $.notinterpolation)),
-        repeat(choice($.interpolation, $.TEXT)),
-        $.NEWLINE,
+        optional($.recipe_line_prefix),
+        repeat(choice($.text, $.interpolation)),
+        $._newline,
       ),
-    // notcomment: ($) => /[^#\s{]\S*/,
-    notcomment: (_) => /[^#\s]\S*/,
-    comment: ($) => seq(/#.*/, $.NEWLINE),
+
+    recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
+
+    shebang: ($) => seq(/\s*#!.*/, $._newline),
+
+    // `# ...` comment
+    comment: ($) => seq(/#.*/, $._newline),
 
     // notinterpolation: ($) => /[^{][^{]\S*/,
     notinterpolation: (_) => /[^\s{][^\s{]\S*/,
@@ -245,15 +285,18 @@ module.exports = grammar({
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),
 
-    BACKTICK: (_) => /`[^`]*`/,
-    INDENTED_BACKTICK: (_) => /```[^(```)]*```/,
-    // COMMENT: (_) => /\#([^!].*)?/, // /\#([^!].*)?$/, // FIXME: '$' Regex assertions not supported, could cause misparses
-    NAME: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
-    RAW_STRING: (_) => /'[^']*'/,
-    INDENTED_RAW_STRING: (_) => /'''[^(''')]*'''/,
+    identifier: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
 
-    STRING: (_) => /"[^"]*"/, // # also processes \n \r \t \" \\ escapes
-    INDENTED_STRING: (_) => /"""[^("""]*"""/, // # also processes \n \r \t \" \\ escapes
-    TEXT: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
+    backticked: (_) => seq("`", repeat(/./), "`"),
+    indented_backticked: (_) => seq("```", repeat(/./), "```"),
+    raw_string: (_) => /'[^']*'/,
+    raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
+    basic_string: ($) =>
+      seq('"', repeat(choice($.string_escape, /[^\\"]+/)), '"'),
+    basic_string_indented: ($) =>
+      seq('"""', repeat(choice($.string_escape, /[^\\"]+/)), '"""'),
+    string_escape: (_) => /\\[nrt"\\]/,
+    text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
+    // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
   },
 });

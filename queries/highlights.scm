@@ -1,31 +1,69 @@
 ; This file specifies how matched syntax patterns should be highlighted
-
-(assignment (NAME) @variable)
-(alias (NAME) @variable)
-(value (NAME) @variable)
-(parameter (NAME) @variable)
-(setting (NAME) @keyword)
-(setting "shell" @keyword)
-
-(call (NAME) @function)
-(dependency (NAME) @function)
-(depcall (NAME) @function)
-(recipe_header (NAME) @function)
-
-(depcall (expression) @parameter)
-(parameter) @parameter
-(variadic_parameters) @parameter
-
-(module (NAME) @namespace)
-
-["if" "else"] @conditional
-
-(string) @string
-
-(boolean ["true" "false"]) @boolean
+;
+; This file is ordered roughly the same as grammar.js
 
 (shebang) @comment
-(comment) @comment
+
+(alias
+  left: (identifier) @variable
+)
+
+(assignment
+  left: (identifier) @variable)
+
+(module (identifier) @namespace)
+
+(setting "shell" @keyword)
+(setting
+  left: ((identifier) @keyword
+  (#any-of? @keyword
+    "allow-duplicate-recipes"
+    "dotenv-filename"
+    "dotenv-load"
+    "dotenv-path"
+    "export"
+    "fallback"
+    "ignore-comments"
+    "positional-arguments"
+    "shell"
+    "tempdi"
+    "windows-powershell"
+    "windows-shell"
+    )))
+
+(boolean ["true" "false"]) @constant.builtin.boolean
+
+["if" "else"] @keyword.control.conditional
+
+(value (identifier) @variable)
+; (call (identifier) @function)
+
+
+; ([parameter varidic_parameter]
+   ; (identifier) @variable)
+(parameter (identifier) @variable)
+(variadic_parameter (parameter (identifier)) @variable)
+
+(function_call
+  name: (identifier) @function)
+
+
+
+(dependency
+  recipe: (identifier) @function
+  expression: (expression)* @parameter)
+  
+(recipe_header (identifier) @function)
+
+; FIXME: what's up with $identifier params
+(parameter) @variable.parameter
+
+
+(string (_ (string_escape) @constant.character.escape))
+(string) @string
+
+
+(comment) @comment.line
 
 ; (interpolation) @string
 
@@ -33,7 +71,7 @@
 ; (shebang interpreter:(TEXT) @keyword ) @comment
 
 [
-  "alias" 
+  "alias"
   "export"
   "import"
   "mod"
@@ -42,6 +80,10 @@
 
 ["@" "==" "!=" "+" ":=" "*" ":" "/" "?"] @operator
 
-[ "(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
+["(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
+
+["," ":"] @punctuation.delimiter
+
+"`" @punctuation.special
 
 (ERROR) @error

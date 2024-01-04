@@ -5,12 +5,18 @@
 #include <cstring>
 #include <cwctype>
 
-enum TokenType { INDENT, DEDENT, NEWLINE, LINE };
+enum TokenType { INDENT, DEDENT, NEWLINE };
 
 struct Scanner {
   uint32_t prev_indent;
+  bool has_seen_eof;
 
-  Scanner() { prev_indent = 0; }
+  Scanner() { init(); }
+
+  void init() {
+    prev_indent = 0;
+    has_seen_eof = false;
+  }
 
   // Only ever working on the same platform so we don't need to worry about
   // endianness.
@@ -23,9 +29,9 @@ struct Scanner {
 
   void deserialize(const char *buf, unsigned len) {
     if (len == 0) {
-      prev_indent = 0;
-      return;
+      return init();
     }
+    
     assert(len == sizeof(Scanner));
     memcpy(this, buf, len);
   }
@@ -72,12 +78,22 @@ void advance(TSLexer *lexer) { return lexer->advance(lexer, false); }
 void skip(TSLexer *lexer) { return lexer->advance(lexer, true); }
 
 // An EOF works as a dedent
-bool handle_eof(TSLexer *lexer, const bool *valid_symbols) {
+bool handle_eof(TSLexer *lexer, Scanner *state, const bool *valid_symbols) {
   assert(lexer->eof(lexer));
   lexer->mark_end(lexer);
 
   if (valid_symbols[DEDENT]) {
     lexer->result_symbol = DEDENT;
+    return true;
+  } else if (valid_symbols[NEWLINE]) {
+    if (state->has_seen_eof) {
+      // allow EOF to count for a single symbol. Don't return true moer than
+      // once, otherwise it will keep calling us thinking there are more tokens.
+      return false;
+    }
+
+    lexer->result_symbol = NEWLINE;
+    state->has_seen_eof = true;
     return true;
   }
   return false;
@@ -92,7 +108,7 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
   bool (*eof)(const TSLexer *) = lexer->eof;
 
   if (eof(lexer)) {
-    return handle_eof(lexer, valid_symbols);
+    return handle_eof(lexer, state, valid_symbols);
   }
 
   // Handle backslash escaping for newlines
@@ -129,7 +145,7 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
     }
 
     if (lexer->eof(lexer)) {
-      return handle_eof(lexer, valid_symbols);
+      return handle_eof(lexer, state, valid_symbols);
     }
 
     uint32_t indent = lexer->get_column(lexer);

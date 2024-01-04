@@ -1,4 +1,14 @@
 ================================================================================
+empty
+================================================================================
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol)))
+
+================================================================================
 assignment
 ================================================================================
 
@@ -8,17 +18,17 @@ foo := "abc"
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (STRING))))
-      (eol
-        (NEWLINE)))))
+            (basic_string))))
+      (eol)))
+  (item
+    (eol)))
 
 ================================================================================
 expression
@@ -30,21 +40,20 @@ foo := "abc" + 'def'
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (STRING)))
-        (expression
-          (value
-            (string
-              (RAW_STRING)))))
-      (eol
-        (NEWLINE)))))
+            (basic_string)))
+        (value
+          (string
+            (raw_string))))
+      (eol)))
+  (item
+    (eol)))
 
 ================================================================================
 paths
@@ -58,185 +67,392 @@ combined := "foo" / bar() / baz
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (STRING)))
-        (expression
-          (value
-            (string
-              (RAW_STRING)))))
-      (eol
-        (NEWLINE))))
-  (item
-    (assignment
-      (NAME)
-      (expression
+            (basic_string)))
         (value
-          (cmd
-            (MISSING BACKTICK)))
-        (expression
-          (value
-            (string
-              (STRING)))))
-      (eol
-        (NEWLINE))))
+          (string
+            (raw_string))))
+      (eol)))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (STRING)))
-        (expression
-          (value
-            (call
-              (NAME)))
-          (expression
-            (value
-              (NAME)))))
-      (eol
-        (NEWLINE)))))
+            (basic_string))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (basic_string)))
+        (value
+          (function_call
+            (identifier)))
+        (value
+          (identifier)))
+      (eol)))
+  (item
+    (eol)))
 
 ================================================================================
-strings FIXME(escapes) XFAIL from escapes
+basic strings
 ================================================================================
 
 foo := "a"
-bar := 'b'
-baz := "c
-d"
-qux := """e
-f"""
-quux := '''g
-h
-i
-'''
-corge := "foo\"bar"
+bar := "b
+  c
+"
+baz := "a\"\t"
 
 --------------------------------------------------------------------------------
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (STRING))))
-      (eol
-        (NEWLINE))))
+            (basic_string))))
+      (eol)))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (RAW_STRING))))
-      (eol
-        (NEWLINE))))
+            (basic_string))))
+      (eol)))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (STRING))))
-      (eol
-        (NEWLINE))))
+            (basic_string
+              (string_escape)
+              (string_escape)))))
+      (eol)))
+  (item
+    (eol)))
+
+================================================================================
+indented basic strings
+================================================================================
+
+foo := """a"""
+bar:= """b
+  c
+"""
+baz := """
+abc \t
+def \"
+"""
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (INDENTED_STRING))))
-      (eol
-        (NEWLINE))))
+            (basic_string_indented))))
+      (eol)))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
           (string
-            (INDENTED_RAW_STRING))))
-      (eol
-        (NEWLINE))))
-  (ERROR
-    (NAME)
-    (ERROR
-      (value
-        (string
-          (STRING))))
-    (NAME)
-    (INDENT)
-    (UNEXPECTED '\0')))
+            (basic_string_indented))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (basic_string_indented
+              (string_escape)
+              (string_escape)))))
+      (eol)))
+  (item
+    (eol)))
+
+================================================================================
+raw strings
+================================================================================
+
+foo := 'a'
+bar := 'b
+  c
+'
+baz := 'a\"\t'
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (raw_string))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (raw_string))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (raw_string))))
+      (eol)))
+  (item
+    (eol)))
+
+================================================================================
+indented raw strings
+================================================================================
+
+foo := '''a'''
+bar:= '''b
+  c
+'''
+  baz := ''''
+  abc \t
+  def \"
+'''
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (raw_string_indented))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (raw_string_indented))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string
+            (raw_string_indented))))
+      (eol)))
+  (item
+    (eol)))
+
+================================================================================
+backticks
+================================================================================
+
+foo := `echo hi`
+bar := `echo hi
+  echo bye
+`
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (command
+            (backticked))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (command
+            (backticked))))
+      (eol)))
+  (item
+    (eol)))
+
+================================================================================
+indented backticks
+================================================================================
+
+foo := ```echo hi```
+bar := ```
+echo bye  
+```
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (command
+            (indented_backticked))))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (command
+            (indented_backticked))))
+      (eol))))
 
 ================================================================================
 if
 ================================================================================
 
+foo := if bar == baz { qux } else { quux }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (if_expression
+          (condition
+            (expression
+              (value
+                (identifier)))
+            (expression
+              (value
+                (identifier))))
+          (expression
+            (value
+              (identifier)))
+          (expression
+            (value
+              (identifier)))))
+      (eol)))
+  (item
+    (eol)))
+
+================================================================================
+else if
+================================================================================
+
 foo := if a == "x" {
   "val"
-} else if "1" != "2" { foo_fn("val") }
+} else if "1" != "2" {
+  foo_fn("val")
+} else if "3" == "4" {
+  if some_bool { val }
 } else { val }
 
 --------------------------------------------------------------------------------
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
-  (ERROR
-    (NAME)
-    (condition
+    (eol))
+  (item
+    (assignment
+      (identifier)
       (expression
-        (value
-          (NAME)))
-      (expression
-        (value
-          (string
-            (STRING)))))
-    (ERROR
-      (expression
-        (value
-          (string
-            (STRING)))))
-    (expression
-      (condition
-        (expression
-          (value
-            (string
-              (STRING))))
-        (expression
-          (value
-            (string
-              (STRING)))))
-      (expression
-        (value
-          (call
-            (NAME)
-            (sequence
+        (if_expression
+          (condition
+            (expression
+              (value
+                (identifier)))
+            (expression
+              (value
+                (string
+                  (basic_string)))))
+          (expression
+            (value
+              (string
+                (basic_string))))
+          (condition
+            (expression
+              (value
+                (string
+                  (basic_string))))
+            (expression
+              (value
+                (string
+                  (basic_string)))))
+          (expression
+            (value
+              (function_call
+                (identifier)
+                (sequence
+                  (expression
+                    (value
+                      (string
+                        (basic_string))))))))
+          (condition
+            (expression
+              (value
+                (string
+                  (basic_string))))
+            (expression
+              (value
+                (string
+                  (basic_string)))))
+          (expression
+            (if_expression
+              (condition
+                (expression
+                  (value
+                    (identifier))))
               (expression
                 (value
-                  (string
-                    (STRING))))))))
-      (ERROR
-        (NEWLINE))
-      (expression
-        (value
-          (NAME)))))
+                  (identifier)))))
+          (expression
+            (value
+              (identifier)))))
+      (eol)))
   (item
-    (eol
-      (NEWLINE))))
+    (eol)))
 
 ================================================================================
 function
@@ -248,26 +464,25 @@ foo := some_fn("param1", param2)
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
-          (call
-            (NAME)
+          (function_call
+            (identifier)
             (sequence
               (expression
                 (value
                   (string
-                    (STRING))))
-              (sequence
-                (expression
-                  (value
-                    (NAME))))))))
-      (eol
-        (NEWLINE)))))
+                    (basic_string))))
+              (expression
+                (value
+                  (identifier)))))))
+      (eol)))
+  (item
+    (eol)))
 
 ================================================================================
 export
@@ -279,18 +494,18 @@ export foo := "abc"
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (export
       (assignment
-        (NAME)
+        (identifier)
         (expression
           (value
             (string
-              (STRING))))
-        (eol
-          (NEWLINE))))))
+              (basic_string))))
+        (eol))))
+  (item
+    (eol)))
 
 ================================================================================
 import
@@ -303,22 +518,21 @@ import? 'baz.just'
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (import
       (string
-        (RAW_STRING))))
+        (raw_string))))
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (import
       (string
-        (RAW_STRING))))
+        (raw_string))))
   (item
-    (eol
-      (NEWLINE))))
+    (eol))
+  (item
+    (eol)))
 
 ================================================================================
 modules
@@ -333,36 +547,33 @@ mod? qux "PATH"
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (module
-      (NAME)))
+      (identifier)))
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (module
-      (NAME)
+      (identifier)
       (string
-        (RAW_STRING))))
+        (raw_string))))
   (item
-    (eol
-      (NEWLINE)))
-  (item
-    (module
-      (NAME)))
-  (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (module
-      (NAME)
+      (identifier)))
+  (item
+    (eol))
+  (item
+    (module
+      (identifier)
       (string
-        (STRING))))
+        (basic_string))))
   (item
-    (eol
-      (NEWLINE))))
+    (eol))
+  (item
+    (eol)))
 
 ================================================================================
 set
@@ -378,39 +589,35 @@ set shell := ["powershell.exe", "-c"]
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (setting
-      (NAME)
-      (eol
-        (NEWLINE))))
+      (identifier)
+      (eol)))
   (item
     (setting
-      (NAME)
+      (identifier)
       (boolean)
-      (eol
-        (NEWLINE))))
+      (eol)))
   (item
     (setting
-      (NAME)
-      (eol
-        (NEWLINE))))
+      (identifier)
+      (eol)))
   (item
     (setting
-      (NAME)
+      (identifier)
       (string
-        (STRING))
-      (eol
-        (NEWLINE))))
+        (basic_string))
+      (eol)))
   (item
     (setting
       (string
-        (STRING))
+        (basic_string))
       (string
-        (STRING))
-      (eol
-        (NEWLINE)))))
+        (basic_string))
+      (eol)))
+  (item
+    (eol)))
 
 ================================================================================
 comment
@@ -423,21 +630,20 @@ foo := bar # + baz
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (eol
-      (comment
-        (NEWLINE))))
+      (comment)))
   (item
     (assignment
-      (NAME)
+      (identifier)
       (expression
         (value
-          (NAME)))
+          (identifier)))
       (eol
-        (comment
-          (NEWLINE))))))
+        (comment))))
+  (item
+    (eol)))
 
 ================================================================================
 shebang
@@ -452,22 +658,16 @@ foo:
 
 (source_file
   (item
-    (eol
-      (NEWLINE)))
+    (eol))
   (item
     (eol
-      (comment
-        (NEWLINE))))
+      (comment)))
   (item
     (recipe
       (recipe_header
-        (NAME))
-      (NEWLINE)
-      (body
-        (INDENT)
-        (recipe_body
-          (line
-            (recipeline
-              (notcomment)
-              (NEWLINE))))
-        (DEDENT)))))
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item
+    (eol)))

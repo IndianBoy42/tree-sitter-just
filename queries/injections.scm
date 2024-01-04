@@ -8,8 +8,8 @@
 ; ) 
 
 (source_file 
-    ; (item (setting lang:(NAME) @language))
-    (item (recipe (body (recipe_body) @content)))
+    ; (item (setting lang:(identifier) @language))
+    (item (recipe (recipe_body) @content))
 ) 
 
 ; (interpolation (expression) @just)
