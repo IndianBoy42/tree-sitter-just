@@ -40,7 +40,10 @@
         ".Justfile"
       ],
       "injection-regex": "^(?i)just(file)?$",
-      "first-line-regex": "#!\\S*bin\\S*[/ ]just"
+      "first-line-regex": "#!\\S*bin\\S*[/ ]just",
+      "highlights": [
+        "queries/highlights.scm"
+      ]
     }
   ]
 }

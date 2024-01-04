@@ -300,7 +300,7 @@ bar := `echo hi
       (identifier)
       (expression
         (value
-          (command
+          (external_command
             (backticked))))
       (eol)))
   (item
@@ -308,7 +308,7 @@ bar := `echo hi
       (identifier)
       (expression
         (value
-          (command
+          (external_command
             (backticked))))
       (eol)))
   (item
@@ -332,7 +332,7 @@ echo bye
       (identifier)
       (expression
         (value
-          (command
+          (external_command
             (indented_backticked))))
       (eol)))
   (item
@@ -340,7 +340,7 @@ echo bye
       (identifier)
       (expression
         (value
-          (command
+          (external_command
             (indented_backticked))))
       (eol))))
 

@@ -4,14 +4,10 @@
 
 (shebang) @comment
 
-(alias
-  left: (identifier) @variable)
+(alias left: (identifier) @variable)
+(assignment left: (identifier) @variable)
 
-(assignment
-  left: (identifier) @variable)
-
-(module
-  mod_name: (identifier) @namespace)
+(module mod_name: (identifier) @namespace)
 
 ; highlight known settings (filtering does not always work)
 (setting
@@ -69,10 +65,8 @@
   "="? @operator)
 
 (dependencies "&&" @operator)
-(dependency
-  recipe: (identifier) @function)
-(dependency_expression
-  recipe: (identifier) @function)
+(dependency recipe: (identifier) @function)
+(dependency_expression recipe: (identifier) @function)
 
 ; handle escape sequences
 (string (_ (string_escape) @constant.character.escape))

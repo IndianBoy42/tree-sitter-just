@@ -176,7 +176,7 @@ module.exports = grammar({
       prec.left(
         choice(
           $.function_call,
-          $.command,
+          $.external_command,
           $.identifier,
           $.string,
           seq("(", $.expression, ")"),
@@ -191,7 +191,8 @@ module.exports = grammar({
         ")",
       ),
 
-    command: ($) => choice(seq($.backticked), seq($.indented_backticked)),
+    external_command: ($) =>
+      choice(seq($.backticked), seq($.indented_backticked)),
 
     // sequence      : expression ',' sequence
     //               | expression ','?

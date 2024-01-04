@@ -717,7 +717,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "command"
+            "name": "external_command"
           },
           {
             "type": "SYMBOL",
@@ -784,7 +784,7 @@
         }
       ]
     },
-    "command": {
+    "external_command": {
       "type": "CHOICE",
       "members": [
         {

@@ -29,8 +29,6 @@ quux var *var2:
 #          ^^^ variable.parameter
 #             ^ operator
 
-# This is a good test of locals.scm
-# (the first `bar` is a recipe and the second is a variable)
 corge +quux: baz (quux quux)
 # <- function
 #     ^ operator
@@ -38,9 +36,9 @@ corge +quux: baz (quux quux)
 #          ^ operator
 #            ^^^ function
 #                ^ punctuation.bracket
+#                 ^^^^ function
 #                      ^^^ variable
 #                          ^ punctuation.bracket
-#                 FIXME  function
 
 grault abc="def":
 # <- function
