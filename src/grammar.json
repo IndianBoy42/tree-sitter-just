@@ -792,7 +792,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "backticked"
+              "name": "_backticked"
             }
           ]
         },
@@ -801,7 +801,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "indented_backticked"
+              "name": "_indented_backticked"
             }
           ]
         }
@@ -1313,27 +1313,23 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "basic_string"
+          "name": "_string_indented"
         },
         {
           "type": "SYMBOL",
-          "name": "basic_string_indented"
+          "name": "_raw_string_indented"
         },
         {
           "type": "SYMBOL",
-          "name": "raw_string"
+          "name": "_string"
         },
         {
-          "type": "SYMBOL",
-          "name": "raw_string_indented"
+          "type": "PATTERN",
+          "value": "'[^']*'"
         }
       ]
     },
-    "raw_string": {
-      "type": "PATTERN",
-      "value": "'[^']*'"
-    },
-    "raw_string_indented": {
+    "_raw_string_indented": {
       "type": "SEQ",
       "members": [
         {
@@ -1353,7 +1349,7 @@
         }
       ]
     },
-    "basic_string": {
+    "_string": {
       "type": "SEQ",
       "members": [
         {
@@ -1382,7 +1378,7 @@
         }
       ]
     },
-    "basic_string_indented": {
+    "_string_indented": {
       "type": "SEQ",
       "members": [
         {
@@ -1415,7 +1411,7 @@
       "type": "PATTERN",
       "value": "\\\\[nrt\"\\\\]"
     },
-    "backticked": {
+    "_backticked": {
       "type": "SEQ",
       "members": [
         {
@@ -1435,7 +1431,7 @@
         }
       ]
     },
-    "indented_backticked": {
+    "_indented_backticked": {
       "type": "SEQ",
       "members": [
         {
@@ -1483,6 +1479,9 @@
     }
   ],
   "inline": [
+    "_string",
+    "_string_indented",
+    "_raw_string_indented",
     "ReferenceError",
     "_expression_recurse"
   ],

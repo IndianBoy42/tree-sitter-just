@@ -5,7 +5,9 @@
 (shebang) @comment
 
 (alias left: (identifier) @variable)
-(assignment left: (identifier) @variable)
+(assignment
+  left: (identifier) @variable
+  [":="] @operator)
 
 (module mod_name: (identifier) @namespace)
 
@@ -69,7 +71,7 @@
 (dependency_expression recipe: (identifier) @function)
 
 ; handle escape sequences
-(string (_ (string_escape) @constant.character.escape))
+(string (string_escape) @constant.character.escape)
 (string) @string
 
 (comment) @comment.line
@@ -89,7 +91,7 @@
 
 ; exclude `=` and `&&` since they are valid in more normal scopes
 ; (matching is covered in their parent nodes)
-["@" "==" "!=" "+" ":=" "*" ":" "/" "?"] @operator
+["@" "==" "!=" "+" "*" ":" "/" "?"] @operator
 
 ["(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
 

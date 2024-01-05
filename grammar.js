@@ -27,6 +27,9 @@ module.exports = grammar({
   inline: (
     $,
   ) => [
+    $._string,
+    $._string_indented,
+    $._raw_string_indented,
     $._expression_braced,
     $._expression_recurse,
   ],
@@ -192,7 +195,7 @@ module.exports = grammar({
       ),
 
     external_command: ($) =>
-      choice(seq($.backticked), seq($.indented_backticked)),
+      choice(seq($._backticked), seq($._indented_backticked)),
 
     // sequence      : expression ',' sequence
     //               | expression ','?
@@ -299,22 +302,21 @@ module.exports = grammar({
     //               | INDENTED_RAW_STRING
     string: ($) =>
       choice(
-        $.basic_string,
-        $.basic_string_indented,
-        $.raw_string,
-        $.raw_string_indented,
+        $._string_indented,
+        $._raw_string_indented,
+        $._string,
+        // _raw_string, can't be written as a separate inline for osm reason
+        /'[^']*'/,
       ),
 
-    raw_string: (_) => /'[^']*'/,
-    raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
-    basic_string: ($) =>
-      seq('"', repeat(choice($.string_escape, /[^\\"]+/)), '"'),
-    basic_string_indented: ($) =>
+    _raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
+    _string: ($) => seq('"', repeat(choice($.string_escape, /[^\\"]+/)), '"'),
+    _string_indented: ($) =>
       seq('"""', repeat(choice($.string_escape, /[^\\"]+/)), '"""'),
     string_escape: (_) => /\\[nrt"\\]/,
 
-    backticked: (_) => seq("`", repeat(/./), "`"),
-    indented_backticked: (_) => seq("```", repeat(/./), "```"),
+    _backticked: (_) => seq("`", repeat(/./), "`"),
+    _indented_backticked: (_) => seq("```", repeat(/./), "```"),
 
     text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
     // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body

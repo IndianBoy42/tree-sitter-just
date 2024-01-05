@@ -154,7 +154,6 @@ foo_fn := env("abc", foo)
 #                    ^^^ variable
 #                       ^ punctuation.bracket
 
-
 export fooexp := "abc"
 # <- keyword
 #      ^^^^^^ variable

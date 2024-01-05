@@ -24,8 +24,7 @@ foo := "abc"
       (identifier)
       (expression
         (value
-          (string
-            (basic_string))))
+          (string)))
       (eol)))
   (item
     (eol)))
@@ -46,11 +45,9 @@ foo := "abc" + 'def'
       (identifier)
       (expression
         (value
-          (string
-            (basic_string)))
+          (string))
         (value
-          (string
-            (raw_string))))
+          (string)))
       (eol)))
   (item
     (eol)))
@@ -73,27 +70,23 @@ combined := "foo" / bar() / baz
       (identifier)
       (expression
         (value
-          (string
-            (basic_string)))
+          (string))
         (value
-          (string
-            (raw_string))))
+          (string)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string
-            (basic_string))))
+          (string)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string
-            (basic_string)))
+          (string))
         (value
           (function_call
             (identifier)))
@@ -123,8 +116,14 @@ baz := "a\"\t"
       (identifier)
       (expression
         (value
-          (string
-            (basic_string))))
+          (string)))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string)))
       (eol)))
   (item
     (assignment
@@ -132,17 +131,8 @@ baz := "a\"\t"
       (expression
         (value
           (string
-            (basic_string))))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string
-            (basic_string
-              (string_escape)
-              (string_escape)))))
+            (string_escape)
+            (string_escape))))
       (eol)))
   (item
     (eol)))
@@ -170,8 +160,14 @@ def \"
       (identifier)
       (expression
         (value
-          (string
-            (basic_string_indented))))
+          (string)))
+      (eol)))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string)))
       (eol)))
   (item
     (assignment
@@ -179,17 +175,8 @@ def \"
       (expression
         (value
           (string
-            (basic_string_indented))))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string
-            (basic_string_indented
-              (string_escape)
-              (string_escape)))))
+            (string_escape)
+            (string_escape))))
       (eol)))
   (item
     (eol)))
@@ -214,24 +201,21 @@ baz := 'a\"\t'
       (identifier)
       (expression
         (value
-          (string
-            (raw_string))))
+          (string)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string
-            (raw_string))))
+          (string)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string
-            (raw_string))))
+          (string)))
       (eol)))
   (item
     (eol)))
@@ -259,24 +243,21 @@ bar:= '''b
       (identifier)
       (expression
         (value
-          (string
-            (raw_string_indented))))
+          (string)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string
-            (raw_string_indented))))
+          (string)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string
-            (raw_string_indented))))
+          (string)))
       (eol)))
   (item
     (eol)))
@@ -300,16 +281,14 @@ bar := `echo hi
       (identifier)
       (expression
         (value
-          (external_command
-            (backticked))))
+          (external_command)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (external_command
-            (backticked))))
+          (external_command)))
       (eol)))
   (item
     (eol)))
@@ -332,16 +311,14 @@ echo bye
       (identifier)
       (expression
         (value
-          (external_command
-            (indented_backticked))))
+          (external_command)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (external_command
-            (indented_backticked))))
+          (external_command)))
       (eol))))
 
 ================================================================================
@@ -405,21 +382,17 @@ foo := if a == "x" {
                 (identifier)))
             (expression
               (value
-                (string
-                  (basic_string)))))
+                (string))))
           (expression
             (value
-              (string
-                (basic_string))))
+              (string)))
           (condition
             (expression
               (value
-                (string
-                  (basic_string))))
+                (string)))
             (expression
               (value
-                (string
-                  (basic_string)))))
+                (string))))
           (expression
             (value
               (function_call
@@ -427,17 +400,14 @@ foo := if a == "x" {
                 (sequence
                   (expression
                     (value
-                      (string
-                        (basic_string))))))))
+                      (string)))))))
           (condition
             (expression
               (value
-                (string
-                  (basic_string))))
+                (string)))
             (expression
               (value
-                (string
-                  (basic_string)))))
+                (string))))
           (expression
             (if_expression
               (condition
@@ -475,8 +445,7 @@ foo := some_fn("param1", param2)
             (sequence
               (expression
                 (value
-                  (string
-                    (basic_string))))
+                  (string)))
               (expression
                 (value
                   (identifier)))))))
@@ -501,8 +470,7 @@ export foo := "abc"
         (identifier)
         (expression
           (value
-            (string
-              (basic_string))))
+            (string)))
         (eol))))
   (item
     (eol)))
@@ -521,14 +489,12 @@ import? 'baz.just'
     (eol))
   (item
     (import
-      (string
-        (raw_string))))
+      (string)))
   (item
     (eol))
   (item
     (import
-      (string
-        (raw_string))))
+      (string)))
   (item
     (eol))
   (item
@@ -556,8 +522,7 @@ mod? qux "PATH"
   (item
     (module
       (identifier)
-      (string
-        (raw_string))))
+      (string)))
   (item
     (eol))
   (item
@@ -568,8 +533,7 @@ mod? qux "PATH"
   (item
     (module
       (identifier)
-      (string
-        (basic_string))))
+      (string)))
   (item
     (eol))
   (item
@@ -606,15 +570,12 @@ set shell := ["powershell.exe", "-c"]
   (item
     (setting
       (identifier)
-      (string
-        (basic_string))
+      (string)
       (eol)))
   (item
     (setting
-      (string
-        (basic_string))
-      (string
-        (basic_string))
+      (string)
+      (string)
       (eol)))
   (item
     (eol)))
