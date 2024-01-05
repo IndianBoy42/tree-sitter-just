@@ -62,10 +62,8 @@ ALl our queries are in `queries-src`. This directory is what gets tested by
 tree-sitter, and should be usable by helix. To generate queries for NeoVim,
 run `./build-flavored-queries.py` (this is run as part of `npm run gen`).
 
-You can use the `nvim-treesitter/playground` plugin
-[from here](https://github.com/nvim-treesitter/playground), to explore the
-resulting parse tree. Use `TSPlaygroundToggle` to view the parse tree, and
-use `TSHighlightCapturesUnderCursor` to view highlight groups
+You can use the [`:InspectTree`](https://neovim.io/doc/user/treesitter.html#%3AInspectTree)
+command to explore the resulting parse tree, and [`:Inspect`](https://neovim.io/doc/user/lua.html#%3AInspect) to view highlight groups.
 
 ## Quirks of Just
 
