@@ -1,5 +1,7 @@
 // Main grammar for justfiles
 
+const ESCAPE_SEQUENCE = token(/\\[nrt"\\]/);
+
 // Comma separated list with at least one item
 function comma_sep1(item) {
   return seq(item, repeat(seq(",", item)));
@@ -23,13 +25,23 @@ function array(item) {
 
 module.exports = grammar({
   name: "just",
-  externals: ($) => [$._indent, $._dedent, $._newline],
+  externals: (
+    $,
+  ) => [
+    $._indent,
+    $._dedent,
+    $._newline,
+    $._string_start,
+    $._string_end,
+    $._string_body,
+    $._raw_string_start,
+    $._raw_string_end,
+    $._command_start,
+    $._command_end,
+  ],
   inline: (
     $,
   ) => [
-    $._string,
-    $._string_indented,
-    $._raw_string_indented,
     $._expression_braced,
     $._expression_recurse,
   ],
@@ -85,7 +97,7 @@ module.exports = grammar({
     export: ($) => seq("export", $.assignment),
 
     // import        : 'import' '?'? string?
-    import: ($) => seq("import", optional("?"), $.string),
+    import: ($) => seq("import", optional("?"), $._string),
 
     // module        : 'mod' '?'? string?
     module: ($) =>
@@ -93,7 +105,7 @@ module.exports = grammar({
         "mod",
         optional("?"),
         field("mod_name", $.identifier),
-        optional($.string),
+        optional($._string),
       ),
 
     // setting       : 'set' 'dotenv-load' boolean?
@@ -108,7 +120,7 @@ module.exports = grammar({
           field(
             "right",
             optional(
-              seq(":=", choice($.boolean, $.string, array($.string))),
+              seq(":=", choice($.boolean, $._string, array($._string))),
             ),
           ),
           $.eol,
@@ -119,7 +131,7 @@ module.exports = grammar({
           ":=",
           field(
             "right",
-            array($.string),
+            array($._string),
           ),
           $.eol,
         ),
@@ -181,7 +193,7 @@ module.exports = grammar({
           $.function_call,
           $.external_command,
           $.identifier,
-          $.string,
+          $._string,
           seq("(", $.expression, ")"),
         ),
       ),
@@ -193,9 +205,6 @@ module.exports = grammar({
         field("arguments", optional($.sequence)),
         ")",
       ),
-
-    external_command: ($) =>
-      choice(seq($._backticked), seq($._indented_backticked)),
 
     // sequence      : expression ',' sequence
     //               | expression ','?
@@ -288,9 +297,6 @@ module.exports = grammar({
     // `# ...` comment
     comment: ($) => seq(/#.*/, $._newline),
 
-    // notinterpolation: ($) => /[^{][^{]\S*/,
-    notinterpolation: (_) => /[^\s{][^\s{]\S*/,
-
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),
 
@@ -300,23 +306,28 @@ module.exports = grammar({
     //               | INDENTED_STRING
     //               | RAW_STRING
     //               | INDENTED_RAW_STRING
-    string: ($) =>
-      choice(
-        $._string_indented,
-        $._raw_string_indented,
-        $._string,
-        // _raw_string, can't be written as a separate inline for osm reason
-        /'[^']*'/,
+    _string: ($) => choice($.raw_string_literal, $.string_literal),
+
+    string_literal: ($) =>
+      seq(
+        $._string_start,
+        repeat(choice($._string_body, $.escape_sequence)),
+        $._string_end,
       ),
 
-    _raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
-    _string: ($) => seq('"', repeat(choice($.string_escape, /[^\\"]+/)), '"'),
-    _string_indented: ($) =>
-      seq('"""', repeat(choice($.string_escape, /[^\\"]+/)), '"""'),
-    string_escape: (_) => /\\[nrt"\\]/,
+    raw_string_literal: ($) =>
+      seq($._raw_string_start, optional($._string_body), $._raw_string_end),
 
-    _backticked: (_) => seq("`", repeat(/./), "`"),
-    _indented_backticked: (_) => seq("```", repeat(/./), "```"),
+    external_command: ($) =>
+      seq(
+        $._command_start,
+        repeat(choice(prec(1, $.interpolation), $.command_body)),
+        $._command_end,
+      ),
+
+    command_body: ($) => $._string_body,
+
+    escape_sequence: (_) => ESCAPE_SEQUENCE,
 
     text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
     // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body

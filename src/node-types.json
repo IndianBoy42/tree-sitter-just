@@ -107,6 +107,11 @@
     "fields": {}
   },
   {
+    "type": "command_body",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "comment",
     "named": true,
     "fields": {}
@@ -249,7 +254,21 @@
   {
     "type": "external_command",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "command_body",
+          "named": true
+        },
+        {
+          "type": "interpolation",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "function_call",
@@ -312,7 +331,11 @@
       "required": true,
       "types": [
         {
-          "type": "string",
+          "type": "raw_string_literal",
+          "named": true
+        },
+        {
+          "type": "string_literal",
           "named": true
         }
       ]
@@ -396,7 +419,11 @@
       "required": false,
       "types": [
         {
-          "type": "string",
+          "type": "raw_string_literal",
+          "named": true
+        },
+        {
+          "type": "string_literal",
           "named": true
         }
       ]
@@ -446,6 +473,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "raw_string_literal",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "recipe",
@@ -586,7 +618,11 @@
         "required": false,
         "types": [
           {
-            "type": "string",
+            "type": "raw_string_literal",
+            "named": true
+          },
+          {
+            "type": "string_literal",
             "named": true
           }
         ]
@@ -600,7 +636,11 @@
             "named": false
           },
           {
-            "type": "string",
+            "type": "raw_string_literal",
+            "named": true
+          },
+          {
+            "type": "string_literal",
             "named": true
           }
         ]
@@ -636,7 +676,11 @@
             "named": true
           },
           {
-            "type": "string",
+            "type": "raw_string_literal",
+            "named": true
+          },
+          {
+            "type": "string_literal",
             "named": true
           }
         ]
@@ -678,7 +722,7 @@
     }
   },
   {
-    "type": "string",
+    "type": "string_literal",
     "named": true,
     "fields": {},
     "children": {
@@ -686,7 +730,7 @@
       "required": false,
       "types": [
         {
-          "type": "string_escape",
+          "type": "escape_sequence",
           "named": true
         }
       ]
@@ -717,7 +761,11 @@
           "named": true
         },
         {
-          "type": "string",
+          "type": "raw_string_literal",
+          "named": true
+        },
+        {
+          "type": "string_literal",
           "named": true
         }
       ]
@@ -758,23 +806,11 @@
     "named": false
   },
   {
-    "type": "\"",
-    "named": false
-  },
-  {
-    "type": "\"\"\"",
-    "named": false
-  },
-  {
     "type": "$",
     "named": false
   },
   {
     "type": "&&",
-    "named": false
-  },
-  {
-    "type": "'''",
     "named": false
   },
   {
@@ -850,20 +886,16 @@
     "named": false
   },
   {
-    "type": "`",
-    "named": false
-  },
-  {
-    "type": "```",
-    "named": false
-  },
-  {
     "type": "alias",
     "named": false
   },
   {
     "type": "else",
     "named": false
+  },
+  {
+    "type": "escape_sequence",
+    "named": true
   },
   {
     "type": "export",
@@ -896,10 +928,6 @@
   {
     "type": "shell",
     "named": false
-  },
-  {
-    "type": "string_escape",
-    "named": true
   },
   {
     "type": "text",
