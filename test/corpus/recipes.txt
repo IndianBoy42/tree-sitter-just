@@ -266,8 +266,7 @@ baz: foo && (bar "x")
           (parameter
             (identifier)
             (value
-              (string
-                (basic_string)))))
+              (string))))
         (dependencies
           (dependency
             (identifier))
@@ -293,8 +292,7 @@ baz: foo && (bar "x")
                 (identifier)
                 (expression
                   (value
-                    (string
-                      (basic_string)))))))))
+                    (string))))))))
       (recipe_body
         (recipe_line
           (text)))))

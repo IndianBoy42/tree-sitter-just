@@ -4,14 +4,12 @@
 
 (shebang) @comment
 
-(alias
-  left: (identifier) @variable)
-
+(alias left: (identifier) @variable)
 (assignment
-  left: (identifier) @variable)
+  left: (identifier) @variable
+  [":="] @operator)
 
-(module
-  mod_name: (identifier) @namespace)
+(module mod_name: (identifier) @namespace)
 
 ; highlight known settings (filtering does not always work)
 (setting
@@ -69,13 +67,11 @@
   "="? @operator)
 
 (dependencies "&&" @operator)
-(dependency
-  recipe: (identifier) @function)
-(dependency_expression
-  recipe: (identifier) @function)
+(dependency recipe: (identifier) @function)
+(dependency_expression recipe: (identifier) @function)
 
 ; handle escape sequences
-(string (_ (string_escape) @constant.character.escape))
+(string (string_escape) @constant.character.escape)
 (string) @string
 
 (comment) @comment.line
@@ -95,7 +91,7 @@
 
 ; exclude `=` and `&&` since they are valid in more normal scopes
 ; (matching is covered in their parent nodes)
-["@" "==" "!=" "+" ":=" "*" ":" "/" "?"] @operator
+["@" "==" "!=" "+" "*" ":" "/" "?"] @operator
 
 ["(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
 
