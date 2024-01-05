@@ -72,16 +72,14 @@
 (dependency recipe: (identifier) @function)
 (dependency_expression recipe: (identifier) @function)
 
+(external_command
+  ["`" "```"] @punctuation.special)
+
 ; handle escape sequences
 (string (string_escape) @string.escape)
 (string) @string
 
 (comment) @comment
-
-; (interpolation) @string
-
-; FIXME: interpreter
-; (shebang interpreter:(TEXT) @keyword ) @comment
 
 [
   "alias"
@@ -91,14 +89,12 @@
   "set"
 ] @keyword
 
-; exclude `=` and `&&` since they are valid in more normal scopes
+; exclude `=` and `&&` since they are more valid only in specific scopes
 ; (matching is covered in their parent nodes)
 ["@" "==" "!=" "+" "*" ":" "/" "?"] @operator
 
 ["(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
 
 ["," ":"] @punctuation.delimiter
-
-"`" @punctuation.special
 
 (ERROR) @error

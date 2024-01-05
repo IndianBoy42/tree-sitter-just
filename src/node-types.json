@@ -567,47 +567,9 @@
     "type": "setting",
     "named": true,
     "fields": {
-      "array": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "[",
-            "named": false
-          },
-          {
-            "type": "]",
-            "named": false
-          }
-        ]
-      },
-      "array_item": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "string",
-            "named": true
-          }
-        ]
-      },
-      "contents": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "string",
-            "named": true
-          }
-        ]
-      },
       "left": {
         "multiple": false,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "identifier",
@@ -624,19 +586,15 @@
             "named": false
           },
           {
-            "type": "[",
-            "named": false
-          },
-          {
-            "type": "]",
-            "named": false
-          },
-          {
             "type": "boolean",
             "named": true
           },
           {
             "type": "string",
+            "named": true
+          },
+          {
+            "type": "string_array",
             "named": true
           }
         ]
@@ -690,6 +648,36 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "string_array",
+    "named": true,
+    "fields": {
+      "array_item": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "contents": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": ",",
+            "named": false
+          },
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -891,10 +879,6 @@
   },
   {
     "type": "set",
-    "named": false
-  },
-  {
-    "type": "shell",
     "named": false
   },
   {

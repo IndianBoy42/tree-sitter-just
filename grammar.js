@@ -8,16 +8,13 @@ function comma_sep1(item) {
 // Create an array with the given item as contents
 function array(item) {
   const array_item = field("array_item", item);
-  return field(
-    "array",
-    seq(
-      "[",
-      field(
-        "contents",
-        optional(seq(comma_sep1(array_item), optional(array_item))),
-      ),
-      "]",
+  return seq(
+    "[",
+    field(
+      "contents",
+      optional(seq(comma_sep1(array_item), optional(array_item))),
     ),
+    "]",
   );
 }
 
@@ -101,29 +98,19 @@ module.exports = grammar({
     //               | 'set' 'positional-arguments' boolean?
     //               | 'set' 'shell' ':=' '[' string (',' string)* ','? ']'
     setting: ($) =>
-      choice(
-        seq(
-          "set",
-          field("left", $.identifier),
-          field(
-            "right",
-            optional(
-              seq(":=", choice($.boolean, $.string, array($.string))),
-            ),
+      seq(
+        "set",
+        field("left", $.identifier),
+        field(
+          "right",
+          optional(
+            seq(":=", choice($.boolean, $.string, $.string_array)),
           ),
-          $.eol,
         ),
-        seq(
-          "set",
-          "shell",
-          ":=",
-          field(
-            "right",
-            array($.string),
-          ),
-          $.eol,
-        ),
+        $.eol,
       ),
+
+    string_array: ($) => array($.string),
 
     // boolean       : ':=' ('true' | 'false')
     boolean: (_) => choice("true", "false"),
@@ -195,7 +182,7 @@ module.exports = grammar({
       ),
 
     external_command: ($) =>
-      choice(seq($._backticked), seq($._indented_backticked)),
+      choice(seq($._backticked), seq($._backticked_indented)),
 
     // sequence      : expression ',' sequence
     //               | expression ','?
@@ -283,7 +270,11 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    shebang: ($) => seq(/\s*#!.*/, $._newline),
+    shebang: ($) => seq(/#!.*/, $._newline),
+
+    shebang_match: ($) => /.*/,
+
+    injection_language: (_) => /[a-zA-Z-_]\S*/,
 
     // `# ...` comment
     comment: ($) => seq(/#.*/, $._newline),
@@ -295,6 +286,8 @@ module.exports = grammar({
     interpolation: ($) => seq("{{", $.expression, "}}"),
 
     identifier: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
+
+    // array: (_) => "",
 
     // string        : STRING
     //               | INDENTED_STRING
@@ -315,8 +308,8 @@ module.exports = grammar({
       seq('"""', repeat(choice($.string_escape, /[^\\"]+/)), '"""'),
     string_escape: (_) => /\\[nrt"\\]/,
 
-    _backticked: (_) => seq("`", repeat(/./), "`"),
-    _indented_backticked: (_) => seq("```", repeat(/./), "```"),
+    _backticked: (_) => seq("`", field("body", repeat(/./)), "`"),
+    _backticked_indented: (_) => seq("```", field("body", repeat(/./)), "```"),
 
     text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
     // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
