@@ -29,7 +29,7 @@ function M.setup(arg)
 				"start",
 				"tree-sitter-just"
 			) or "https://github.com/IndianBoy42/tree-sitter-just", -- local path or git repo
-			files = { "src/parser.c", "src/scanner.cc" },
+			files = { "src/parser.c", "src/scanner.c" },
 			branch = "main",
 		},
 		maintainers = { "@IndianBoy42" },
