@@ -5,7 +5,7 @@
   "main": "grammar.js",
   "scripts": {
     "test": "npm run gen && tree-sitter test",
-    "gen": "tree-sitter generate"
+    "gen": "tree-sitter generate && python3 build-flavored-queries.py"
   },
   "repository": {
     "type": "git",
@@ -41,9 +41,8 @@
       ],
       "injection-regex": "^(?i)just(file)?$",
       "first-line-regex": "#!\\S*bin\\S*[/ ]just",
-      "highlights": [
-        "queries/highlights.scm"
-      ]
+      "highlights": ["queries-src/highlights.scm"],
+      "locals": ["queries-src/locals.scm"]
     }
   ]
 }
