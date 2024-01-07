@@ -3,11 +3,22 @@
 ((comment) @injection.content
   (#set! injection.language "comment"))
 
+; NVIM-DISABLE-START
+(recipe_body
+    (shebang) @injection.shebang 
+    (recipe_line
+        (text) @injection.content))
+; NVIM-DISABLE-END
 
-; FIXME: read default from shebang
 (recipe_line
     (text) @injection.content
     (#set! injection.language "bash"))
+
+; NVIM-ENABLE (recipe_body
+; NVIM-ENABLE     (shebang) @injection.language
+; NVIM-ENABLE     (recipe_line
+; NVIM-ENABLE         (text) @injection.content)
+; NVIM-ENABLE     (#gsub! injection.language "/#!%*[\/ ](%S+)/" "%1"))
 
 (external_command
     (command_body) @injection.content

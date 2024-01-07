@@ -823,6 +823,11 @@
     }
   },
   {
+    "type": "text",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "value",
     "named": true,
     "fields": {},
@@ -1026,10 +1031,6 @@
   {
     "type": "shell",
     "named": false
-  },
-  {
-    "type": "text",
-    "named": true
   },
   {
     "type": "true",

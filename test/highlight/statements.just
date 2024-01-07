@@ -79,7 +79,7 @@ def \"
 
 foo2 := 'a'
 # <- variable
-#   ^^ operator
+#    ^^ operator
 #       ^^^ string
 
 bar2 := 'b
@@ -94,7 +94,7 @@ baz2 := 'a\"\t'
 
 foo3 := '''a'''
 # <- variable
-#   ^^ operator
+#    ^^ operator
 #       ^^^^^^^ string
 
 bar3 := '''b
@@ -115,11 +115,14 @@ bar4 := `echo hi
 
 foo5 := ```echo hi```
 # <- variable
-#   ^^ operator
+#    ^^ operator
+#       ^^^ punctuation.special
+#                 ^^^ punctuation.special
 
 bar5 := ```
 echo bye  
 ```
+# <- punctuation.special
 
 foo_if := if foo == "x" { "val" } else if "1" != "2" { env("val") } else { bar }
 # <- variable
