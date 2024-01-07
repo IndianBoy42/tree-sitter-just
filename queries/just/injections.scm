@@ -14,6 +14,11 @@
     (command_body) @injection.content
     (#set! injection.language "bash"))
 
+((regex_literal
+    [(string_literal)
+        (raw_string_literal)] @injection.content)
+    (#set! injection.language "regex"))
+
 ; ; FIXME: read default from shebang
 ; ([
 ;     (recipe_body 

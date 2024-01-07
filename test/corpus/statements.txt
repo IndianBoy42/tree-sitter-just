@@ -636,3 +636,35 @@ foo:
           (text)))))
   (item
     (eol)))
+
+================================================================================
+regex literal
+================================================================================
+
+foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (if_expression
+          (condition
+            (expression
+              (value
+                (string_literal)))
+            (regex_literal
+              (raw_string_literal)))
+          (expression
+            (value
+              (string_literal)))
+          (expression
+            (value
+              (string_literal)))))
+      (eol)))
+  (item
+    (eol)))
