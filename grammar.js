@@ -176,10 +176,13 @@ module.exports = grammar({
       choice(
         seq($.expression, "==", $.expression),
         seq($.expression, "!=", $.expression),
-        seq($.expression, "=~", $.expression),
+        seq($.expression, "=~", choice($.regex_literal, $.expression)),
         // verify whether this is valid
         $.expression,
       ),
+
+    // Capture this special for injections
+    regex_literal: ($) => prec(4, $._string),
 
     // value         : NAME '(' sequence? ')'
     //               | BACKTICK
