@@ -12,6 +12,7 @@ guide for these parameters than tree-sitter does.
     
 """
 
+import re
 from glob import glob
 from pathlib import Path
 
@@ -26,6 +27,11 @@ REPLACEMENTS = [
     ("@constant.character.escape", "@string.escape"),
 ]
 
+REPLACEMENTS_RE = [
+    (r";\s*NVIM-DISABLE-START.*;\s*NVIM-DISABLE-END", "", re.MULTILINE | re.DOTALL),
+    ("^.*NVIM-ENABLE(?P<content>.*)$", r"\g<content>", re.MULTILINE),
+]
+
 
 def main():
     sources = glob("queries-src/*.scm")
@@ -35,8 +41,11 @@ def main():
         with open(fname) as f:
             contents += f.read()
 
-        for x, to in REPLACEMENTS:
-            contents = contents.replace(x, to)
+        for query, sub in REPLACEMENTS:
+            contents = contents.replace(query, sub)
+
+        for query, sub, flags in REPLACEMENTS_RE:
+            contents = re.sub(query, sub, contents, flags=flags)
 
         dest = Path("queries") / "just" / Path(fname).name
         with open(dest, "w") as f:
