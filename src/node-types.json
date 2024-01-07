@@ -254,20 +254,41 @@
   {
     "type": "external_command",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "command_body",
-          "named": true
-        },
-        {
-          "type": "interpolation",
-          "named": true
-        }
-      ]
+    "fields": {
+      "body": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "command_body",
+            "named": true
+          },
+          {
+            "type": "interpolation",
+            "named": true
+          }
+        ]
+      },
+      "close": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "(`|```)",
+            "named": false
+          }
+        ]
+      },
+      "open": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "(`|```)",
+            "named": false
+          }
+        ]
+      }
     }
   },
   {
@@ -477,7 +498,28 @@
   {
     "type": "raw_string_literal",
     "named": true,
-    "fields": {}
+    "fields": {
+      "close": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "('|''')",
+            "named": false
+          }
+        ]
+      },
+      "open": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "('|''')",
+            "named": false
+          }
+        ]
+      }
+    }
   },
   {
     "type": "recipe",
@@ -724,16 +766,37 @@
   {
     "type": "string_literal",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "escape_sequence",
-          "named": true
-        }
-      ]
+    "fields": {
+      "body": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "escape_sequence",
+            "named": true
+          }
+        ]
+      },
+      "close": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "(\"|\"\"\")",
+            "named": false
+          }
+        ]
+      },
+      "open": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "(\"|\"\"\")",
+            "named": false
+          }
+        ]
+      }
     }
   },
   {
@@ -815,6 +878,18 @@
   },
   {
     "type": "(",
+    "named": false
+  },
+  {
+    "type": "(\"|\"\"\")",
+    "named": false
+  },
+  {
+    "type": "('|''')",
+    "named": false
+  },
+  {
+    "type": "(`|```)",
     "named": false
   },
   {
