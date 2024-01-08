@@ -42,7 +42,8 @@
       "injection-regex": "^(?i)just(file)?$",
       "first-line-regex": "#!\\S*bin\\S*[/ ]just",
       "highlights": ["queries-src/highlights.scm"],
-      "locals": ["queries-src/locals.scm"]
+      "locals": ["queries-src/locals.scm"],
+      "injections": ["queries-src/injections.scm"]
     }
   ]
 }

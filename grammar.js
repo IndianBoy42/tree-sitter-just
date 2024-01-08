@@ -8,7 +8,7 @@ function comma_sep1(item) {
 }
 
 // Create an array with the given item as contents
-function array(item) {
+function make_array(item) {
   const array_item = field("array_item", item);
   return field(
     "array",
@@ -119,25 +119,16 @@ module.exports = grammar({
         seq(
           "set",
           field("left", $.identifier),
-          field(
-            "right",
-            optional(
-              seq(":=", choice($.boolean, $._string, array($._string))),
-            ),
-          ),
-          $.eol,
-        ),
-        seq(
-          "set",
-          "shell",
-          ":=",
-          field(
-            "right",
-            array($._string),
+          optional(
+            seq(":=", field("right", choice($.boolean, $._string, $.array))),
           ),
           $.eol,
         ),
       ),
+
+    // Our only use of arrays (setting) only accepts strings. We may want to figure
+    // out how to better reuse `array` while specifying a type.
+    array: ($) => make_array($._string),
 
     // boolean       : ':=' ('true' | 'false')
     boolean: (_) => choice("true", "false"),
