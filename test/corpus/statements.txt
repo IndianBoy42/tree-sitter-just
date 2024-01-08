@@ -578,8 +578,10 @@ set shell := ["powershell.exe", "-c"]
       (eol)))
   (item
     (setting
-      (string_literal)
-      (string_literal)
+      (identifier)
+      (array
+        (string_literal)
+        (string_literal))
       (eol)))
   (item
     (eol)))

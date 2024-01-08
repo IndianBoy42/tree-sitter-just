@@ -7,13 +7,14 @@
 (alias left: (identifier) @variable)
 (assignment
   left: (identifier) @variable
-  [":="] @operator)
+  ":=" @operator)
 
 (module mod_name: (identifier) @namespace)
 
 ; highlight known settings (filtering does not always work)
 (setting
   left: ((identifier) @keyword
+  ":="? @operator
   (#any-of? @keyword
     "allow-duplicate-recipes"
     "dotenv-filename"
@@ -38,24 +39,8 @@
 (function_call
   name: (identifier) @function)
 
-; highlight known attributes (filtering does not always work)
 (attribute
-  attr_item: ((identifier) @attribute
-  (#any-of? @attribute
-    "private"
-    "allow-duplicate-recipes"
-    "dotenv-filename"
-    "dotenv-load"
-    "dotenv-path"
-    "export"
-    "fallback"
-    "ignore-comments"
-    "positional-arguments"
-    "shell"
-    "tempdi"
-    "windows-powershell"
-    "windows-shell"
-    )))
+  attr_item: ((identifier) @attribute))
 
 (recipe_header
   recipe_name: (identifier) @function)
