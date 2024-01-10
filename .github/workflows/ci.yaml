@@ -8,6 +8,7 @@ jobs:
   deno:
     name: Deno format and lint
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
@@ -18,6 +19,7 @@ jobs:
 
   test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: true
       matrix:
@@ -54,6 +56,7 @@ jobs:
 
   static-validation:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: taiki-e/install-action@just
