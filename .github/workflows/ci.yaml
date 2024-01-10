@@ -18,7 +18,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: pip install ruff
+      - name: Install dependencies
+        run: |
+          pip install ruff black
+          sudo apt-get update
+          sudo apt-get install -y luarocks
+          sudo luarocks install luacheck
       - name: Get npm cache directory
         id: npm-cache-dir
         shell: bash
@@ -58,6 +63,11 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
+      - name: Setup nvim (requires sudo)
+        run: |
+          printenv
+          JUST=$(which just)
+          sudo "$JUST" --verbose ci-setup-nvim
       - run: just setup --locked
       - name: Configure
         run: just --verbose configure-tree-sitter
