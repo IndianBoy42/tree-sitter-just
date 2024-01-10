@@ -28,8 +28,8 @@ REPLACEMENTS = [
 ]
 
 REPLACEMENTS_RE = [
-    (r"^[^;] ?(.*;\s*NVIM-DISABLE)$", "", re.MULTILINE),
-    (r"^; ?(.*;\s*NVIM-ENABLE)$", r"\1", re.MULTILINE),
+    (r";\s*NVIM-DISABLE-START.*;\s*NVIM-DISABLE-END", "", re.MULTILINE | re.DOTALL),
+    ("^.*NVIM-ENABLE(?P<content>.*)$", r"\g<content>", re.MULTILINE),
 ]
 
 
