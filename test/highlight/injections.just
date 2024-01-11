@@ -42,7 +42,7 @@ perl_shebang:
 	my $iter = $dir->iterator;
 	while (my $file = $iter->()) {
 	    # See if it is a directory and skip
-
+	
 	    next if $file->is_dir();
 	    # Print out the file name and path
 	    print "$file\n";
