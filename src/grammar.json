@@ -1276,10 +1276,6 @@
         ]
       }
     },
-    "shebang_language": {
-      "type": "PATTERN",
-      "value": ".+"
-    },
     "comment": {
       "type": "SEQ",
       "members": [

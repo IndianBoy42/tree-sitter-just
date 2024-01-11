@@ -12,10 +12,10 @@
     (#set! injection.language "bash"))
 
  (recipe_body
-     (shebang) @injection.shebang 
+     (shebang) @injection.language
      (recipe_line
-         (text) @injection.content
-         (#set! injection.language "python")))
+         (text) @injection.content)
+     (#gsub! injection.language "/#!%*[\/ ](%S+)/" "%1"))
 
 (external_command
     (command_body) @injection.content
