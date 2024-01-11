@@ -1,0 +1,31 @@
+# Injection highlighting shows up as none during tests
+localhost := `if [ -f "foo" ]; then; echo hi; fi`
+# <- variable
+#         ^^ operator
+#            ^ punctuation.special
+#                                               ^ punctuation.special
+
+# interpolation within injection
+foo := `[ {{ dir(localhost) }} = "hi" ] && "bye"`
+# <- variable
+#   ^^ operator
+#      ^ punctuation.special
+#         ^^ punctuation.bracket
+#            ^^^ function
+#               ^ punctuation.bracket
+#                ^^^^^^^^^ variable
+#                         ^ punctuation.bracket
+#                           ^^ punctuation.bracket
+#                                               ^ punctuation.special
+
+stuff := ```
+	echo foo
+	echo bar
+```
+# <- punctuation.special
+
+# These have to be verified manually, no automated tests are available
+
+
+
+
