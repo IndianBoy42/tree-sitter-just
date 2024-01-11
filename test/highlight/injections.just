@@ -32,6 +32,11 @@ foo:
 		echo hi; \
 	fi
 
+py_shebang:
+	#!/usr/bin/env python
+	if foo is not None:
+		print("bar")
+
 
 
 
