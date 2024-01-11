@@ -26,6 +26,12 @@ stuff := ```
 
 # These have to be verified manually, no automated tests are available
 
+foo:
+	echo "hello {{ foo }}"
+	if [ -f "foo" ]; then; \
+		echo hi; \
+	fi
+
 
 
 
