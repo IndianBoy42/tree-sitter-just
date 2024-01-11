@@ -10,7 +10,7 @@
 #endif
 
 // Enable this for debugging
-// #define DEBUG_PRINT
+#define DEBUG_PRINT
 #ifdef DEBUG_PRINT
 #define dbg_print(...)                                                         \
   do {                                                                         \
