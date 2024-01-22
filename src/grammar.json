@@ -1298,72 +1298,11 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "FIELD",
-          "name": "open",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_string_start"
-            },
-            "named": false,
-            "value": "(\"|\"\"\")"
-          }
+          "type": "SYMBOL",
+          "name": "_string_start"
         },
         {
-          "type": "FIELD",
-          "name": "body",
-          "content": {
-            "type": "REPEAT",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_string_body"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "escape_sequence"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "type": "FIELD",
-          "name": "close",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_string_end"
-            },
-            "named": false,
-            "value": "(\"|\"\"\")"
-          }
-        }
-      ]
-    },
-    "raw_string_literal": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "FIELD",
-          "name": "open",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_raw_string_start"
-            },
-            "named": false,
-            "value": "('|''')"
-          }
-        },
-        {
-          "type": "FIELD",
-          "name": "body",
+          "type": "REPEAT",
           "content": {
             "type": "CHOICE",
             "members": [
@@ -1372,23 +1311,40 @@
                 "name": "_string_body"
               },
               {
-                "type": "BLANK"
+                "type": "SYMBOL",
+                "name": "escape_sequence"
               }
             ]
           }
         },
         {
-          "type": "FIELD",
-          "name": "close",
-          "content": {
-            "type": "ALIAS",
-            "content": {
+          "type": "SYMBOL",
+          "name": "_string_end"
+        }
+      ]
+    },
+    "raw_string_literal": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_raw_string_start"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
               "type": "SYMBOL",
-              "name": "_raw_string_end"
+              "name": "_string_body"
             },
-            "named": false,
-            "value": "('|''')"
-          }
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_raw_string_end"
         }
       ]
     },
@@ -1396,54 +1352,32 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "FIELD",
-          "name": "open",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_command_start"
-            },
-            "named": false,
-            "value": "(`|```)"
-          }
+          "type": "SYMBOL",
+          "name": "_command_start"
         },
         {
-          "type": "FIELD",
-          "name": "body",
+          "type": "REPEAT",
           "content": {
-            "type": "REPEAT",
-            "content": {
-              "type": "CHOICE",
-              "members": [
-                {
-                  "type": "PREC",
-                  "value": 1,
-                  "content": {
-                    "type": "SYMBOL",
-                    "name": "interpolation"
-                  }
-                },
-                {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "PREC",
+                "value": 1,
+                "content": {
                   "type": "SYMBOL",
-                  "name": "command_body"
+                  "name": "interpolation"
                 }
-              ]
-            }
+              },
+              {
+                "type": "SYMBOL",
+                "name": "command_body"
+              }
+            ]
           }
         },
         {
-          "type": "FIELD",
-          "name": "close",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "_command_end"
-            },
-            "named": false,
-            "value": "(`|```)"
-          }
+          "type": "SYMBOL",
+          "name": "_command_end"
         }
       ]
     },

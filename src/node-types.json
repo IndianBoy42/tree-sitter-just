@@ -254,41 +254,20 @@
   {
     "type": "external_command",
     "named": true,
-    "fields": {
-      "body": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "command_body",
-            "named": true
-          },
-          {
-            "type": "interpolation",
-            "named": true
-          }
-        ]
-      },
-      "close": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "(`|```)",
-            "named": false
-          }
-        ]
-      },
-      "open": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "(`|```)",
-            "named": false
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "command_body",
+          "named": true
+        },
+        {
+          "type": "interpolation",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -498,28 +477,7 @@
   {
     "type": "raw_string_literal",
     "named": true,
-    "fields": {
-      "close": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "('|''')",
-            "named": false
-          }
-        ]
-      },
-      "open": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "('|''')",
-            "named": false
-          }
-        ]
-      }
-    }
+    "fields": {}
   },
   {
     "type": "recipe",
@@ -766,37 +724,16 @@
   {
     "type": "string_literal",
     "named": true,
-    "fields": {
-      "body": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "escape_sequence",
-            "named": true
-          }
-        ]
-      },
-      "close": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "(\"|\"\"\")",
-            "named": false
-          }
-        ]
-      },
-      "open": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "(\"|\"\"\")",
-            "named": false
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "escape_sequence",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -878,18 +815,6 @@
   },
   {
     "type": "(",
-    "named": false
-  },
-  {
-    "type": "(\"|\"\"\")",
-    "named": false
-  },
-  {
-    "type": "('|''')",
-    "named": false
-  },
-  {
-    "type": "(`|```)",
     "named": false
   },
   {

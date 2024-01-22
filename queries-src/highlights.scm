@@ -79,6 +79,11 @@
 
 (comment) @comment.line
 
+; (interpolation) @string
+
+; FIXME: interpreter
+; (shebang interpreter:(TEXT) @keyword ) @comment
+
 [
   "alias"
   "export"
@@ -87,7 +92,7 @@
   "set"
 ] @keyword
 
-; exclude `=` and `&&` since they are valid only in specific scopes
+; exclude `=` and `&&` since they are valid in more normal scopes
 ; (matching is covered in their parent nodes)
 ["@" "==" "!=" "+" "*" ":" "/" "?"] @operator
 
@@ -95,11 +100,6 @@
 
 ["," ":"] @punctuation.delimiter
 
-
-; open and close are "`" or "```" 
-(external_command
-  open: _ @punctuation.special
-  close: _ @punctuation.special
-  )
+; "`" @punctuation.special
 
 (ERROR) @error

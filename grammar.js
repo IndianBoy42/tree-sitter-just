@@ -310,23 +310,19 @@ module.exports = grammar({
 
     string_literal: ($) =>
       seq(
-        field("open", alias($._string_start, '("|""")')),
-        field("body", repeat(choice($._string_body, $.escape_sequence))),
-        field("close", alias($._string_end, '("|""")')),
+        $._string_start,
+        repeat(choice($._string_body, $.escape_sequence)),
+        $._string_end,
       ),
 
     raw_string_literal: ($) =>
-      seq(
-        field("open", alias($._raw_string_start, "('|''')")),
-        field("body", optional($._string_body)),
-        field("close", alias($._raw_string_end, "('|''')")),
-      ),
+      seq($._raw_string_start, optional($._string_body), $._raw_string_end),
 
     external_command: ($) =>
       seq(
-        field("open", alias($._command_start, "(`|```)")),
-        field("body", repeat(choice(prec(1, $.interpolation), $.command_body))),
-        field("close", alias($._command_end, "(`|```)")),
+        $._command_start,
+        repeat(choice(prec(1, $.interpolation), $.command_body)),
+        $._command_end,
       ),
 
     command_body: ($) => $._string_body,
@@ -334,5 +330,6 @@ module.exports = grammar({
     escape_sequence: (_) => ESCAPE_SEQUENCE,
 
     text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
+    // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
   },
 });
