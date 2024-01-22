@@ -192,5 +192,3 @@ set shell := ["powershell.exe", "-c"]
 foo_cmt := bar # + baz
 # <- variable
 #              ^ comment.line
-
-foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch" }

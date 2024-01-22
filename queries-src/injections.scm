@@ -4,7 +4,6 @@
   (#set! injection.language "comment"))
 
 
-; FIXME: read default from shebang
 (recipe_line
     (text) @injection.content
     (#set! injection.language "bash"))
@@ -13,9 +12,12 @@
     (command_body) @injection.content
     (#set! injection.language "bash"))
 
-((regex_literal
-    [
-        (string_literal)
-        (raw_string_literal)
-    ] @injection.content)
-    (#set! injection.language "regex"))
+; ; FIXME: read default from shebang
+; ([
+;     (recipe_body 
+;       (recipe_line (text)))
+;     (external_command
+;         body: (_)*)
+;   ] @injection.content
+;   (#set! injection.language "bash")
+;   )
