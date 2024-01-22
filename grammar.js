@@ -51,8 +51,6 @@ module.exports = grammar({
     // justfile      : item* EOF
     source_file: ($) => seq(optional($.shebang), repeat($.item)),
 
-    // _sheb: ($) => ,
-
     // item          : recipe
     //               | alias
     //               | assignment
@@ -297,7 +295,7 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    shebang: ($) => prec.left(seq(/#!.*/, optional($._newline))),
+    shebang: ($) => seq(/\s*#!.*/, $._newline),
 
     // `# ...` comment
     comment: ($) => seq(/#.*/, $._newline),

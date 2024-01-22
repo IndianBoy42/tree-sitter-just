@@ -403,7 +403,6 @@ foo:
         (identifier))
       (recipe_body
         (shebang)
-        (recipe_line)
         (recipe_line
           (text))
         (recipe_line
