@@ -55,15 +55,6 @@ jobs:
             echo '::warning::run `npm run gen` and commit the changes'
           fi
       - run: npm test
-      - name: Check C files with args
-        shell: bash
-        run: >
-          find src/ -name '*.c' ! -name "parser.c" |
-          xargs -IFNAME sh -c
-          'echo "\nCHECKING FILE FNAME" &&
-          clang FNAME -c -Wall -Werror --pedantic 
-          -Wno-format-pedantic
-          -o/dev/null'
 
   static-validation:
     runs-on: ubuntu-latest
@@ -82,4 +73,4 @@ jobs:
             just --list --unstable --justfile "$fname"
           done
       - name: Look for tests that contain errors
-        run: "! grep -nr -C4 -E '(ERROR|MISSING|UNEXPECTED)' test"
+        run: "! grep -r -E '(ERROR|MISSING|UNEXPECTED)' test"

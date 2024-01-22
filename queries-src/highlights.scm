@@ -71,11 +71,8 @@
 (dependency_expression recipe: (identifier) @function)
 
 ; handle escape sequences
-(string_literal (escape_sequence) @constant.character.escape)
-[
-  (string_literal)
-  (raw_string_literal)
-] @string
+(string (string_escape) @constant.character.escape)
+(string) @string
 
 (comment) @comment.line
 
@@ -100,6 +97,6 @@
 
 ["," ":"] @punctuation.delimiter
 
-; "`" @punctuation.special
+"`" @punctuation.special
 
 (ERROR) @error

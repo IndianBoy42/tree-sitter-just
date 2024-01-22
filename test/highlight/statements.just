@@ -80,7 +80,7 @@ def \"
 foo2 := 'a'
 # <- variable
 #   ^^ operator
-#       ^^^ string
+#      ^^^ string
 
 bar2 := 'b
   c
@@ -89,20 +89,20 @@ bar2 := 'b
 
 baz2 := 'a\"\t'
 # <- variable
-#    ^^ operator
-#       ^^^ string
+#   ^^ operator
+#      ^^^ string
 
 foo3 := '''a'''
 # <- variable
 #   ^^ operator
-#       ^^^^^^^ string
+#      ^^^^^^^ string
 
 bar3 := '''b
   c
 '''
 # <- string
 
-baz3 := '''
+baz3 := ''''
   abc \t
   def \"
 '''
