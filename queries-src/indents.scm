@@ -4,4 +4,5 @@
 
 (recipe) @indent @extend
 (string_literal) @indent @extend
+(raw_string_literal) @indent @extend
 (external_command) @indent @extend

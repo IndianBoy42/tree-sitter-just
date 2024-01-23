@@ -79,8 +79,8 @@ def \"
 
 foo2 := 'a'
 # <- variable
-#   ^^ operator
-#      ^^^ string
+#    ^^ operator
+#       ^^^ string
 
 bar2 := 'b
   c
@@ -89,20 +89,20 @@ bar2 := 'b
 
 baz2 := 'a\"\t'
 # <- variable
-#   ^^ operator
-#      ^^^ string
+#    ^^ operator
+#       ^^^ string
 
 foo3 := '''a'''
 # <- variable
-#   ^^ operator
-#      ^^^^^^^ string
+#    ^^ operator
+#       ^^^^^^^ string
 
 bar3 := '''b
   c
 '''
 # <- string
 
-baz3 := ''''
+baz3 := '''
   abc \t
   def \"
 '''
@@ -115,11 +115,14 @@ bar4 := `echo hi
 
 foo5 := ```echo hi```
 # <- variable
-#   ^^ operator
+#    ^^ operator
+#       ^^^ punctuation.special
+#                 ^^^ punctuation.special
 
 bar5 := ```
 echo bye  
 ```
+# <- punctuation.special
 
 foo_if := if foo == "x" { "val" } else if "1" != "2" { env("val") } else { bar }
 # <- variable
@@ -192,3 +195,5 @@ set shell := ["powershell.exe", "-c"]
 foo_cmt := bar # + baz
 # <- variable
 #              ^ comment.line
+
+foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch" }

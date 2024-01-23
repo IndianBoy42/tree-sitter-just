@@ -47,7 +47,7 @@ foo := "abc" + 'def'
         (value
           (string_literal))
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (eol)))
@@ -72,7 +72,7 @@ combined := "foo" / bar() / baz
         (value
           (string_literal))
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (assignment
@@ -131,8 +131,8 @@ baz := "a\"\t"
       (expression
         (value
           (string_literal
-            (string_escape)
-            (string_escape))))
+            (escape_sequence)
+            (escape_sequence))))
       (eol)))
   (item
     (eol)))
@@ -175,8 +175,8 @@ def \"
       (expression
         (value
           (string_literal
-            (string_escape)
-            (string_escape))))
+            (escape_sequence)
+            (escape_sequence))))
       (eol)))
   (item
     (eol)))
@@ -201,21 +201,21 @@ baz := 'a\"\t'
       (identifier)
       (expression
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (eol)))
@@ -228,7 +228,7 @@ foo := '''a'''
 bar:= '''b
   c
 '''
-  baz := ''''
+baz := '''
   abc \t
   def \"
 '''
@@ -243,21 +243,21 @@ bar:= '''b
       (identifier)
       (expression
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string_literal)))
+          (raw_string_literal)))
       (eol)))
   (item
     (eol)))
@@ -281,14 +281,16 @@ bar := `echo hi
       (identifier)
       (expression
         (value
-          (external_command)))
+          (external_command
+            (command_body))))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (external_command)))
+          (external_command
+            (command_body))))
       (eol)))
   (item
     (eol)))
@@ -311,14 +313,16 @@ echo bye
       (identifier)
       (expression
         (value
-          (external_command)))
+          (external_command
+            (command_body))))
       (eol)))
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (external_command)))
+          (external_command
+            (command_body))))
       (eol))))
 
 ================================================================================
@@ -489,12 +493,12 @@ import? 'baz.just'
     (eol))
   (item
     (import
-      (string_literal)))
+      (raw_string_literal)))
   (item
     (eol))
   (item
     (import
-      (string_literal)))
+      (raw_string_literal)))
   (item
     (eol))
   (item
@@ -522,7 +526,7 @@ mod? qux "PATH"
   (item
     (module
       (identifier)
-      (string_literal)))
+      (raw_string_literal)))
   (item
     (eol))
   (item
@@ -574,8 +578,10 @@ set shell := ["powershell.exe", "-c"]
       (eol)))
   (item
     (setting
-      (string_literal)
-      (string_literal)
+      (identifier)
+      (array
+        (string_literal)
+        (string_literal))
       (eol)))
   (item
     (eol)))
@@ -609,7 +615,6 @@ foo := bar # + baz
 ================================================================================
 shebang
 ================================================================================
-
 #!/usr/bin/env just
 
 foo:
@@ -618,17 +623,48 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
+  (shebang)
   (item
     (eol))
-  (item
-    (eol
-      (comment)))
   (item
     (recipe
       (recipe_header
         (identifier))
+      (eol)
       (recipe_body
         (recipe_line
           (text)))))
+  (item
+    (eol)))
+
+================================================================================
+regex literal
+================================================================================
+
+foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (item
+    (eol))
+  (item
+    (assignment
+      (identifier)
+      (expression
+        (if_expression
+          (condition
+            (expression
+              (value
+                (string_literal)))
+            (regex_literal
+              (raw_string_literal)))
+          (expression
+            (value
+              (string_literal)))
+          (expression
+            (value
+              (string_literal)))))
+      (eol)))
   (item
     (eol)))
