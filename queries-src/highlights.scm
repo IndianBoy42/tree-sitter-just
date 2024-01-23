@@ -7,13 +7,14 @@
 (alias left: (identifier) @variable)
 (assignment
   left: (identifier) @variable
-  [":="] @operator)
+  ":=" @operator)
 
 (module mod_name: (identifier) @namespace)
 
 ; highlight known settings (filtering does not always work)
 (setting
   left: ((identifier) @keyword
+  ":="? @operator
   (#any-of? @keyword
     "allow-duplicate-recipes"
     "dotenv-filename"
@@ -38,24 +39,8 @@
 (function_call
   name: (identifier) @function)
 
-; highlight known attributes (filtering does not always work)
 (attribute
-  attr_item: ((identifier) @attribute
-  (#any-of? @attribute
-    "private"
-    "allow-duplicate-recipes"
-    "dotenv-filename"
-    "dotenv-load"
-    "dotenv-path"
-    "export"
-    "fallback"
-    "ignore-comments"
-    "positional-arguments"
-    "shell"
-    "tempdi"
-    "windows-powershell"
-    "windows-shell"
-    )))
+  attr_item: ((identifier) @attribute))
 
 (recipe_header
   recipe_name: (identifier) @function)
@@ -71,15 +56,13 @@
 (dependency_expression recipe: (identifier) @function)
 
 ; handle escape sequences
-(string_literal (string_escape) @constant.character.escape)
-(string_literal) @string
+(string_literal (escape_sequence) @constant.character.escape)
+[
+  (string_literal)
+  (raw_string_literal)
+] @string
 
 (comment) @comment.line
-
-; (interpolation) @string
-
-; FIXME: interpreter
-; (shebang interpreter:(TEXT) @keyword ) @comment
 
 [
   "alias"
@@ -89,7 +72,7 @@
   "set"
 ] @keyword
 
-; exclude `=` and `&&` since they are valid in more normal scopes
+; exclude `=` and `&&` since they are valid only in specific scopes
 ; (matching is covered in their parent nodes)
 ["@" "==" "!=" "+" "*" ":" "/" "?"] @operator
 
@@ -97,6 +80,11 @@
 
 ["," ":"] @punctuation.delimiter
 
-"`" @punctuation.special
+
+; open and close are "`" or "```" 
+(external_command
+  open: _ @punctuation.special
+  close: _ @punctuation.special
+  )
 
 (ERROR) @error

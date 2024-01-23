@@ -1,12 +1,14 @@
 // Main grammar for justfiles
 
+const ESCAPE_SEQUENCE = token(/\\[nrt"\\]/);
+
 // Comma separated list with at least one item
 function comma_sep1(item) {
   return seq(item, repeat(seq(",", item)));
 }
 
 // Create an array with the given item as contents
-function array(item) {
+function make_array(item) {
   const array_item = field("array_item", item);
   return field(
     "array",
@@ -23,7 +25,22 @@ function array(item) {
 
 module.exports = grammar({
   name: "just",
-  externals: ($) => [$._indent, $._dedent, $._newline],
+  externals: (
+    $,
+  ) => [
+    $._indent,
+    $._dedent,
+    $._newline,
+    $._string_start,
+    $._string_end,
+    $._content_component,
+    $._raw_string_start,
+    $._raw_string_end,
+    $._command_start,
+    $._command_end,
+    $._interp_start,
+    $._interp_end,
+  ],
   inline: (
     $,
   ) => [
@@ -85,7 +102,7 @@ module.exports = grammar({
     export: ($) => seq("export", $.assignment),
 
     // import        : 'import' '?'? string?
-    import: ($) => seq("import", optional("?"), $.string_literal),
+    import: ($) => seq("import", optional("?"), $._string),
 
     // module        : 'mod' '?'? string?
     module: ($) =>
@@ -93,7 +110,7 @@ module.exports = grammar({
         "mod",
         optional("?"),
         field("mod_name", $.identifier),
-        optional($.string_literal),
+        optional($._string),
       ),
 
     // setting       : 'set' 'dotenv-load' boolean?
@@ -105,28 +122,16 @@ module.exports = grammar({
         seq(
           "set",
           field("left", $.identifier),
-          field(
-            "right",
-            optional(
-              seq(
-                ":=",
-                choice($.boolean, $.string_literal, array($.string_literal)),
-              ),
-            ),
-          ),
-          $.eol,
-        ),
-        seq(
-          "set",
-          "shell",
-          ":=",
-          field(
-            "right",
-            array($.string_literal),
+          optional(
+            seq(":=", field("right", choice($.boolean, $._string, $.array))),
           ),
           $.eol,
         ),
       ),
+
+    // Our only use of arrays (setting) only accepts strings. We may want to figure
+    // out how to better reuse `array` while specifying a type.
+    array: ($) => make_array($._string),
 
     // boolean       : ':=' ('true' | 'false')
     boolean: (_) => choice("true", "false"),
@@ -167,10 +172,12 @@ module.exports = grammar({
       choice(
         seq($.expression, "==", $.expression),
         seq($.expression, "!=", $.expression),
-        seq($.expression, "=~", $.expression),
-        // verify whether this is valid
+        seq($.expression, "=~", choice($.regex_literal, $.expression)),
         $.expression,
       ),
+
+    // Capture this special for injections
+    regex_literal: ($) => prec(4, $._string),
 
     // value         : NAME '(' sequence? ')'
     //               | BACKTICK
@@ -184,7 +191,7 @@ module.exports = grammar({
           $.function_call,
           $.external_command,
           $.identifier,
-          $.string_literal,
+          $._string,
           seq("(", $.expression, ")"),
         ),
       ),
@@ -196,9 +203,6 @@ module.exports = grammar({
         field("arguments", optional($.sequence)),
         ")",
       ),
-
-    external_command: ($) =>
-      choice(seq($._backticked), seq($._indented_backticked)),
 
     // sequence      : expression ',' sequence
     //               | expression ','?
@@ -218,7 +222,7 @@ module.exports = grammar({
       seq(
         repeat($.attribute),
         $.recipe_header,
-        $._newline,
+        $.eol,
         optional($.recipe_body),
       ),
 
@@ -286,13 +290,10 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    shebang: ($) => seq(/\s*#!.*/, $._newline),
+    shebang: ($) => prec.left(seq(/#!.*/, optional($._newline))),
 
     // `# ...` comment
     comment: ($) => seq(/#.*/, $._newline),
-
-    // notinterpolation: ($) => /[^{][^{]\S*/,
-    notinterpolation: (_) => /[^\s{][^\s{]\S*/,
 
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),
@@ -303,25 +304,32 @@ module.exports = grammar({
     //               | INDENTED_STRING
     //               | RAW_STRING
     //               | INDENTED_RAW_STRING
+    _string: ($) => choice($.raw_string_literal, $.string_literal),
+
+    escape_sequence: (_) => ESCAPE_SEQUENCE,
     string_literal: ($) =>
-      choice(
-        $._string_indented,
-        $._raw_string_indented,
-        $._string,
-        // _raw_string, can't be written as a separate inline for osm reason
-        /'[^']*'/,
+      seq(
+        field("open", alias($._string_start, '("|""")')),
+        field("body", repeat(choice($._content_component, $.escape_sequence))),
+        field("close", alias($._string_end, '("|""")')),
       ),
 
-    _raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
-    _string: ($) => seq('"', repeat(choice($.string_escape, /[^\\"]+/)), '"'),
-    _string_indented: ($) =>
-      seq('"""', repeat(choice($.string_escape, /[^\\"]+/)), '"""'),
-    string_escape: (_) => /\\[nrt"\\]/,
+    raw_string_literal: ($) =>
+      seq(
+        field("open", alias($._raw_string_start, "('|''')")),
+        field("body", optional($._content_component)),
+        field("close", alias($._raw_string_end, "('|''')")),
+      ),
 
-    _backticked: (_) => seq("`", repeat(/./), "`"),
-    _indented_backticked: (_) => seq("```", repeat(/./), "```"),
+    external_command: ($) =>
+      seq(
+        field("open", alias($._command_start, "(`|```)")),
+        field("body", repeat(choice(prec(1, $.interpolation), $.command_body))),
+        field("close", alias($._command_end, "(`|```)")),
+      ),
+
+    command_body: ($) => $._content_component,
 
     text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
-    // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
   },
 });

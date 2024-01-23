@@ -24,6 +24,8 @@ switch: (rebuild "switch")
 
 test: (rebuild "test")
 
+a:
+
 ci:
     nix run \
       --inputs-from . \

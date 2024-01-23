@@ -13,8 +13,11 @@ format:
 	deno fmt
 
 # Generate the parser
-gen:
-	npm run gen
+gen *extra-args:
+	#!/bin/sh
+	set -eaux
+	npx tree-sitter generate {{ extra-args }}
+	python3 build-flavored-queries.py
 
 alias t := test-ts
 
@@ -27,19 +30,22 @@ test-parse-highlight:
 	#!/bin/sh
 	set -eaux
 
-	# skip readme.just because it is broken but works for testing
+	# skip readme.just because it is broken but works for testing, and skip files
+	# from the fuzzer
 	# FIXME: also skip test.just because it is currently broken
 	find {{justfile_directory()}} -type f -iregex '.*[\./]just[^\./]*' |
 		grep -v readme.just |
 		grep -v test.just |
+		grep -vE 'timeout-.*' |
+		grep -vE 'crash-.*' |
 		while read -r fname
 	do
 		printf '\n\n\n'
 		echo "::group::Parse and highlight testing for $fname"
 		echo "::notice:: checking parsing of $fname"
-		npx tree-sitter parse "$fname" > "$fname.parse.out"
+		npx tree-sitter parse "$fname" /dev/null
 		echo "::notice:: checking highlight of $fname"
-		npx tree-sitter highlight "$fname" > "$fname.highlight.out"
+		npx tree-sitter highlight "$fname" /dev/null
 		echo "::endgroup::"
 	done
 
@@ -55,6 +61,55 @@ check-c:
 		-Wno-format-pedantic \
 		-o/dev/null'
 
+fuzz *extra-args: (gen "--debug-build")
+	#!/bin/sh
+	set -eaux
+
+	out="fuzzer-out"
+	ts_source="$out/tree-sitter"
+	
+	flags="-fsanitize=fuzzer,address,undefined"
+	flags="$flags -g -O1"
+	flags="$flags -Isrc/ -I$ts_source/lib/include"
+	flags="$flags -o $out/fuzzer"
+
+	mkdir -p "$out"
+
+	[ ! -d "$ts_source" ] &&
+		git clone https://github.com/tree-sitter/tree-sitter "$ts_source" \
+		--depth=1
+
+	make -C "$ts_source"
+
+	cat << EOF | clang $flags "$ts_source/libtree-sitter.a" "src/scanner.c" "src/parser.c" -x c -
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include "tree_sitter/api.h"
+
+	TSLanguage *tree_sitter_just();
+
+	int LLVMFuzzerTestOneInput(const uint8_t *data, const size_t len) {
+	  TSParser *parser = ts_parser_new();
+	  ts_parser_set_language(parser, tree_sitter_just());
+
+	  // Build a syntax tree based on source code stored in a string.
+	  TSTree *tree = ts_parser_parse_string(
+	    parser,
+	    NULL,
+	    (const char *)data,
+	    len
+	  );
+	  // Free all of the heap-allocated memory.
+	  ts_tree_delete(tree);
+	  ts_parser_delete(parser);
+	  return 0;
+	}
+	EOF
+
+	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
+	./fuzzer-out/fuzzer $fuzzer_flags {{ extra-args }}
+
+
 # Verify that the `just` tool parses all files we are using
 verify-just-parsing:
 	#!/bin/sh
@@ -63,6 +118,8 @@ verify-just-parsing:
 	# skip readme.just because it is broken but works for testing
 	find . -type f -iregex '.*[\./]just[^\./]*' |
 		grep -v readme.just |
+		grep -vE 'timeout-.*' |
+		grep -vE 'crash-.*' |
 		while read -r fname
 	do
 		echo "::notice file=$fname:: checking Just parsing"
