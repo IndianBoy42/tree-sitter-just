@@ -21,7 +21,7 @@ typedef struct Scanner {
 // anytime your language is set on a parser. Often, you will want to allocate
 // memory on the heap and return a pointer to it. If your external scanner
 // doesn’t need to maintain any state, it’s ok to return NULL.
-void *tree_sitter_just_external_scanner_create() {
+void *tree_sitter_just_external_scanner_create(void) {
   Scanner *ptr = (Scanner *)malloc(SBYTES);
   assert(ptr);
   return ptr;
@@ -60,10 +60,10 @@ void tree_sitter_just_external_scanner_deserialize(void *payload,
 }
 
 // Continue and include the preceding character in the token
-void advance(TSLexer *lexer) { return lexer->advance(lexer, false); }
+void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 
 // Continue and discard the preceding character
-void skip(TSLexer *lexer) { return lexer->advance(lexer, true); }
+void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 
 // An EOF works as a dedent
 bool handle_eof(TSLexer *lexer, Scanner *state, const bool *valid_symbols) {
