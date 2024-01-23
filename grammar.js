@@ -85,7 +85,7 @@ module.exports = grammar({
     export: ($) => seq("export", $.assignment),
 
     // import        : 'import' '?'? string?
-    import: ($) => seq("import", optional("?"), $.string),
+    import: ($) => seq("import", optional("?"), $.string_literal),
 
     // module        : 'mod' '?'? string?
     module: ($) =>
@@ -93,7 +93,7 @@ module.exports = grammar({
         "mod",
         optional("?"),
         field("mod_name", $.identifier),
-        optional($.string),
+        optional($.string_literal),
       ),
 
     // setting       : 'set' 'dotenv-load' boolean?
@@ -108,7 +108,10 @@ module.exports = grammar({
           field(
             "right",
             optional(
-              seq(":=", choice($.boolean, $.string, array($.string))),
+              seq(
+                ":=",
+                choice($.boolean, $.string_literal, array($.string_literal)),
+              ),
             ),
           ),
           $.eol,
@@ -119,7 +122,7 @@ module.exports = grammar({
           ":=",
           field(
             "right",
-            array($.string),
+            array($.string_literal),
           ),
           $.eol,
         ),
@@ -181,7 +184,7 @@ module.exports = grammar({
           $.function_call,
           $.external_command,
           $.identifier,
-          $.string,
+          $.string_literal,
           seq("(", $.expression, ")"),
         ),
       ),
@@ -300,7 +303,7 @@ module.exports = grammar({
     //               | INDENTED_STRING
     //               | RAW_STRING
     //               | INDENTED_RAW_STRING
-    string: ($) =>
+    string_literal: ($) =>
       choice(
         $._string_indented,
         $._raw_string_indented,

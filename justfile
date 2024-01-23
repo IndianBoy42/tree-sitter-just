@@ -12,9 +12,15 @@ alias fmt := format
 format:
 	deno fmt
 
+# Generate the parser
+gen:
+	npm run gen
+
+alias t := test-ts
+
 # Run tests that are built into tree-sitter
-test-ts:
-	npm test
+test-ts *ts-test-args: gen
+	npm test -- {{ ts-test-args }}
 
 # Verify that tree-sitter can parse and highlight all files in the repo. Requires a tree-sitter configuration.
 test-parse-highlight:
