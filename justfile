@@ -32,10 +32,8 @@ test-parse-highlight:
 
 	# skip readme.just because it is broken but works for testing, and skip files
 	# from the fuzzer
-	# FIXME: also skip test.just because it is currently broken
 	find {{justfile_directory()}} -type f -iregex '.*[\./]just[^\./]*' |
 		grep -v readme.just |
-		grep -v test.just |
 		grep -vE 'timeout-.*' |
 		grep -vE 'crash-.*' |
 		while read -r fname
@@ -43,9 +41,9 @@ test-parse-highlight:
 		printf '\n\n\n'
 		echo "::group::Parse and highlight testing for $fname"
 		echo "::notice:: checking parsing of $fname"
-		npx tree-sitter parse "$fname" /dev/null
+		npx tree-sitter parse "$fname" > /dev/null
 		echo "::notice:: checking highlight of $fname"
-		npx tree-sitter highlight "$fname" /dev/null
+		npx tree-sitter highlight "$fname" > /dev/null
 		echo "::endgroup::"
 	done
 
