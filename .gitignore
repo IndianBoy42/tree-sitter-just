@@ -4,3 +4,4 @@ build
 log.html
 *.wasm
 fuzzer-out/
+**.log

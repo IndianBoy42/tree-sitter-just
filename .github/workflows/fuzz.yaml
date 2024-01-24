@@ -17,10 +17,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: taiki-e/install-action@just
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: tree-sitter-cli
       - run: just fuzz 
       - name: print tests
         if: always()
         run: |
+          find . -name '*.a'
           nm -g fuzzer-out/tree-sitter/libtree-sitter.a
           find . -name 'timeout-*' |
             xargs -IFNAME sh -c 'echo "\nPrinting FNAME" && base64 -i FNAME'

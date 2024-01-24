@@ -16,14 +16,14 @@ format:
 gen *extra-args:
 	#!/bin/sh
 	set -eaux
-	npx tree-sitter generate {{ extra-args }}
+	tree-sitter generate {{ extra-args }}
 	python3 build-flavored-queries.py
 
 alias t := test-ts
 
 # Run tests that are built into tree-sitter
 test-ts *ts-test-args: gen
-	npm test -- {{ ts-test-args }}
+	tree-sitter test {{ ts-test-args }}
 
 # Verify that tree-sitter can parse and highlight all files in the repo. Requires a tree-sitter configuration.
 test-parse-highlight:
@@ -41,9 +41,9 @@ test-parse-highlight:
 		printf '\n\n\n'
 		echo "::group::Parse and highlight testing for $fname"
 		echo "::notice:: checking parsing of $fname"
-		npx tree-sitter parse "$fname" > /dev/null
+		tree-sitter parse "$fname" > /dev/null
 		echo "::notice:: checking highlight of $fname"
-		npx tree-sitter highlight "$fname" > /dev/null
+		tree-sitter highlight "$fname" > /dev/null
 		echo "::endgroup::"
 	done
 
@@ -147,7 +147,7 @@ configure-tree-sitter:
 		
 	cfg_fname = r"""{{ config_directory() / "tree-sitter" / "config.json" }}"""
 	if not os.path.isfile(cfg_fname):
-		sp.run(["npx", "tree-sitter", "init-config"], check=True, shell=shell)
+		sp.run(["tree-sitter", "init-config"], check=True, shell=shell)
 
 	with open(cfg_fname, "r+") as f:
 		j = json.load(f)
@@ -166,20 +166,18 @@ ci-codestyle:
 	deno fmt --check
 
 # Make sure that files have not changed
-ci-validate-generated-files:
+ci-validate-generated-files: gen
 	#!/bin/sh
 	set -eaux
 
 	git tag ci-tmp-pre-updates
 	
-	npm run gen
-
 	failed=false
 	git diff ci-tmp-pre-updates --exit-code || failed=true
 
 	if ! [ "$failed" = "false" ]; then
 		echo '::warning::Generated files are out of date!'
-		echo '::warning::run `npm run gen` and commit the changes'
+		echo '::warning::run `just gen` or `npm run gen` and commit the changes'
 	fi
 
 	git tag -d ci-tmp-pre-updates
