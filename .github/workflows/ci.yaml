@@ -31,12 +31,28 @@ jobs:
         with:
           tool: tree-sitter-cli@0.20.8
       - uses: Swatinem/rust-cache@v2
+      - name: print glibc version
+        run: |
+          GCC_FEATURES=$(gcc -dM -E - <<< "#include <features.h>")
+
+          if grep -q __UCLIBC__ <<< "${GCC_FEATURES}"; then
+              echo "uClibc"
+              grep "#define __UCLIBC_MAJOR__" <<< "${GCC_FEATURES}"
+              grep "#define __UCLIBC_MINOR__" <<< "${GCC_FEATURES}"
+              grep "#define __UCLIBC_SUBLEVEL__" <<< "${GCC_FEATURES}"
+          elif grep -q __GLIBC__ <<< "${GCC_FEATURES}"; then
+              echo "glibc"
+              grep "#define __GLIBC__" <<< "${GCC_FEATURES}"
+              grep "#define __GLIBC_MINOR__" <<< "${GCC_FEATURES}"
+          else
+              echo "something else"
+          fi
       - name: Configure
         run: just --verbose configure-tree-sitter
       - name: Check generated files
         run: just --verbose ci-validate-generated-files
       - name: Run tests
-        run: just --verbose test-ts; echo "exited with code $?"
+        run: just --verbose test-ts
       - name: Test parsing and highlighting on all Just files in repo
         run: just --verbose test-parse-highlight
       - name: Check C files with args
