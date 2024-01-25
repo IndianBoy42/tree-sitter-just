@@ -26,9 +26,10 @@ def main():
     out_dir = repo / "fuzzer" / "corpus"
     out_dir.mkdir(exist_ok=True)
 
-    # Clear the corpus
+    # Clear the corpus of all files we created
     for existing in out_dir.iterdir():
-        existing.unlink()
+        if existing.name.endswith(".just"):
+            existing.unlink()
 
     for (name, source) in corpus.items():
         out_file: Path = out_dir / name
