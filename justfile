@@ -100,9 +100,9 @@ fuzz *extra-args: (gen "--debug-build") \
 	flags="$flags -g -O1 -std=gnu99"
 	flags="$flags -I{{ src }} -I{{ ts_src }}/lib/include"
 
-	sources="{{src}}/scanner.c {{src}}/parser.c {{fuzzer}}/entry.c" 
-	link="-L{{ts_src}} -ltree-sitter"
-	
+	sources="{{src}}/scanner.c {{src}}/parser.c {{fuzzer}}/entry.c"
+	link="{{ if os() == "macos" { ts_src / 'libtree-sitter.a' } else { '-L' + ts_src + ' -ltree-sitter' } }}"
+
 	clang $flags -o "$exe" $sources $link
 
 	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{nproc}}"

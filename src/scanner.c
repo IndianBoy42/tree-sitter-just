@@ -251,7 +251,7 @@ bool scan_string_start(TSLexer *lexer, Scanner *state, const Delimiter delim) {
 
   Delimiter tripled;
   assertf(to_triple(delim, &tripled),
-          "got a delimiter tha does not have a triple form");
+          "got a delimiter that does not have a triple form");
 
   advance(lexer);
   mark_end(lexer);
@@ -301,9 +301,10 @@ bool scan_body_or_end(TSLexer *lexer, Scanner *state) {
   Delimiter end_delim = last(state); // peek
   DelimInfo dinfo = delimiter_info(end_delim);
 
-  dbg_print("scanning for end char %c, repeat %d backslash %d, braces %d\n",
-            dinfo.end_char, dinfo.repeat, dinfo.backslash_pause,
-            dinfo.braces_pause);
+  dbg_print(
+      "scanning for end char '%c', repeat %d backslash %d, braces %d end %d\n",
+      dinfo.end_char, dinfo.repeat, dinfo.backslash_pause, dinfo.braces_pause,
+      dinfo.end_symbol);
 
   // If returning `CONTENT_COMPONENT`, only return `true` if we actually
   // parsed something nonempty.
@@ -341,38 +342,34 @@ bool scan_body_or_end(TSLexer *lexer, Scanner *state) {
     }
 
     if (lexer->lookahead == dinfo.end_char) {
+      bool found_end = true;
       if (dinfo.repeat > 1) {
         mark_end(lexer);
 
         for (uint8_t count = 1; count < dinfo.repeat; ++count) {
           advance(lexer);
-
-          // TODO: better way to check this, need to make sure we completed the
-          // loop
+          dbg_print("advance to '%c' %d\n", lexer->lookahead, count);
           if (lexer->lookahead != dinfo.end_char) {
-            pop(state);
-            mark_end(lexer);
-
-            dbg_print("located end of triple string\n");
-
-            // TODO: should we return has_content?
-            lexer->result_symbol = CONTENT_COMPONENT;
-            return true;
+            found_end = false;
+            break;
           }
         }
       }
 
-      if (has_content) {
-        // Foun
-        lexer->result_symbol = CONTENT_COMPONENT;
-      } else {
-        pop(state);
-        advance(lexer);
-        mark_end(lexer);
-        lexer->result_symbol = dinfo.end_symbol;
+      if (found_end) {
+        dbg_print("located end of %n*%d-delimited string\n", dinfo.end_char,dinfo.repeat);
+        if (has_content) {
+          // Found the end of content
+          lexer->result_symbol = CONTENT_COMPONENT;
+        } else {
+          // No further content, return the end delimiter
+          pop(state);
+          advance(lexer);
+          mark_end(lexer);
+          lexer->result_symbol = dinfo.end_symbol;
+        }
       }
 
-      dbg_print("located end of single string\n");
       return true;
     }
 
@@ -496,8 +493,8 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
   if ((valid_symbols[CONTENT_COMPONENT] || valid_symbols[STRING_END] ||
        valid_symbols[RAW_STRING_END] || valid_symbols[COMMAND_END]) &&
       scan_body_or_end(lexer, payload)) {
-    assertf(valid_symbols[lexer->result_symbol],
-            "invalid precondition for symbol %d", lexer->result_symbol);
+    assertf(valid_symbols[lexer->result_symbol], "invalid result symbol %d",
+            lexer->result_symbol);
     return true;
   }
 
