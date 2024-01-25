@@ -80,7 +80,7 @@ debug-build: tree-sitter
 
 # Run the fuzzer
 fuzz *extra-args: (gen "--debug-build") \
-	(tree-sitter "-fsanitize=fuzzer,address,undefined" "-fvisibility=nothidden")
+	(tree-sitter "-fsanitize=fuzzer,address,undefined" "-fvisibility=notidden")
 	#!/bin/sh
 	set -eaux
 
@@ -95,12 +95,13 @@ fuzz *extra-args: (gen "--debug-build") \
 
 	clang $flags "src/scanner.c" -c -o "$obj/scanner.o"
 	clang $flags "src/parser.c" -c -o "$obj/parser.o"
-	sources="{{ ts_staticlib }} $obj/scanner.o $obj/parser.o" 
+	sources="$obj/scanner.o $obj/parser.o" 
+	link="-L{{ts_src}} -ltree-sitter"
 	
-	clang $flags -o "$obj/fuzz.out" $sources "bindings/fuzz.c"
+	clang $flags --verbose -o "$out/fuzz.out" $sources "bindings/fuzz.c" $link
 
 	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
-	"/$out/fuzz.out" $fuzzer_flags {{ extra-args }}
+	LD_LIBRARY_PATH="{{ts_src}}" "$out/fuzz.out" $fuzzer_flags {{ extra-args }}
 
 
 # Verify that the `just` tool parses all files we are using
