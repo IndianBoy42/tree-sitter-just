@@ -80,6 +80,9 @@ debug-build: tree-sitter
 	"{{src}}/scanner.c" "{{src}}/parser.c" "{{bindings}}/debug.c" \
 	-o debug.out
 
+debug *file-names: debug-build
+	LD_LIBRARY_PATH="{{ts_src}}" ./debug.out {{file-names}}
+
 # Run the fuzzer
 fuzz *extra-args: (gen "--debug-build") \
 	(tree-sitter "-fsanitize=fuzzer,address,undefined" "-fvisibility=notidden")
