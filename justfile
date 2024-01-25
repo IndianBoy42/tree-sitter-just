@@ -79,7 +79,8 @@ debug-build: tree-sitter
 	-o debug.out
 
 # Run the fuzzer
-fuzz *extra-args: (gen "--debug-build") (tree-sitter "-fsanitize=fuzzer,address,undefined")
+fuzz *extra-args: (gen "--debug-build") \
+	(tree-sitter "-fsanitize=fuzzer,address,undefined" "-fvisibility=nothidden")
 	#!/bin/sh
 	set -eaux
 
@@ -89,7 +90,7 @@ fuzz *extra-args: (gen "--debug-build") (tree-sitter "-fsanitize=fuzzer,address,
 	
 	
 	flags="-fsanitize=fuzzer,address,undefined"
-	flags="$flags -g -O1"
+	flags="$flags -g -O1 -std=gnu99 -Wall -Wextra -Wshadow"
 	flags="$flags -I{{ src }} -I{{ ts_src }}/lib/include"
 
 	clang $flags "src/scanner.c" -c -o "$obj/scanner.o"
