@@ -7,3 +7,4 @@ fuzzer/
 tree-sitter-src/
 **.log
 **.out
+**.dSYM

@@ -75,7 +75,7 @@ tree-sitter *cflags:
 debug-build: tree-sitter
 	clang -O3 -g ${CFLAGS:-} -Isrc "-I{{ ts_src }}/lib/include" \
 	"-L{{ ts_src }}" "-ltree-sitter" \
-	"src/scanner.c" "src/parser.c" "debug.c" \
+	"src/scanner.c" "src/parser.c" "bindings/debug.c" \
 	-o debug.out
 
 # Run the fuzzer
@@ -96,30 +96,7 @@ fuzz *extra-args: (gen "--debug-build") (tree-sitter "-fsanitize=fuzzer,address,
 	clang $flags "src/parser.c" -c -o "$obj/parser.o"
 	sources="{{ ts_staticlib }} $obj/scanner.o $obj/parser.o" 
 	
-	cat << EOF | clang $flags -o "$obj/fuzz.out" $sources -x c -
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include "tree_sitter/api.h"
-
-	TSLanguage *tree_sitter_just();
-
-	int LLVMFuzzerTestOneInput(const uint8_t *data, const size_t len) {
-	  TSParser *parser = ts_parser_new();
-	  ts_parser_set_language(parser, tree_sitter_just());
-
-	  // Build a syntax tree based on source code stored in a string.
-	  TSTree *tree = ts_parser_parse_string(
-	    parser,
-	    NULL,
-	    (const char *)data,
-	    len
-	  );
-	  // Free all of the heap-allocated memory.
-	  ts_tree_delete(tree);
-	  ts_parser_delete(parser);
-	  return 0;
-	}
-	EOF
+	clang $flags -o "$obj/fuzz.out" $sources "bindings/fuzz.c"
 
 	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
 	"/$out/fuzz.out" $fuzzer_flags {{ extra-args }}
