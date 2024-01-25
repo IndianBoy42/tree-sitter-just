@@ -3,5 +3,7 @@ node_modules
 build
 log.html
 *.wasm
-fuzzer-out/
+fuzzer/
+tree-sitter-src/
 **.log
+**.out

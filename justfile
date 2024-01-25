@@ -59,27 +59,39 @@ check-c:
 		-Wno-format-pedantic \
 		-o/dev/null'
 
-fuzz *extra-args: (gen "--debug-build")
+ts_src := justfile_directory() / "tree-sitter-src"
+ts_staticlib := ts_src / "libtree-sitter.a"
+
+# Download and build upstream tree-sitter
+tree-sitter:
+	#!/bin/sh
+	[ ! -d "{{ ts_src }}" ] &&
+		git clone https://github.com/tree-sitter/tree-sitter "{{ ts_src }}" \
+		--depth=1
+	CFLAGS="-O3 -g $CFLAGS" make -C "{{ ts_src }}"
+
+debug-build: tree-sitter
+	clang -O3 -g ${CFLAGS:-} -Isrc "-I{{ ts_src }}/lib/include" \
+	"-L{{ ts_src }}" "-ltree-sitter" \
+	"src/scanner.c" "src/parser.c" "debug.c" \
+	-o debug.out
+
+# Run the fuzzer
+fuzz *extra-args: (gen "--debug-build") tree-sitter
 	#!/bin/sh
 	set -eaux
 
-	out="fuzzer-out"
+	out="fuzzer"
 	ts_source="$out/tree-sitter"
 	
 	flags="-fsanitize=fuzzer,address,undefined"
 	flags="$flags -g -O1"
 	flags="$flags -Isrc/ -I$ts_source/lib/include"
-	flags="$flags -o $out/fuzzer"
+	flags="$flags -o $out/fuzz.out"
 
 	mkdir -p "$out"
 
-	[ ! -d "$ts_source" ] &&
-		git clone https://github.com/tree-sitter/tree-sitter "$ts_source" \
-		--depth=1
-
-	make -C "$ts_source"
-
-	cat << EOF | clang $flags "$ts_source/libtree-sitter.a" "src/scanner.c" "src/parser.c" -x c -
+	cat << EOF | clang $flags "{{ ts_staticlib }}" "src/scanner.c" "src/parser.c" -x c -
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include "tree_sitter/api.h"
@@ -105,7 +117,7 @@ fuzz *extra-args: (gen "--debug-build")
 	EOF
 
 	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
-	./fuzzer-out/fuzzer $fuzzer_flags {{ extra-args }}
+	"./$out/fuzz.out" $fuzzer_flags {{ extra-args }}
 
 
 # Verify that the `just` tool parses all files we are using
