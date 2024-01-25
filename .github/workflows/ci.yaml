@@ -36,7 +36,7 @@ jobs:
       - name: Check generated files
         run: just --verbose ci-validate-generated-files
       - name: Run tests
-        run: just --verbose test-ts
+        run: just --verbose test-ts; echo "exited with code $?"
       - name: Test parsing and highlighting on all Just files in repo
         run: just --verbose test-parse-highlight
       - name: Check C files with args
