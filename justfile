@@ -63,12 +63,12 @@ ts_src := justfile_directory() / "tree-sitter-src"
 ts_staticlib := ts_src / "libtree-sitter.a"
 
 # Download and build upstream tree-sitter
-tree-sitter:
+tree-sitter *cflags:
 	#!/bin/sh
 	[ ! -d "{{ ts_src }}" ] &&
 		git clone https://github.com/tree-sitter/tree-sitter "{{ ts_src }}" \
 		--depth=1
-	CFLAGS="-O3 -g $CFLAGS" make -C "{{ ts_src }}"
+	CFLAGS="-O1 -g {{ cflags }} $CFLAGS" make -C "{{ ts_src }}"
 
 debug-build: tree-sitter
 	clang -O3 -g ${CFLAGS:-} -Isrc "-I{{ ts_src }}/lib/include" \
@@ -77,21 +77,24 @@ debug-build: tree-sitter
 	-o debug.out
 
 # Run the fuzzer
-fuzz *extra-args: (gen "--debug-build") tree-sitter
+fuzz *extra-args: (gen "--debug-build") (tree-sitter "-fsanitize=fuzzer,address,undefined")
 	#!/bin/sh
 	set -eaux
 
 	out="fuzzer"
-	ts_source="$out/tree-sitter"
+	obj="$out/obj"
+	mkdir -p "$obj"
+	
 	
 	flags="-fsanitize=fuzzer,address,undefined"
 	flags="$flags -g -O1"
-	flags="$flags -Isrc/ -I$ts_source/lib/include"
-	flags="$flags -o $out/fuzz.out"
+	flags="$flags -Isrc/ -I{{ ts_src }}/lib/include"
 
-	mkdir -p "$out"
-
-	cat << EOF | clang $flags "{{ ts_staticlib }}" "src/scanner.c" "src/parser.c" -x c -
+	clang $flags "src/scanner.c" -c -o "$obj/scanner.o"
+	clang $flags "src/parser.c" -c -o "$obj/parser.o"
+	sources="{{ ts_staticlib }} $obj/scanner.o $obj/parser.o" 
+	
+	cat << EOF | clang $flags -o "$obj/fuzz.out" $sources -x c -
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include "tree_sitter/api.h"
