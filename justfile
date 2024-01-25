@@ -64,6 +64,7 @@ bindings := justfile_directory() / "bindings"
 ts_src := justfile_directory() / "tree-sitter-src"
 ts_staticlib := ts_src / "libtree-sitter.a"
 fuzz_out := justfile_directory() / "fuzzer"
+nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
 
 # Download and build upstream tree-sitter
 tree-sitter *cflags:
@@ -95,9 +96,9 @@ fuzz *extra-args: (gen "--debug-build") \
 	sources="{{src}}/scanner.c {{src}}/parser.c {{bindings}}/fuzz.c" 
 	link="-L{{ts_src}} -ltree-sitter"
 	
-	clang $flags --verbose -o "$out/fuzz.out" $sources $link
+	clang $flags -o "$out/fuzz.out" $sources $link
 
-	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
+	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200 -jobs={{nproc}}"
 	LD_LIBRARY_PATH="{{ts_src}}" "$out/fuzz.out" $fuzzer_flags {{ extra-args }}
 
 
