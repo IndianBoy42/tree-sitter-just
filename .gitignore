@@ -1,10 +1,18 @@
+# Rust build
 target/**
+
+# Node cache
 node_modules
+
+# Tree-sitter ouptut
 build
 log.html
 *.wasm
-fuzzer/
+
+# Fuzzer items
 tree-sitter-src/
+fuzzer/corpus
+fuzzer/artifacts
 **.log
 **.out
 **.dSYM

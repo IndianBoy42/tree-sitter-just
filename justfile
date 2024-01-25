@@ -63,7 +63,7 @@ src := justfile_directory() / "src"
 bindings := justfile_directory() / "bindings"
 ts_src := justfile_directory() / "tree-sitter-src"
 ts_staticlib := ts_src / "libtree-sitter.a"
-fuzz_out := justfile_directory() / "fuzzer"
+fuzzer := justfile_directory() / "fuzzer"
 nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
 
 # Download and build upstream tree-sitter
@@ -86,20 +86,24 @@ fuzz *extra-args: (gen "--debug-build") \
 	#!/bin/sh
 	set -eaux
 
-	out="{{ fuzz_out }}"
-	mkdir -p "$out"
+	"{{fuzzer / "build-corpus.py"}}"
+
+	artifacts="{{fuzzer}}/artifacts/"
+	exe="{{fuzzer}}/fuzz.out"
+	corpus="{{fuzzer}}/corpus"
+	mkdir -p "$artifacts"
 
 	flags="-fsanitize=fuzzer,address,undefined"
-	flags="$flags -g -O1 -std=gnu99 -Wall -Wshadow"
+	flags="$flags -g -O1 -std=gnu99"
 	flags="$flags -I{{ src }} -I{{ ts_src }}/lib/include"
 
-	sources="{{src}}/scanner.c {{src}}/parser.c {{bindings}}/fuzz.c" 
+	sources="{{src}}/scanner.c {{src}}/parser.c {{fuzzer}}/entry.c" 
 	link="-L{{ts_src}} -ltree-sitter"
 	
-	clang $flags -o "$out/fuzz.out" $sources $link
+	clang $flags -o "$exe" $sources $link
 
-	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200 -jobs={{nproc}}"
-	LD_LIBRARY_PATH="{{ts_src}}" "$out/fuzz.out" $fuzzer_flags {{ extra-args }}
+	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{nproc}}"
+	LD_LIBRARY_PATH="{{ts_src}}" "$exe" "$corpus" $fuzzer_flags {{ extra-args }}
 
 
 # Verify that the `just` tool parses all files we are using
