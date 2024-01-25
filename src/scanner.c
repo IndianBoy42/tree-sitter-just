@@ -357,7 +357,8 @@ bool scan_body_or_end(TSLexer *lexer, Scanner *state) {
       }
 
       if (found_end) {
-        dbg_print("located end of %n*%d-delimited string\n", dinfo.end_char,dinfo.repeat);
+        dbg_print("located end of %n*%d-delimited string\n", dinfo.end_char,
+                  dinfo.repeat);
         if (has_content) {
           // Found the end of content
           lexer->result_symbol = CONTENT_COMPONENT;
