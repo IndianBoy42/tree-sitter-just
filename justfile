@@ -60,6 +60,7 @@ check-c:
 		-o/dev/null'
 
 src := justfile_directory() / "src"
+bindings := justfile_directory() / "bindings"
 ts_src := justfile_directory() / "tree-sitter-src"
 ts_staticlib := ts_src / "libtree-sitter.a"
 fuzz_out := justfile_directory() / "fuzzer"
@@ -75,7 +76,7 @@ tree-sitter *cflags:
 debug-build: tree-sitter
 	clang -O3 -g ${CFLAGS:-} -Isrc "-I{{ ts_src }}/lib/include" \
 	"-L{{ ts_src }}" "-ltree-sitter" \
-	"src/scanner.c" "src/parser.c" "bindings/debug.c" \
+	"{{src}}/scanner.c" "{{src}}/parser.c" "{{bindings}}/debug.c" \
 	-o debug.out
 
 # Run the fuzzer
@@ -85,20 +86,16 @@ fuzz *extra-args: (gen "--debug-build") \
 	set -eaux
 
 	out="{{ fuzz_out }}"
-	obj="$out/obj"
-	mkdir -p "$obj"
-	
-	
+	mkdir -p "$out"
+
 	flags="-fsanitize=fuzzer,address,undefined"
-	flags="$flags -g -O1 -std=gnu99 -Wall -Wextra -Wshadow"
+	flags="$flags -g -O1 -std=gnu99 -Wall -Wshadow"
 	flags="$flags -I{{ src }} -I{{ ts_src }}/lib/include"
 
-	clang $flags "src/scanner.c" -c -o "$obj/scanner.o"
-	clang $flags "src/parser.c" -c -o "$obj/parser.o"
-	sources="$obj/scanner.o $obj/parser.o" 
+	sources="{{src}}/scanner.c {{src}}/parser.c {{bindings}}/fuzz.c" 
 	link="-L{{ts_src}} -ltree-sitter"
 	
-	clang $flags --verbose -o "$out/fuzz.out" $sources "bindings/fuzz.c" $link
+	clang $flags --verbose -o "$out/fuzz.out" $sources $link
 
 	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
 	LD_LIBRARY_PATH="{{ts_src}}" "$out/fuzz.out" $fuzzer_flags {{ extra-args }}
