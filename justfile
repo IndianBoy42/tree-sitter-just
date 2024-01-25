@@ -59,8 +59,10 @@ check-c:
 		-Wno-format-pedantic \
 		-o/dev/null'
 
+src := justfile_directory() / "src"
 ts_src := justfile_directory() / "tree-sitter-src"
 ts_staticlib := ts_src / "libtree-sitter.a"
+fuzz_out := justfile_directory() / "fuzzer"
 
 # Download and build upstream tree-sitter
 tree-sitter *cflags:
@@ -81,14 +83,14 @@ fuzz *extra-args: (gen "--debug-build") (tree-sitter "-fsanitize=fuzzer,address,
 	#!/bin/sh
 	set -eaux
 
-	out="fuzzer"
+	out="{{ fuzz_out }}"
 	obj="$out/obj"
 	mkdir -p "$obj"
 	
 	
 	flags="-fsanitize=fuzzer,address,undefined"
 	flags="$flags -g -O1"
-	flags="$flags -Isrc/ -I{{ ts_src }}/lib/include"
+	flags="$flags -I{{ src }} -I{{ ts_src }}/lib/include"
 
 	clang $flags "src/scanner.c" -c -o "$obj/scanner.o"
 	clang $flags "src/parser.c" -c -o "$obj/parser.o"
@@ -120,7 +122,7 @@ fuzz *extra-args: (gen "--debug-build") (tree-sitter "-fsanitize=fuzzer,address,
 	EOF
 
 	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
-	"./$out/fuzz.out" $fuzzer_flags {{ extra-args }}
+	"/$out/fuzz.out" $fuzzer_flags {{ extra-args }}
 
 
 # Verify that the `just` tool parses all files we are using
