@@ -5,16 +5,30 @@ on:
 
 
 jobs:
-  deno:
+  codestyle:
     name: Codestyle (format and lint)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: taiki-e/install-action@just
-      - uses: denoland/setup-deno@v1
+      - uses: actions/setup-node@v4
         with:
-          deno-version: "~1.39"
+          node-version: 18
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+      - run: |
+          npm --version
+          npx --version
+      - run: npm install --locked --include=dev
       - run: just --verbose ci-codestyle
 
   test:

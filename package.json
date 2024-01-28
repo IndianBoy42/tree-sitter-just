@@ -1,12 +1,10 @@
 {
   "name": "tree-sitter-just",
+  "author": "Anshuman Medhi",
+  "license": "MIT",
   "version": "0.1.0",
   "description": "Treesitter grammar for Justfiles (casey/just)",
   "main": "grammar.js",
-  "scripts": {
-    "test": "npm run gen && tree-sitter test",
-    "gen": "tree-sitter generate && python3 build-flavored-queries.py"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/IndianBoy42/tree-sitter-just"
@@ -17,14 +15,24 @@
     "parser",
     "lexer"
   ],
-  "author": "Anshuman Medhi",
-  "license": "MIT",
   "dependencies": {
+    "eslint-config-prettier": "^9.1.0",
     "nan": "^2.18.0",
+    "prettier": "^3.2.5",
     "tree-sitter": "^0.20.6"
   },
   "devDependencies": {
+    "eslint": ">=5.16.0",
+    "eslint-config-google": "^0.14.0",
     "tree-sitter-cli": "^0.20.8"
+  },
+  "scripts": {
+    "test": "npm run gen && tree-sitter test",
+    "gen": "tree-sitter generate && python3 build-flavored-queries.py",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "tree-sitter": [
     {
@@ -41,8 +49,12 @@
       ],
       "injection-regex": "^(?i)just(file)?$",
       "first-line-regex": "#!\\S*bin\\S*[/ ]just",
-      "highlights": ["queries-src/highlights.scm"],
-      "locals": ["queries-src/locals.scm"]
+      "highlights": [
+        "queries-src/highlights.scm"
+      ],
+      "locals": [
+        "queries-src/locals.scm"
+      ]
     }
   ]
 }
