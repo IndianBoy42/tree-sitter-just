@@ -39,6 +39,13 @@ module.exports = grammar({
     $._indent,
     $._dedent,
     $._newline,
+    $.text,
+    $.error_recovery,
+  ],
+
+  extras: $ => [
+    $.comment,
+    /\s/,
   ],
 
   inline: $ => [
@@ -62,7 +69,6 @@ module.exports = grammar({
     //               | import
     //               | module
     //               | setting
-    //               | _eol
     item: $ => choice(
       $.recipe,
       $.alias,
@@ -71,12 +77,7 @@ module.exports = grammar({
       $.import,
       $.module,
       $.setting,
-      $._eol,
     ),
-
-    // _eol           : NEWLINE
-    //               | COMMENT NEWLINE
-    _eol: $ => choice($._newline, $.comment),
 
     // alias         : 'alias' NAME ':=' NAME
     alias: $ => seq(
@@ -91,7 +92,7 @@ module.exports = grammar({
       field('left', $.identifier),
       ':=',
       field('right', $.expression),
-      $._eol,
+      $._newline,
     ),
 
     // export        : 'export' assignment
@@ -125,7 +126,7 @@ module.exports = grammar({
             ),
           ),
         ),
-        $._eol,
+        $._newline,
       ),
       seq(
         'set',
@@ -135,7 +136,7 @@ module.exports = grammar({
           'right',
           array($.string_literal),
         ),
-        $._eol,
+        $._newline,
       ),
     ),
 
@@ -216,11 +217,11 @@ module.exports = grammar({
       '[',
       field('contents', comma_sep1(field('attr_item', $.identifier))),
       ']',
-      $._eol,
+      $._newline,
     ),
 
     // A complete recipe
-    // recipe        : attribute? '@'? NAME parameter* variadic_parameters? ':' dependency* body?
+    // recipe        : attribute? '@'? NAM parameter* variadic_parameters? ':' dependency* body?
     recipe: $ => seq(
       repeat($.attribute),
       $.recipe_header,
@@ -230,7 +231,7 @@ module.exports = grammar({
 
     recipe_header: $ => seq(
       optional('@'),
-      field('recipe_name', $.identifier),
+      field('name', $.identifier),
       optional($.parameters),
       ':',
       optional($.dependencies),
@@ -277,30 +278,22 @@ module.exports = grammar({
     // body          : INDENT line+ DEDENT
     recipe_body: $ => seq(
       $._indent,
-      field('contents', seq(optional($.shebang), repeat($.recipe_line))),
+      field('content', seq(
+        optional($.shebang),
+        repeat(seq($.recipe_line, $._newline)),
+        $._newline,
+      )),
       $._dedent,
     ),
 
     recipe_line: $ => seq(
       optional($.recipe_line_prefix),
-      repeat(choice($.text, $.interpolation)),
-      $._newline,
+      repeat1(choice($.text, $.interpolation)),
     ),
 
     recipe_line_prefix: _ => choice('@-', '-@', '@', '-'),
 
     shebang: $ => seq(/\s*#!.*/, $._newline),
-
-    // `# ...` comment
-    comment: $ => seq(/#.*/, $._newline),
-
-    // notinterpolation: $ => /[^{][^{]\S*/,
-    notinterpolation: _ => /[^\s{][^\s{]\S*/,
-
-    // interpolation : '{{' expression '}}'
-    interpolation: $ => seq('{{', $.expression, '}}'),
-
-    identifier: _ => /[a-zA-Z_][a-zA-Z0-9_-]*/,
 
     // string        : STRING
     //               | INDENTED_STRING
@@ -330,7 +323,12 @@ module.exports = grammar({
     _backticked: _ => seq('`', repeat(/./), '`'),
     _indented_backticked: _ => seq('```', repeat(/./), '```'),
 
-    text: _ => /.+/, // recipe TEXT, only matches in a recipe body
-    // text: _ => /\S+/, //recipe TEXT, only matches in a recipe body
+    // interpolation : '{{' expression '}}'
+    interpolation: $ => seq('{{', $.expression, '}}'),
+
+    identifier: _ => /[a-zA-Z_][a-zA-Z0-9_-]*/,
+
+    // `# ...` comment
+    comment: _ => token(prec(-1, /#.*/)),
   },
 });
