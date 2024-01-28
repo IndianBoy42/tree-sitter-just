@@ -266,9 +266,10 @@ foo := if bar == baz { qux } else { quux }
         (expression
           (value
             (identifier)))
-        (expression
-          (value
-            (identifier)))))))
+        (else_clause
+          (expression
+            (value
+              (identifier))))))))
 
 ================================================================================
 else if
@@ -299,40 +300,43 @@ foo := if a == "x" {
         (expression
           (value
             (string)))
-        (condition
-          (expression
-            (value
-              (string)))
-          (expression
-            (value
-              (string))))
-        (expression
-          (value
-            (function_call
-              (identifier)
-              (sequence
-                (expression
-                  (value
-                    (string)))))))
-        (condition
-          (expression
-            (value
-              (string)))
-          (expression
-            (value
-              (string))))
-        (expression
-          (if_expression
-            (condition
-              (expression
-                (value
-                  (identifier))))
+        (else_if_clause
+          (condition
             (expression
               (value
-                (identifier)))))
-        (expression
-          (value
-            (identifier)))))))
+                (string)))
+            (expression
+              (value
+                (string))))
+          (expression
+            (value
+              (function_call
+                (identifier)
+                (sequence
+                  (expression
+                    (value
+                      (string))))))))
+        (else_if_clause
+          (condition
+            (expression
+              (value
+                (string)))
+            (expression
+              (value
+                (string))))
+          (expression
+            (if_expression
+              (condition
+                (expression
+                  (value
+                    (identifier))))
+              (expression
+                (value
+                  (identifier))))))
+        (else_clause
+          (expression
+            (value
+              (identifier))))))))
 
 ================================================================================
 function
