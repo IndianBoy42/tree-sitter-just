@@ -10,6 +10,8 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+const ESCAPE_SEQUENCE = token(/\\[nrt"\\]/);
+
 /** Comma separated list with at least one item */
 function comma_sep1(item) {
   return seq(item, repeat(seq(",", item)));
@@ -314,10 +316,11 @@ module.exports = grammar({
       ),
 
     _raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
-    _string: ($) => seq('"', repeat(choice($.string_escape, /[^\\"]+/)), '"'),
+    _string: ($) => seq('"', repeat(choice($.escape_sequence, /[^\\"]+/)), '"'),
     _string_indented: ($) =>
-      seq('"""', repeat(choice($.string_escape, /[^\\"]+/)), '"""'),
-    string_escape: (_) => /\\[nrt"\\]/,
+      seq('"""', repeat(choice($.escape_sequence, /[^\\"]+/)), '"""'),
+
+    escape_sequence: (_) => ESCAPE_SEQUENCE,
 
     _backticked: (_) => seq("`", repeat(/./), "`"),
     _indented_backticked: (_) => seq("```", repeat(/./), "```"),

@@ -682,7 +682,7 @@
       "required": false,
       "types": [
         {
-          "type": "string_escape",
+          "type": "escape_sequence",
           "named": true
         }
       ]
@@ -862,6 +862,10 @@
     "named": false
   },
   {
+    "type": "escape_sequence",
+    "named": true
+  },
+  {
     "type": "export",
     "named": false
   },
@@ -892,10 +896,6 @@
   {
     "type": "shell",
     "named": false
-  },
-  {
-    "type": "string_escape",
-    "named": true
   },
   {
     "type": "text",

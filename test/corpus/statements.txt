@@ -131,8 +131,8 @@ baz := "a\"\t"
       (expression
         (value
           (string_literal
-            (string_escape)
-            (string_escape))))
+            (escape_sequence)
+            (escape_sequence))))
       (eol)))
   (item
     (eol)))
@@ -175,8 +175,8 @@ def \"
       (expression
         (value
           (string_literal
-            (string_escape)
-            (string_escape))))
+            (escape_sequence)
+            (escape_sequence))))
       (eol)))
   (item
     (eol)))
