@@ -43,8 +43,8 @@ module.exports = grammar({
 
   inline: $ => [
     $._string,
-    $._string_indented,
-    $._raw_string_indented,
+    $._indented_string,
+    $._raw_indented_string,
     $._expression_braced,
     $._expression_recurse,
   ],
@@ -62,7 +62,7 @@ module.exports = grammar({
     //               | import
     //               | module
     //               | setting
-    //               | eol
+    //               | _eol
     item: $ => choice(
       $.recipe,
       $.alias,
@@ -71,12 +71,12 @@ module.exports = grammar({
       $.import,
       $.module,
       $.setting,
-      $.eol,
+      $._eol,
     ),
 
-    // eol           : NEWLINE
+    // _eol           : NEWLINE
     //               | COMMENT NEWLINE
-    eol: $ => choice($._newline, $.comment),
+    _eol: $ => choice($._newline, $.comment),
 
     // alias         : 'alias' NAME ':=' NAME
     alias: $ => seq(
@@ -86,12 +86,12 @@ module.exports = grammar({
       field('right', $.identifier),
     ),
 
-    // assignment    : NAME ':=' expression eol
+    // assignment    : NAME ':=' expression _eol
     assignment: $ => seq(
       field('left', $.identifier),
       ':=',
       field('right', $.expression),
-      $.eol,
+      $._eol,
     ),
 
     // export        : 'export' assignment
@@ -125,7 +125,7 @@ module.exports = grammar({
             ),
           ),
         ),
-        $.eol,
+        $._eol,
       ),
       seq(
         'set',
@@ -135,7 +135,7 @@ module.exports = grammar({
           'right',
           array($.string_literal),
         ),
-        $.eol,
+        $._eol,
       ),
     ),
 
@@ -216,7 +216,7 @@ module.exports = grammar({
       '[',
       field('contents', comma_sep1(field('attr_item', $.identifier))),
       ']',
-      $.eol,
+      $._eol,
     ),
 
     // A complete recipe
