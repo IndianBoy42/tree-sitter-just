@@ -1,12 +1,8 @@
 {
   "name": "tree-sitter-just",
   "version": "0.1.0",
-  "description": "Treesitter grammar for Justfiles (casey/just)",
-  "main": "grammar.js",
-  "scripts": {
-    "test": "npm run gen && tree-sitter test",
-    "gen": "tree-sitter generate && python3 build-flavored-queries.py"
-  },
+  "description": "Justfiles grammar for tree-sitter",
+  "main": "bindings/node",
   "repository": {
     "type": "git",
     "url": "https://github.com/IndianBoy42/tree-sitter-just"
@@ -17,16 +13,27 @@
     "parser",
     "lexer"
   ],
-  "author": "Anshuman Medhi",
+  "author": "Anshuman Medhi <amedhi@connect.ust.uk>",
+  "contributors": [
+    "Trevor Gross <tmgross@umich.edu>",
+    "Amaan Qureshi <amaanq12@gmail.com>"
+  ],
   "license": "MIT",
   "dependencies": {
-    "nan": "^2.18.0",
-    "tree-sitter": "^0.20.6"
+    "nan": "^2.18.0"
   },
   "devDependencies": {
-    "eslint": ">=5.16.0",
+    "eslint": ">=8.56.0",
     "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "^0.20.8"
+    "tree-sitter-cli": "^0.20.8",
+    "node-gyp": "^10.0.1"
+  },
+  "scripts": {
+    "build": "tree-sitter generate && node-gyp build",
+    "lint": "eslint grammar.js",
+    "test": "tree-sitter test && tree-sitter parse examples/* --quiet --time",
+    "test-windows": "tree-sitter test",
+    "gen": "tree-sitter generate && python3 build-flavored-queries.py"
   },
   "tree-sitter": [
     {
@@ -42,13 +49,7 @@
         ".Justfile"
       ],
       "injection-regex": "^(?i)just(file)?$",
-      "first-line-regex": "#!\\S*bin\\S*[/ ]just",
-      "highlights": [
-        "queries-src/highlights.scm"
-      ],
-      "locals": [
-        "queries-src/locals.scm"
-      ]
+      "first-line-regex": "#!\\S*bin\\S*[/ ]just"
     }
   ]
 }
