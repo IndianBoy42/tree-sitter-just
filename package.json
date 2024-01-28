@@ -24,6 +24,8 @@
     "tree-sitter": "^0.20.6"
   },
   "devDependencies": {
+    "eslint": ">=5.16.0",
+    "eslint-config-google": "^0.14.0",
     "tree-sitter-cli": "^0.20.8"
   },
   "tree-sitter": [
@@ -41,8 +43,12 @@
       ],
       "injection-regex": "^(?i)just(file)?$",
       "first-line-regex": "#!\\S*bin\\S*[/ ]just",
-      "highlights": ["queries-src/highlights.scm"],
-      "locals": ["queries-src/locals.scm"]
+      "highlights": [
+        "queries-src/highlights.scm"
+      ],
+      "locals": [
+        "queries-src/locals.scm"
+      ]
     }
   ]
 }
