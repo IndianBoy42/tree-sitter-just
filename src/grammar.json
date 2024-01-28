@@ -1140,38 +1140,34 @@
           "name": "_indent"
         },
         {
-          "type": "FIELD",
-          "name": "content",
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "shebang"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
           "content": {
-            "type": "SEQ",
+            "type": "CHOICE",
             "members": [
               {
-                "type": "CHOICE",
+                "type": "SEQ",
                 "members": [
                   {
                     "type": "SYMBOL",
-                    "name": "shebang"
+                    "name": "recipe_line"
                   },
                   {
-                    "type": "BLANK"
+                    "type": "SYMBOL",
+                    "name": "_newline"
                   }
                 ]
-              },
-              {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "recipe_line"
-                    },
-                    {
-                      "type": "SYMBOL",
-                      "name": "_newline"
-                    }
-                  ]
-                }
               },
               {
                 "type": "SYMBOL",
@@ -1179,6 +1175,10 @@
               }
             ]
           }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_newline"
         },
         {
           "type": "SYMBOL",

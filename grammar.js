@@ -272,14 +272,9 @@ module.exports = grammar({
     recipe_body: ($) =>
       seq(
         $._indent,
-        field(
-          "content",
-          seq(
-            optional($.shebang),
-            repeat(seq($.recipe_line, $._newline)),
-            $._newline,
-          ),
-        ),
+        optional($.shebang),
+        repeat(choice(seq($.recipe_line, $._newline), $._newline)),
+        $._newline,
         $._dedent,
       ),
 
