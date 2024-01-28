@@ -317,15 +317,15 @@ module.exports = grammar({
     _raw_string_indented: _ => seq('\'\'\'', repeat(/./), '\'\'\''),
     _string: $ => seq(
       '"',
-      repeat(choice($.string_escape, /[^\\"]+/)),
+      repeat(choice($.escape_sequence, /[^\\"]+/)),
       '"',
     ),
     _string_indented: $ => seq(
       '"""',
-      repeat(choice($.string_escape, /[^\\"]+/)),
+      repeat(choice($.escape_sequence, /[^\\"]+/)),
       '"""',
     ),
-    string_escape: _ => /\\[nrt"\\]/,
+    escape_sequence: _ => /\\[nrt"\\]/,
 
     _backticked: _ => seq('`', repeat(/./), '`'),
     _indented_backticked: _ => seq('```', repeat(/./), '```'),
