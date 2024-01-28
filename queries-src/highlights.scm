@@ -71,7 +71,7 @@
 (dependency_expression recipe: (identifier) @function)
 
 ; handle escape sequences
-(string_literal (string_escape) @constant.character.escape)
+(string_literal (escape_sequence) @constant.character.escape)
 (string_literal) @string
 
 (comment) @comment.line

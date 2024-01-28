@@ -1350,7 +1350,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "string_escape"
+                "name": "escape_sequence"
               },
               {
                 "type": "PATTERN",
@@ -1379,7 +1379,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "string_escape"
+                "name": "escape_sequence"
               },
               {
                 "type": "PATTERN",
@@ -1394,9 +1394,12 @@
         }
       ]
     },
-    "string_escape": {
-      "type": "PATTERN",
-      "value": "\\\\[nrt\"\\\\]"
+    "escape_sequence": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PATTERN",
+        "value": "\\\\[nrt\"\\\\]"
+      }
     },
     "_backticked": {
       "type": "SEQ",
