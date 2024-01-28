@@ -11,7 +11,6 @@ bar:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
@@ -25,8 +24,7 @@ bar:
         (identifier))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 quiet
@@ -38,15 +36,13 @@ quiet
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
         (identifier))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 dependencies
@@ -58,7 +54,6 @@ foo: bar baz
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
@@ -70,8 +65,7 @@ foo: bar baz
             (identifier))))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 arguments
@@ -89,7 +83,6 @@ corge *grault:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
@@ -123,8 +116,7 @@ corge *grault:
               (identifier)))))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 dependency call
@@ -145,7 +137,6 @@ corge: foo (quux corge + banana)
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
@@ -211,8 +202,7 @@ corge: foo (quux corge + banana)
                   (identifier)))))))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 subsequent dependencies
@@ -230,7 +220,6 @@ baz: foo && (bar "x")
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
@@ -277,8 +266,7 @@ baz: foo && (bar "x")
                   (string_literal)))))))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 attribute
@@ -291,7 +279,6 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (attribute
@@ -300,8 +287,7 @@ foo:
         (identifier))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 stacked attributes
@@ -315,7 +301,6 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (attribute
@@ -326,8 +311,7 @@ foo:
         (identifier))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 sequence attributes
@@ -340,7 +324,6 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (attribute
@@ -350,8 +333,7 @@ foo:
         (identifier))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 body shebang
@@ -366,7 +348,6 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
@@ -376,10 +357,14 @@ foo:
         (recipe_line
           (text))
         (recipe_line
+          (text)
+          (interpolation
+            (expression
+              (value
+                (identifier))))
           (text))
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
 
 ================================================================================
 longer bodies
@@ -404,7 +389,6 @@ bar:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (recipe
       (recipe_header
@@ -430,5 +414,4 @@ bar:
         (recipe_line
           (text))
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))

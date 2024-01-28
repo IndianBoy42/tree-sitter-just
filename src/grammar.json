@@ -56,23 +56,6 @@
         {
           "type": "SYMBOL",
           "name": "setting"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_eol"
-        }
-      ]
-    },
-    "_eol": {
-      "type": "CHOICE",
-      "members": [
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "comment"
         }
       ]
     },
@@ -130,7 +113,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_eol"
+          "name": "_newline"
         }
       ]
     },
@@ -350,7 +333,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_eol"
+              "name": "_newline"
             }
           ]
         },
@@ -458,7 +441,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "_eol"
+              "name": "_newline"
             }
           ]
         }
@@ -882,7 +865,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_eol"
+          "name": "_newline"
         }
       ]
     },
@@ -935,7 +918,7 @@
         },
         {
           "type": "FIELD",
-          "name": "recipe_name",
+          "name": "name",
           "content": {
             "type": "SYMBOL",
             "name": "identifier"
@@ -1154,7 +1137,7 @@
         },
         {
           "type": "FIELD",
-          "name": "contents",
+          "name": "content",
           "content": {
             "type": "SEQ",
             "members": [
@@ -1173,9 +1156,22 @@
               {
                 "type": "REPEAT",
                 "content": {
-                  "type": "SYMBOL",
-                  "name": "recipe_line"
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "SYMBOL",
+                      "name": "recipe_line"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "_newline"
+                    }
+                  ]
                 }
+              },
+              {
+                "type": "SYMBOL",
+                "name": "_newline"
               }
             ]
           }
@@ -1202,7 +1198,7 @@
           ]
         },
         {
-          "type": "REPEAT",
+          "type": "REPEAT1",
           "content": {
             "type": "CHOICE",
             "members": [
@@ -1216,10 +1212,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
         }
       ]
     },
@@ -1256,44 +1248,6 @@
           "name": "_newline"
         }
       ]
-    },
-    "comment": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "PATTERN",
-          "value": "#.*"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
-        }
-      ]
-    },
-    "notinterpolation": {
-      "type": "PATTERN",
-      "value": "[^\\s{][^\\s{]\\S*"
-    },
-    "interpolation": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "{{"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "expression"
-        },
-        {
-          "type": "STRING",
-          "value": "}}"
-        }
-      ]
-    },
-    "identifier": {
-      "type": "PATTERN",
-      "value": "[a-zA-Z_][a-zA-Z0-9_-]*"
     },
     "string_literal": {
       "type": "CHOICE",
@@ -1441,12 +1395,44 @@
         }
       ]
     },
-    "text": {
+    "interpolation": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{{"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "STRING",
+          "value": "}}"
+        }
+      ]
+    },
+    "identifier": {
       "type": "PATTERN",
-      "value": ".+"
+      "value": "[a-zA-Z_][a-zA-Z0-9_-]*"
+    },
+    "comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "PREC",
+        "value": -1,
+        "content": {
+          "type": "PATTERN",
+          "value": "#.*"
+        }
+      }
     }
   },
   "extras": [
+    {
+      "type": "SYMBOL",
+      "name": "comment"
+    },
     {
       "type": "PATTERN",
       "value": "\\s"
@@ -1466,6 +1452,14 @@
     {
       "type": "SYMBOL",
       "name": "_newline"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "text"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "error_recovery"
     }
   ],
   "inline": [

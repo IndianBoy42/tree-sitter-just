@@ -8,7 +8,7 @@
 (assignment left: (identifier) @local.definition.variable)
 (module mod_name: (identifier) @local.definition.namespace)
 (parameter param: (identifier) @local.definition.variable)
-(recipe_header recipe_name: (identifier) @local.definition.function)
+(recipe_header name: (identifier) @local.definition.function)
 
 ; reference locations
 (alias right: (identifier) @local.reference.variable)

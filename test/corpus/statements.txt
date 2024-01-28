@@ -4,8 +4,7 @@ empty
 
 --------------------------------------------------------------------------------
 
-(source_file
-  (item))
+(source_file)
 
 ================================================================================
 assignment
@@ -16,14 +15,12 @@ foo := "abc"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
       (expression
         (value
-          (string_literal)))))
-  (item))
+          (string_literal))))))
 
 ================================================================================
 expression
@@ -34,7 +31,6 @@ foo := "abc" + 'def'
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -42,8 +38,7 @@ foo := "abc" + 'def'
         (value
           (string_literal))
         (value
-          (string_literal)))))
-  (item))
+          (string_literal))))))
 
 ================================================================================
 paths
@@ -56,7 +51,6 @@ combined := "foo" / bar() / baz
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -81,8 +75,7 @@ combined := "foo" / bar() / baz
           (function_call
             (identifier)))
         (value
-          (identifier)))))
-  (item))
+          (identifier))))))
 
 ================================================================================
 basic strings
@@ -97,7 +90,6 @@ baz := "a\"\t"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -117,8 +109,7 @@ baz := "a\"\t"
         (value
           (string_literal
             (escape_sequence)
-            (escape_sequence))))))
-  (item))
+            (escape_sequence)))))))
 
 ================================================================================
 escape newlines
@@ -130,15 +121,13 @@ b"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
       (expression
         (value
           (string_literal
-            (escape_sequence))))))
-  (item))
+            (escape_sequence)))))))
 
 ================================================================================
 indented basic strings
@@ -156,7 +145,6 @@ def \"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -176,8 +164,7 @@ def \"
         (value
           (string_literal
             (escape_sequence)
-            (escape_sequence))))))
-  (item))
+            (escape_sequence)))))))
 
 ================================================================================
 raw strings
@@ -192,7 +179,6 @@ baz := 'a\"\t'
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -210,8 +196,7 @@ baz := 'a\"\t'
       (identifier)
       (expression
         (value
-          (string_literal)))))
-  (item))
+          (string_literal))))))
 
 ================================================================================
 indented raw strings
@@ -229,7 +214,6 @@ bar:= '''b
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -247,8 +231,7 @@ bar:= '''b
       (identifier)
       (expression
         (value
-          (string_literal)))))
-  (item))
+          (string_literal))))))
 
 ================================================================================
 backticks
@@ -262,7 +245,6 @@ bar := `echo hi
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -274,8 +256,7 @@ bar := `echo hi
       (identifier)
       (expression
         (value
-          (external_command)))))
-  (item))
+          (external_command))))))
 
 ================================================================================
 indented backticks
@@ -288,7 +269,6 @@ echo bye
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -311,7 +291,6 @@ foo := if bar == baz { qux } else { quux }
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -329,8 +308,7 @@ foo := if bar == baz { qux } else { quux }
               (identifier)))
           (expression
             (value
-              (identifier)))))))
-  (item))
+              (identifier))))))))
 
 ================================================================================
 else if
@@ -347,7 +325,6 @@ foo := if a == "x" {
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -396,8 +373,7 @@ foo := if a == "x" {
                   (identifier)))))
           (expression
             (value
-              (identifier)))))))
-  (item))
+              (identifier))))))))
 
 ================================================================================
 function
@@ -408,7 +384,6 @@ foo := some_fn("param1", param2)
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (assignment
       (identifier)
@@ -422,8 +397,7 @@ foo := some_fn("param1", param2)
                   (string_literal)))
               (expression
                 (value
-                  (identifier)))))))))
-  (item))
+                  (identifier))))))))))
 
 ================================================================================
 export
@@ -434,15 +408,13 @@ export foo := "abc"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (export
       (assignment
         (identifier)
         (expression
           (value
-            (string_literal))))))
-  (item))
+            (string_literal)))))))
 
 ================================================================================
 import
@@ -454,16 +426,12 @@ import? 'baz.just'
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (import
       (string_literal)))
-  (item)
   (item
     (import
-      (string_literal)))
-  (item)
-  (item))
+      (string_literal))))
 
 ================================================================================
 modules
@@ -477,26 +445,20 @@ mod? qux "PATH"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (module
       (identifier)))
-  (item)
   (item
     (module
       (identifier)
       (string_literal)))
-  (item)
   (item
     (module
       (identifier)))
-  (item)
   (item
     (module
       (identifier)
-      (string_literal)))
-  (item)
-  (item))
+      (string_literal))))
 
 ================================================================================
 set
@@ -511,7 +473,6 @@ set shell := ["powershell.exe", "-c"]
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
   (item
     (setting
       (identifier)))
@@ -529,8 +490,7 @@ set shell := ["powershell.exe", "-c"]
   (item
     (setting
       (string_literal)
-      (string_literal)))
-  (item))
+      (string_literal))))
 
 ================================================================================
 comment
@@ -542,17 +502,14 @@ foo := bar # + baz
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
-  (item
-    (comment))
+  (comment)
   (item
     (assignment
       (identifier)
       (expression
         (value
           (identifier)))
-      (comment)))
-  (item))
+      (comment))))
 
 ================================================================================
 shebang
@@ -566,14 +523,11 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item)
-  (item
-    (comment))
+  (shebang)
   (item
     (recipe
       (recipe_header
         (identifier))
       (recipe_body
         (recipe_line
-          (text)))))
-  (item))
+          (text))))))
