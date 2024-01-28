@@ -225,7 +225,7 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const
             // Can't start with #!
 
             // printf("lookahead: %c\n", lexer->lookahead);
-            if (lexer->lookahead == '#') {
+            if (lexer->lookahead == '#' && !advanced_once) {
                 advance(lexer);
                 if (lexer->lookahead == '!') {
                     return false;
