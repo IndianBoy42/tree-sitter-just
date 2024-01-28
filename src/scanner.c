@@ -202,7 +202,7 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
              lexer->lookahead != '{') {
         // Can't start with #!
 
-        if (lexer->lookahead == '#') {
+        if (lexer->lookahead == '#' && !advanced_once) {
           advance(lexer);
           if (lexer->lookahead == '!') {
             return false;
@@ -240,7 +240,6 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
 
           // scan till a balanced pair of }} are found, then assume it's a valid
           // interpolation
-
           while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
             advance(lexer);
             // printf("[[]]lookahead: %d\n", lexer->lookahead);

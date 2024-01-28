@@ -445,21 +445,20 @@
   {
     "type": "recipe_body",
     "named": true,
-    "fields": {
-      "content": {
-        "multiple": true,
-        "required": true,
-        "types": [
-          {
-            "type": "recipe_line",
-            "named": true
-          },
-          {
-            "type": "shebang",
-            "named": true
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "recipe_line",
+          "named": true
+        },
+        {
+          "type": "shebang",
+          "named": true
+        }
+      ]
     }
   },
   {
