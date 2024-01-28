@@ -59,8 +59,7 @@
     "windows-shell"
     )))
 
-(recipe_header
-  recipe_name: (identifier) @function)
+(recipe_header name: (identifier) @function)
 
 ; recipe argument specification
 ; pattern includes variadic_parameter

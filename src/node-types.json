@@ -49,16 +49,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -89,25 +79,10 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
-        }
-      ]
     }
   },
   {
     "type": "boolean",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "comment",
     "named": true,
     "fields": {}
   },
@@ -320,7 +295,7 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "alias",
@@ -328,10 +303,6 @@
         },
         {
           "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "comment",
           "named": true
         },
         {
@@ -455,9 +426,9 @@
     "type": "recipe_body",
     "named": true,
     "fields": {
-      "contents": {
+      "content": {
         "multiple": true,
-        "required": false,
+        "required": true,
         "types": [
           {
             "type": "recipe_line",
@@ -475,7 +446,7 @@
     "type": "recipe_header",
     "named": true,
     "fields": {
-      "recipe_name": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -507,7 +478,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "interpolation",
@@ -622,16 +593,6 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "comment",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -841,6 +802,10 @@
   {
     "type": "alias",
     "named": false
+  },
+  {
+    "type": "comment",
+    "named": true
   },
   {
     "type": "else",
