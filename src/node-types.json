@@ -135,10 +135,6 @@
       "required": true,
       "types": [
         {
-          "type": "dependencies",
-          "named": true
-        },
-        {
           "type": "dependency",
           "named": true
         }
