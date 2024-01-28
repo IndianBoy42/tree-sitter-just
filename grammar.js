@@ -254,8 +254,7 @@ module.exports = grammar({
     variadic_parameter: ($) =>
       seq(field("kleene", choice("*", "+")), $.parameter),
 
-    dependencies: ($) =>
-      prec.left(seq($.dependency, repeat(seq(optional("&&"), $.dependencies)))),
+    dependencies: ($) => repeat1(seq(optional("&&"), $.dependency)),
 
     // dependency    : NAME
     //               | '(' NAME expression* ')'
