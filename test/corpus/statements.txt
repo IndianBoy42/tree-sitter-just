@@ -4,9 +4,7 @@ empty
 
 --------------------------------------------------------------------------------
 
-(source_file
-  (item
-    (eol)))
+(source_file)
 
 ================================================================================
 assignment
@@ -17,17 +15,11 @@ foo := "abc"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string)))))
 
 ================================================================================
 expression
@@ -38,19 +30,13 @@ foo := "abc" + 'def'
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal))
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))
+      (value
+        (string)))))
 
 ================================================================================
 paths
@@ -63,38 +49,28 @@ combined := "foo" / bar() / baz
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal))
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal))
-        (value
-          (function_call
-            (identifier)))
-        (value
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))
+      (value
+        (function_call
           (identifier)))
-      (eol)))
-  (item
-    (eol)))
+      (value
+        (identifier)))))
 
 ================================================================================
 basic strings
@@ -109,33 +85,23 @@ baz := "a\"\t"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal
-            (string_escape)
-            (string_escape))))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string
+          (escape_sequence)
+          (escape_sequence))))))
 
 ================================================================================
 indented basic strings
@@ -153,33 +119,23 @@ def \"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal
-            (string_escape)
-            (string_escape))))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string
+          (escape_sequence)
+          (escape_sequence))))))
 
 ================================================================================
 raw strings
@@ -194,31 +150,21 @@ baz := 'a\"\t'
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string)))))
 
 ================================================================================
 indented raw strings
@@ -236,31 +182,21 @@ bar:= '''b
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (string_literal)))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string)))))
 
 ================================================================================
 backticks
@@ -274,24 +210,16 @@ bar := `echo hi
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (external_command)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (external_command)))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (external_command))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (external_command)))))
 
 ================================================================================
 indented backticks
@@ -304,22 +232,16 @@ echo bye
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (external_command)))
-      (eol)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (external_command)))
-      (eol))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (external_command))))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (external_command)))))
 
 ================================================================================
 if
@@ -330,29 +252,23 @@ foo := if bar == baz { qux } else { quux }
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (if_expression
-          (condition
-            (expression
-              (value
-                (identifier)))
-            (expression
-              (value
-                (identifier))))
+  (assignment
+    (identifier)
+    (expression
+      (if_expression
+        (condition
           (expression
             (value
               (identifier)))
           (expression
             (value
-              (identifier)))))
-      (eol)))
-  (item
-    (eol)))
+              (identifier))))
+        (expression
+          (value
+            (identifier)))
+        (expression
+          (value
+            (identifier)))))))
 
 ================================================================================
 else if
@@ -369,60 +285,54 @@ foo := if a == "x" {
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (if_expression
-          (condition
-            (expression
-              (value
-                (identifier)))
-            (expression
-              (value
-                (string_literal))))
+  (assignment
+    (identifier)
+    (expression
+      (if_expression
+        (condition
           (expression
             (value
-              (string_literal)))
-          (condition
-            (expression
-              (value
-                (string_literal)))
-            (expression
-              (value
-                (string_literal))))
+              (identifier)))
           (expression
             (value
-              (function_call
-                (identifier)
-                (sequence
-                  (expression
-                    (value
-                      (string_literal)))))))
-          (condition
-            (expression
-              (value
-                (string_literal)))
-            (expression
-              (value
-                (string_literal))))
+              (string))))
+        (expression
+          (value
+            (string)))
+        (condition
           (expression
-            (if_expression
-              (condition
+            (value
+              (string)))
+          (expression
+            (value
+              (string))))
+        (expression
+          (value
+            (function_call
+              (identifier)
+              (sequence
                 (expression
                   (value
-                    (identifier))))
-              (expression
-                (value
-                  (identifier)))))
+                    (string)))))))
+        (condition
           (expression
             (value
-              (identifier)))))
-      (eol)))
-  (item
-    (eol)))
+              (string)))
+          (expression
+            (value
+              (string))))
+        (expression
+          (if_expression
+            (condition
+              (expression
+                (value
+                  (identifier))))
+            (expression
+              (value
+                (identifier)))))
+        (expression
+          (value
+            (identifier)))))))
 
 ================================================================================
 function
@@ -433,25 +343,19 @@ foo := some_fn("param1", param2)
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (function_call
-            (identifier)
-            (sequence
-              (expression
-                (value
-                  (string_literal)))
-              (expression
-                (value
-                  (identifier)))))))
-      (eol)))
-  (item
-    (eol)))
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (function_call
+          (identifier)
+          (sequence
+            (expression
+              (value
+                (string)))
+            (expression
+              (value
+                (identifier)))))))))
 
 ================================================================================
 export
@@ -462,18 +366,12 @@ export foo := "abc"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (export
-      (assignment
-        (identifier)
-        (expression
-          (value
-            (string_literal)))
-        (eol))))
-  (item
-    (eol)))
+  (export
+    (assignment
+      (identifier)
+      (expression
+        (value
+          (string))))))
 
 ================================================================================
 import
@@ -485,20 +383,10 @@ import? 'baz.just'
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (import
-      (string_literal)))
-  (item
-    (eol))
-  (item
-    (import
-      (string_literal)))
-  (item
-    (eol))
-  (item
-    (eol)))
+  (import
+    (string))
+  (import
+    (string)))
 
 ================================================================================
 modules
@@ -512,32 +400,16 @@ mod? qux "PATH"
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (module
-      (identifier)))
-  (item
-    (eol))
-  (item
-    (module
-      (identifier)
-      (string_literal)))
-  (item
-    (eol))
-  (item
-    (module
-      (identifier)))
-  (item
-    (eol))
-  (item
-    (module
-      (identifier)
-      (string_literal)))
-  (item
-    (eol))
-  (item
-    (eol)))
+  (module
+    (identifier))
+  (module
+    (identifier)
+    (string))
+  (module
+    (identifier))
+  (module
+    (identifier)
+    (string)))
 
 ================================================================================
 set
@@ -552,33 +424,19 @@ set shell := ["powershell.exe", "-c"]
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (setting
-      (identifier)
-      (eol)))
-  (item
-    (setting
-      (identifier)
-      (boolean)
-      (eol)))
-  (item
-    (setting
-      (identifier)
-      (eol)))
-  (item
-    (setting
-      (identifier)
-      (string_literal)
-      (eol)))
-  (item
-    (setting
-      (string_literal)
-      (string_literal)
-      (eol)))
-  (item
-    (eol)))
+  (setting
+    (identifier))
+  (setting
+    (identifier)
+    (boolean))
+  (setting
+    (identifier))
+  (setting
+    (identifier)
+    (string))
+  (setting
+    (string)
+    (string)))
 
 ================================================================================
 comment
@@ -590,21 +448,13 @@ foo := bar # + baz
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (eol
-      (comment)))
-  (item
-    (assignment
-      (identifier)
-      (expression
-        (value
-          (identifier)))
-      (eol
-        (comment))))
-  (item
-    (eol)))
+  (comment)
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (identifier)))
+    (comment)))
 
 ================================================================================
 shebang
@@ -618,17 +468,10 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (eol
-      (comment)))
-  (item
-    (recipe
-      (recipe_header
-        (identifier))
-      (recipe_body
-        (recipe_line
-          (text)))))
-  (item
-    (eol)))
+  (shebang)
+  (recipe
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text)))))
