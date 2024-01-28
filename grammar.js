@@ -325,7 +325,7 @@ module.exports = grammar({
       repeat(choice($.escape_sequence, /[^\\"]+/)),
       '"""',
     ),
-    escape_sequence: _ => /\\[nrt"\\]/,
+    escape_sequence: _ => /\\([nrt"\\]|(\r?\n))/,
 
     _backticked: _ => seq('`', repeat(/./), '`'),
     _indented_backticked: _ => seq('```', repeat(/./), '```'),
