@@ -1,5 +1,6 @@
-target/**
+Cargo.lock
 node_modules
 build
-log.html
-*.wasm
+package-lock.json
+/target/
+.build/

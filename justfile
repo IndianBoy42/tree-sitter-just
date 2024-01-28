@@ -2,15 +2,15 @@
 default:
 	just --list
 
-# Run deno lint
+# Run the linter
 lint:
-	deno lint
+	npm run lint:check
 
 alias fmt := format
 
-# Run deno format
+# Autoformat code
 format:
-	deno fmt
+	npm run format:write
 
 # Generate the parser
 gen:
@@ -107,8 +107,8 @@ configure-tree-sitter:
 
 # Run lint and check formatting
 ci-codestyle:
-	deno lint
-	deno fmt --check
+	npm run format:check
+	npm run lint:check
 
 # Make sure that files have not changed
 ci-validate-generated-files:

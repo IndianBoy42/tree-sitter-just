@@ -1,11 +1,21 @@
-// Main grammar for justfiles
+/**
+ * @file Justfile grammar for tree-sitter
+ * @author Anshuman Medhi
+ * @license Apache-2.0
+ */
 
-// Comma separated list with at least one item
+/* eslint-disable arrow-parens */
+/* eslint-disable camelcase */
+/* eslint-disable-next-line spaced-comment */
+/// <reference types="tree-sitter-cli/dsl" />
+// @ts-check
+
+/** Comma separated list with at least one item */
 function comma_sep1(item) {
   return seq(item, repeat(seq(",", item)));
 }
 
-// Create an array with the given item as contents
+/** Create an array with the given item as contents */
 function array(item) {
   const array_item = field("array_item", item);
   return field(
@@ -321,7 +331,7 @@ module.exports = grammar({
     _backticked: (_) => seq("`", repeat(/./), "`"),
     _indented_backticked: (_) => seq("```", repeat(/./), "```"),
 
-    text: (_) => /.+/, //recipe TEXT, only matches in a recipe body
-    // text: (_) => /\S+/, //recipe TEXT, only matches in a recipe body
+    text: (_) => /.+/, // recipe TEXT, only matches in a recipe body
+    // text: (_) => /\S+/, // recipe TEXT, only matches in a recipe body
   },
 });
