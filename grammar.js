@@ -163,10 +163,14 @@ module.exports = grammar({
       seq(
         "if",
         $.condition,
-        $._braced_expr,
-        repeat(seq("else", "if", $.condition, $._braced_expr)),
-        optional(seq("else", $._braced_expr)),
+        field("consequence", $._braced_expr),
+        repeat(field("alternative", $.else_if_clause)),
+        optional(field("alternative", $.else_clause)),
       ),
+
+    else_if_clause: ($) => seq("else", "if", $.condition, $._braced_expr),
+
+    else_clause: ($) => seq("else", $._braced_expr),
 
     _braced_expr: ($) => seq("{", field("body", $.expression), "}"),
 

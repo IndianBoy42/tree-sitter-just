@@ -154,6 +154,48 @@
     }
   },
   {
+    "type": "else_clause",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "else_if_clause",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "condition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "export",
     "named": true,
     "fields": {},
@@ -222,8 +264,22 @@
     "type": "if_expression",
     "named": true,
     "fields": {
-      "body": {
+      "alternative": {
         "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "else_clause",
+            "named": true
+          },
+          {
+            "type": "else_if_clause",
+            "named": true
+          }
+        ]
+      },
+      "body": {
+        "multiple": false,
         "required": true,
         "types": [
           {
@@ -231,10 +287,28 @@
             "named": true
           }
         ]
+      },
+      "consequence": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "{",
+            "named": false
+          },
+          {
+            "type": "}",
+            "named": false
+          }
+        ]
       }
     },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
