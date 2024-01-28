@@ -307,20 +307,20 @@ module.exports = grammar({
     //               | RAW_STRING
     //               | INDENTED_RAW_STRING
     string_literal: $ => choice(
-      $._string_indented,
-      $._raw_string_indented,
+      $._indented_string,
+      $._raw_indented_string,
       $._string,
       // _raw_string, can't be written as a separate inline for osm reason
       /'[^']*'/,
     ),
 
-    _raw_string_indented: _ => seq('\'\'\'', repeat(/./), '\'\'\''),
+    _raw_indented_string: _ => seq('\'\'\'', repeat(/./), '\'\'\''),
     _string: $ => seq(
       '"',
       repeat(choice($.escape_sequence, /[^\\"]+/)),
       '"',
     ),
-    _string_indented: $ => seq(
+    _indented_string: $ => seq(
       '"""',
       repeat(choice($.escape_sequence, /[^\\"]+/)),
       '"""',
