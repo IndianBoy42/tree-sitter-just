@@ -49,53 +49,18 @@
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "eol",
-          "named": true
-        }
-      ]
     }
   },
   {
     "type": "attribute",
     "named": true,
-    "fields": {
-      "attr_item": {
-        "multiple": true,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      },
-      "contents": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "eol",
+          "type": "identifier",
           "named": true
         }
       ]
@@ -103,11 +68,6 @@
   },
   {
     "type": "boolean",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "comment",
     "named": true,
     "fields": {}
   },
@@ -135,10 +95,6 @@
       "required": true,
       "types": [
         {
-          "type": "dependencies",
-          "named": true
-        },
-        {
           "type": "dependency",
           "named": true
         }
@@ -149,7 +105,7 @@
     "type": "dependency",
     "named": true,
     "fields": {
-      "recipe": {
+      "name": {
         "multiple": false,
         "required": false,
         "types": [
@@ -175,17 +131,7 @@
     "type": "dependency_expression",
     "named": true,
     "fields": {
-      "expression": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
-      "recipe": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -195,18 +141,55 @@
           }
         ]
       }
-    }
-  },
-  {
-    "type": "eol",
-    "named": true,
-    "fields": {},
+    },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": false,
       "types": [
         {
-          "type": "comment",
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "else_clause",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "else_if_clause",
+    "named": true,
+    "fields": {
+      "body": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "condition",
           "named": true
         }
       ]
@@ -281,8 +264,22 @@
     "type": "if_expression",
     "named": true,
     "fields": {
-      "braced_body": {
+      "alternative": {
         "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "else_clause",
+            "named": true
+          },
+          {
+            "type": "else_if_clause",
+            "named": true
+          }
+        ]
+      },
+      "body": {
+        "multiple": false,
         "required": true,
         "types": [
           {
@@ -290,10 +287,28 @@
             "named": true
           }
         ]
+      },
+      "consequence": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          },
+          {
+            "type": "{",
+            "named": false
+          },
+          {
+            "type": "}",
+            "named": false
+          }
+        ]
       }
     },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
@@ -312,7 +327,7 @@
       "required": true,
       "types": [
         {
-          "type": "string_literal",
+          "type": "string",
           "named": true
         }
       ]
@@ -334,53 +349,10 @@
     }
   },
   {
-    "type": "item",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "alias",
-          "named": true
-        },
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "eol",
-          "named": true
-        },
-        {
-          "type": "export",
-          "named": true
-        },
-        {
-          "type": "import",
-          "named": true
-        },
-        {
-          "type": "module",
-          "named": true
-        },
-        {
-          "type": "recipe",
-          "named": true
-        },
-        {
-          "type": "setting",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "module",
     "named": true,
     "fields": {
-      "mod_name": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -396,7 +368,7 @@
       "required": false,
       "types": [
         {
-          "type": "string_literal",
+          "type": "string",
           "named": true
         }
       ]
@@ -415,17 +387,17 @@
             "named": true
           }
         ]
-      },
-      "param": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
       }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -473,28 +445,27 @@
   {
     "type": "recipe_body",
     "named": true,
-    "fields": {
-      "contents": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "recipe_line",
-            "named": true
-          },
-          {
-            "type": "shebang",
-            "named": true
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "recipe_line",
+          "named": true
+        },
+        {
+          "type": "shebang",
+          "named": true
+        }
+      ]
     }
   },
   {
     "type": "recipe_header",
     "named": true,
     "fields": {
-      "recipe_name": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -526,7 +497,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "interpolation",
@@ -581,17 +552,7 @@
           }
         ]
       },
-      "array_item": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "string_literal",
-            "named": true
-          }
-        ]
-      },
-      "contents": {
+      "content": {
         "multiple": true,
         "required": false,
         "types": [
@@ -600,7 +561,17 @@
             "named": false
           },
           {
-            "type": "string_literal",
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "element": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
             "named": true
           }
         ]
@@ -636,27 +607,12 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string",
             "named": true
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "eol",
-          "named": true
-        }
-      ]
     }
-  },
-  {
-    "type": "shebang",
-    "named": true,
-    "fields": {}
   },
   {
     "type": "source_file",
@@ -667,7 +623,31 @@
       "required": false,
       "types": [
         {
-          "type": "item",
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "export",
+          "named": true
+        },
+        {
+          "type": "import",
+          "named": true
+        },
+        {
+          "type": "module",
+          "named": true
+        },
+        {
+          "type": "recipe",
+          "named": true
+        },
+        {
+          "type": "setting",
           "named": true
         },
         {
@@ -678,7 +658,7 @@
     }
   },
   {
-    "type": "string_literal",
+    "type": "string",
     "named": true,
     "fields": {},
     "children": {
@@ -686,7 +666,7 @@
       "required": false,
       "types": [
         {
-          "type": "string_escape",
+          "type": "escape_sequence",
           "named": true
         }
       ]
@@ -717,7 +697,7 @@
           "named": true
         },
         {
-          "type": "string_literal",
+          "type": "string",
           "named": true
         }
       ]
@@ -726,22 +706,7 @@
   {
     "type": "variadic_parameter",
     "named": true,
-    "fields": {
-      "kleene": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "*",
-            "named": false
-          },
-          {
-            "type": "+",
-            "named": false
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
       "multiple": false,
       "required": true,
@@ -862,8 +827,16 @@
     "named": false
   },
   {
+    "type": "comment",
+    "named": true
+  },
+  {
     "type": "else",
     "named": false
+  },
+  {
+    "type": "escape_sequence",
+    "named": true
   },
   {
     "type": "export",
@@ -894,12 +867,12 @@
     "named": false
   },
   {
-    "type": "shell",
-    "named": false
+    "type": "shebang",
+    "named": true
   },
   {
-    "type": "string_escape",
-    "named": true
+    "type": "shell",
+    "named": false
   },
   {
     "type": "text",
