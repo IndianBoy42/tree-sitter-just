@@ -24,16 +24,18 @@ typedef struct Scanner {
     uint32_t prev_indent;
     uint16_t advance_brace_count;
     bool has_seen_eof;
-
 } Scanner;
 
 // This function should create your scanner object. It will only be called once
 // anytime your language is set on a parser. Often, you will want to allocate
 // memory on the heap and return a pointer to it. If your external scanner
 // doesn’t need to maintain any state, it’s ok to return NULL.
-void *tree_sitter_just_external_scanner_create(void) {
+void *tree_sitter_just_external_scanner_create() {
     Scanner *ptr = (Scanner *)calloc(SBYTES, 1);
-    assert(ptr);
+    if (ptr == NULL) {
+        fprintf(stderr, "tree_sitter_just_external_scanner_create: out of memory\n");
+        abort();
+    }
     return ptr;
 }
 
@@ -69,18 +71,6 @@ static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 // Continue and discard the preceding character
 static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 
-// #define advance(lexer)                                                                                                 \
-//     {                                                                                                                  \
-//         printf("advance %c, line: %d\n", (lexer)->lookahead, __LINE__);                                                \
-//         ((lexer)->advance)(lexer, false);                                                                              \
-//     }
-//
-// #define skip(lexer) \
-//     { \
-//         printf("skip %c, line: %d\n", (lexer)->lookahead, __LINE__); \
-//         ((lexer)->advance)(lexer, true); \
-//     }
-
 // Returns true if the lexer is currently in error recovery
 static inline bool in_error_recovery(const bool *valid_symbols) { return valid_symbols[ERROR_RECOVERY]; }
 
@@ -112,14 +102,6 @@ static bool handle_eof(TSLexer *lexer, Scanner *state, const bool *valid_symbols
 bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     Scanner *scanner = (Scanner *)(payload);
 
-    // for (int i = 0; i < 5; i++) {
-    //     printf("valid_symbols[%d]: %d\n", i, valid_symbols[i]);
-    // }
-
-    // if (in_error_recovery(valid_symbols)) {
-    //     return false;
-    // }
-
     if (lexer->eof(lexer)) {
         return handle_eof(lexer, scanner, valid_symbols);
     }
@@ -143,15 +125,12 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const
         }
 
         if (eol_found && !escape) {
-            // printf("newline, valid_symbols[DEDENT]: %d\n", valid_symbols[DEDENT]);
             lexer->result_symbol = NEWLINE;
             return true;
         }
     }
 
     if (valid_symbols[INDENT] || valid_symbols[DEDENT]) {
-        // printf("valid_symbols[INDENT]: %d, valid_symbols[DEDENT]: %d\n", valid_symbols[INDENT],
-        // valid_symbols[DEDENT]);
         while (!lexer->eof(lexer) && isspace(lexer->lookahead)) {
             switch (lexer->lookahead) {
                 case '\n':
@@ -174,18 +153,12 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const
         }
 
         uint32_t indent = lexer->get_column(lexer);
-        // printf("indent: %d, prev_indent: %d\n", indent, scanner->prev_indent);
-        // lexer->mark_end(lexer);
-        // advance(lexer);
-        // printf("lookahead: %c\n", lexer->lookahead);
         if (indent > scanner->prev_indent && valid_symbols[INDENT] && scanner->prev_indent == 0) {
-            // printf("indent\n");
             lexer->result_symbol = INDENT;
             scanner->prev_indent = indent;
             return true;
         }
         if (indent < scanner->prev_indent && valid_symbols[DEDENT] && indent == 0) {
-            // printf("dedent\n");
             lexer->result_symbol = DEDENT;
             scanner->prev_indent = indent;
             return true;
@@ -193,18 +166,8 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const
     }
 
     if (valid_symbols[TEXT]) {
-        // skip indentation level, and parse while not {
-
-        uint8_t skipped = 0;
-        while (iswspace(lexer->lookahead)) {
-            if (skipped == scanner->prev_indent) {
-                break;
-            }
-            skip(lexer);
-            skipped++;
-        }
-
-        if (lexer->lookahead == '\n') {
+        if (lexer->get_column(lexer) == scanner->prev_indent &&
+            (lexer->lookahead == '\n' || lexer->lookahead == '@' || lexer->lookahead == '-')) {
             return false;
         }
 
@@ -224,7 +187,6 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const
         while (!lexer->eof(lexer) && lexer->lookahead != '\n' && lexer->lookahead != '{') {
             // Can't start with #!
 
-            // printf("lookahead: %c\n", lexer->lookahead);
             if (lexer->lookahead == '#' && !advanced_once) {
                 advance(lexer);
                 if (lexer->lookahead == '!') {
@@ -246,7 +208,6 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const
             lexer->mark_end(lexer);
             advance(lexer);
 
-            // printf("lookahead: %d\n", lexer->lookahead);
             if (lexer->eof(lexer) || lexer->lookahead == '\n') { // EOF without anything after {
                 lexer->mark_end(lexer);
                 lexer->result_symbol = TEXT;
@@ -265,11 +226,9 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer, const
 
                 while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
                     advance(lexer);
-                    // printf("[[]]lookahead: %d\n", lexer->lookahead);
                     if (lexer->lookahead == '}') {
                         advance(lexer);
                         if (lexer->lookahead == '}') {
-                            // printf("got text\n");
                             lexer->result_symbol = TEXT;
                             return advanced_once;
                         }

@@ -70,7 +70,7 @@ module.exports = grammar({
 
   rules: {
     // justfile      : item* EOF
-    source_file: $ => seq(optional($.shebang), repeat($._item)),
+    source_file: $ => seq(optional(seq($.shebang, $._newline)), repeat($._item)),
 
     // item          : recipe
     //               | alias
@@ -286,7 +286,7 @@ module.exports = grammar({
     // body          : INDENT line+ DEDENT
     recipe_body: $ => seq(
       $._indent,
-      optional($.shebang),
+      optional(seq($.shebang, $._newline)),
       repeat(choice(seq($.recipe_line, $._newline), $._newline)),
       $._newline,
       $._dedent,
@@ -299,7 +299,7 @@ module.exports = grammar({
 
     recipe_line_prefix: _ => choice('@-', '-@', '@', '-'),
 
-    shebang: $ => seq(/\s*#!.*/, $._newline),
+    shebang: _ => /\s*#!.*/,
 
     // string        : STRING
     //               | INDENTED_STRING
