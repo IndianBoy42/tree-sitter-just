@@ -615,11 +615,6 @@
     }
   },
   {
-    "type": "shebang",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -885,6 +880,10 @@
   {
     "type": "set",
     "named": false
+  },
+  {
+    "type": "shebang",
+    "named": true
   },
   {
     "type": "shell",

@@ -149,6 +149,7 @@ escapes := '\t\n\r\"\\'
 x := '''
   foo
   bar
+'''
 
 # this string will evaluate to `abc\n  wuv\nbar\n`
 y := """

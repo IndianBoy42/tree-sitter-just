@@ -64,7 +64,6 @@ typedef struct Scanner {
   uint32_t prev_indent;
   uint16_t advance_brace_count;
   bool has_seen_eof;
-
 } Scanner;
 
 // This function should create your scanner object. It will only be called once
@@ -73,7 +72,7 @@ typedef struct Scanner {
 // doesn’t need to maintain any state, it’s ok to return NULL.
 void *tree_sitter_just_external_scanner_create(void) {
   Scanner *ptr = (Scanner *)calloc(SBYTES, 1);
-  assertf(ptr, "memory allocation failed");
+  assertf(ptr, "tree_sitter_just_external_scanner_create: out of memory");
   return ptr;
 }
 
@@ -213,16 +212,9 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
   }
 
   if (valid_symbols[TEXT]) {
-    uint8_t skipped = 0;
-    while (iswspace(lexer->lookahead)) {
-      if (skipped == scanner->prev_indent) {
-        break;
-      }
-      skip(lexer);
-      skipped++;
-    }
-
-    if (lexer->lookahead == '\n') {
+    if (lexer->get_column(lexer) == scanner->prev_indent &&
+        (lexer->lookahead == '\n' || lexer->lookahead == '@' ||
+         lexer->lookahead == '-')) {
       return false;
     }
 
@@ -243,7 +235,6 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
       while (!lexer->eof(lexer) && lexer->lookahead != '\n' &&
              lexer->lookahead != '{') {
         // Can't start with #!
-
         if (lexer->lookahead == '#' && !advanced_once) {
           advance(lexer);
           if (lexer->lookahead == '!') {
@@ -284,11 +275,9 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
           // interpolation
           while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
             advance(lexer);
-            // printf("[[]]lookahead: %d\n", lexer->lookahead);
             if (lexer->lookahead == '}') {
               advance(lexer);
               if (lexer->lookahead == '}') {
-                // printf("got text\n");
                 lexer->result_symbol = TEXT;
                 return advanced_once;
               }
