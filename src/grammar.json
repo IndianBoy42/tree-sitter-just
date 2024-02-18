@@ -1398,7 +1398,7 @@
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "\\\\[nrt\"\\\\]"
+        "value": "\\\\([nrt\"\\\\]|(\\r?\\n))"
       }
     },
     "_backticked": {
