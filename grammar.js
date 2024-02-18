@@ -34,9 +34,7 @@ function array(item) {
 module.exports = grammar({
   name: "just",
   externals: ($) => [$._indent, $._dedent, $._newline],
-  inline: (
-    $,
-  ) => [
+  inline: ($) => [
     $._string,
     $._string_indented,
     $._raw_string_indented,
@@ -130,10 +128,7 @@ module.exports = grammar({
           "set",
           "shell",
           ":=",
-          field(
-            "right",
-            array($.string_literal),
-          ),
+          field("right", array($.string_literal)),
           $.eol,
         ),
       ),
@@ -265,10 +260,7 @@ module.exports = grammar({
     // dependency    : NAME
     //               | '(' NAME expression* ')'
     dependency: ($) =>
-      choice(
-        field("recipe", $.identifier),
-        $.dependency_expression,
-      ),
+      choice(field("recipe", $.identifier), $.dependency_expression),
 
     // contents of `(recipe expression)`
     dependency_expression: ($) =>

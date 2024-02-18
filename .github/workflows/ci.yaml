@@ -3,7 +3,6 @@ on:
   pull_request:
   push:
 
-
 jobs:
   codestyle:
     name: Codestyle (format and lint)
