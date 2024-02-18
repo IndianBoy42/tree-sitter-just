@@ -10,7 +10,7 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-const ESCAPE_SEQUENCE = token(/\\[nrt"\\]/);
+const ESCAPE_SEQUENCE = token(/\\([nrt"\\]|(\r?\n))/);
 
 /** Comma separated list with at least one item */
 function comma_sep1(item) {
