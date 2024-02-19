@@ -252,6 +252,10 @@ bool tree_sitter_just_external_scanner_scan(void *payload, TSLexer *lexer,
         if (advanced_once) {
           return true;
         }
+        if (lexer->eof(lexer)) {
+          return handle_eof(lexer, scanner, valid_symbols);
+        }
+        advance(lexer);
       } else if (lexer->lookahead == '{') {
         lexer->mark_end(lexer);
         advance(lexer);
