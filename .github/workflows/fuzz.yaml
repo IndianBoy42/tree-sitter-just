@@ -17,10 +17,23 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: taiki-e/install-action@just
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        shell: bash
+        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+      - uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+      - run: |
+          npm --version
+          npx --version
+      - run: npm install --locked --include=dev
       - run: just fuzz
       - name: print tests
         if: always()
         run: |
-          nm -g .fuzzer-cache/tree-sitter/libtree-sitter.a
           find . -name 'timeout-*' |
             xargs -IFNAME sh -c 'echo "\nPrinting FNAME" && base64 -i FNAME'
