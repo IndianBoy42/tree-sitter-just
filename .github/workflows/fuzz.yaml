@@ -11,6 +11,10 @@ on:
       - .github/workflows/fuzz.yaml
   workflow_dispatch:
 
+env:
+  RUST_BACKTRACE: 1
+  CI: 1
+
 jobs:
   test:
     name: Parser fuzzing
@@ -36,5 +40,5 @@ jobs:
       - run: just fuzz
       - name: Print failures
         if: always()
-        run: ls fuzzer/cache/failures/*  |
+        run: ls fuzzer/failures/*  |
           xargs -IFNAME sh -c 'echo "\nContents of FNAME:" && base64 -i FNAME'

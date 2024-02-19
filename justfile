@@ -22,6 +22,11 @@ ts_tag := "v0.20.9"
 
 base_cache_key := sha256_file(src / "scanner.c") + sha256_file(src / "parser.c") + sha256(parser_sources) + sha256(include_args) + sha256(general_cflags) + sha256(fuzzer_flags)
 
+# `timeout` is not available on all platforms, but perl often is. This needs a
+# bash shell.
+make_timeout_fn := '''function timeout() { perl -e 'alarm shift; exec @ARGV' "$@"; }'''
+verbose_flag := if env("CI", "") == "1" { "--verbose" } else { "" }
+
 # List all recipes
 default:
 	just --list
@@ -67,6 +72,7 @@ gen *extra-args:
 
 	# Run formatting only on generated files
 	npx prettier --write src/
+
 	# Only clang-format if it is available
 	which clang-format > /dev/null && \
 		clang-format -i src/parser.c || \
@@ -77,17 +83,20 @@ alias t := test
 # Run tests that are built into tree-sitter, as well as integration and Cargo tests
 test *ts-test-args: gen
 	npx tree-sitter test {{ ts-test-args }}
-	just test-parse-highlight
+	just {{ verbose_flag }} test-parse-highlight
 
-	echo && echo Running Cargo tests
+	echo '\nRunning Cargo tests'
 
 	# FIXME: xfail CI on Windows because we are getting STATUS_DLL_NOT_FOUND
 	{{ if os_family() + env("CI", "1") == "windows1" { "echo skipping tests on Windows" } else { "cargo test" } }}
 
 # Verify that tree-sitter can parse and highlight all files in the repo. Requires a tree-sitter configuration.
 test-parse-highlight:
-	#!/bin/sh
+	#!/bin/bash
 	set -eau
+	{{ if env("CI", "") == "1" { "set -x && echo running in CI" } else { "" } }}
+
+	{{ make_timeout_fn }}
 
 	echo Checking all files in the repo...
 
@@ -96,18 +105,48 @@ test-parse-highlight:
 	git ls-files '**.just' 'justfile' |
 		grep -v readme.just |
 		grep -v test.just |
-		grep -vE 'timeout-.*' |
-		grep -vE 'crash-.*' |
+		grep -vE '(timeout|crash)-.*' |
 		while read -r fname
 	do
-		printf '\n\n'
 		echo "::group::Parse and highlight testing for $fname"
 
-		npx tree-sitter parse "$fname" > /dev/null
-		npx tree-sitter highlight "$fname" > /dev/null
+		timeout 10 npx tree-sitter parse "$fname" > /dev/null
+		timeout 10 npx tree-sitter highlight "$fname" > /dev/null
 
 		echo "::endgroup::"
 	done
+
+	# Parse files with expected errors 
+	git ls-files test | grep -E '(timeout-.*|crash-.*)' |
+		while read -r fname
+	do
+		echo "::group::Parse and highlight testing for invalid source $fname"
+	
+		exitcode=0
+		# Run with a timeout
+		timeout 10 npx tree-sitter parse --scope=source.just "$fname" > /dev/null ||
+			exitstat=$?
+	
+		# Failed highlighting returns exit code 1, syntax errors are 2. We are
+		# looking for SIGBUS/SIGSEGV/SIGALRM (timeout), 135/138/142
+		if [ "$exitcode" -gt 2 ]; then
+			echo "exited with code $exitcode"
+			exit "$exitcode"
+		fi
+	
+		# Try the same for highlighting
+		timeout 10 npx tree-sitter highlight --scope=source.just "$fname" > /dev/null ||
+			exitcode=$?
+		if [ "$exitcode" -gt 2 ]; then
+			echo "exited with code $exitcode"
+			exit "$exitcode"
+		fi
+	
+		echo "::endgroup::"
+	done
+	
+
+	
 
 # Verify that the `just` tool parses all files we are using
 verify-just-parsing:
@@ -171,7 +210,7 @@ ci-validate-generated-files:
 
 	git tag ci-tmp-pre-updates
 
-	just gen
+	just {{ verbose_flag }} gen
 
 	failed=false
 	git diff ci-tmp-pre-updates --exit-code || failed=true
@@ -213,9 +252,9 @@ debug-build: tree-sitter-clone _out-dirs
 	#!/bin/sh
 	cache_key='{{ base_cache_key + sha256_file(bindings / "debug.c") }}'
 	keyfile="{{ obj_dir }}/debug-build.cachekey"
-	[ "$cache_key" = $(cat "$keyfile" || echo "") ] && exit 0
+	[ "$cache_key" = $(cat "$keyfile" 2> /dev/null || echo "") ] && exit 0
 
-	clang -O1 -g {{ fuzzer_flags }} ${CFLAGS:-} {{ include_args }} \
+	clang -O0 -g {{ fuzzer_flags }} ${CFLAGS:-} {{ include_args }} \
 	{{ parser_sources }} "{{ bindings }}/debug.c" \
 	-o {{ debug_out }}
 
