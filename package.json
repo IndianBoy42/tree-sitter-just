@@ -27,8 +27,6 @@
     "tree-sitter-cli": "^0.20.8"
   },
   "scripts": {
-    "test": "npm run gen && tree-sitter test",
-    "gen": "tree-sitter generate && python3 build-flavored-queries.py",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "lint:check": "eslint .",

@@ -41,13 +41,14 @@ format-check:
 gen *extra-args:
 	npx tree-sitter generate {{ extra-args }}
 	python3 build-flavored-queries.py
+	# Do formatting on generated files
 	npx prettier --write src/
 
 alias t := test
 
 # Run tests that are built into tree-sitter, as well as integration and Cargo tests
 test *ts-test-args: gen
-	npm test -- {{ ts-test-args }}
+	npx tree-sitter test {{ ts-test-args }}
 	just test-parse-highlight
 
 	echo && echo Running Cargo tests
@@ -92,7 +93,7 @@ verify-just-parsing:
 		grep -vE 'crash-.*' |
 		while read -r fname
 	do
-		echo "::notice file=$fname:: checking Just parsing"
+		echo "::notice:: checking Just parsing"
 		just --list --unstable --justfile "$fname"
 	done
 
