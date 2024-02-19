@@ -1548,6 +1548,10 @@
     },
     {
       "type": "PATTERN",
+      "value": "\\\\(\\n|\\r\\n)\\s*"
+    },
+    {
+      "type": "PATTERN",
       "value": "\\s"
     }
   ],
