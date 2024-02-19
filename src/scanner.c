@@ -1,6 +1,5 @@
 #include "tree_sitter/parser.h"
 
-#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,6 +7,42 @@
 
 #ifdef NDEBUG
 #error "expected assertions to be enabled"
+#endif
+
+// Enable this for debugging
+// #define DEBUG_PRINT
+
+#ifndef __FILE_NAME__
+#define __FILE_NAME__ __FILE__
+#endif
+
+#ifdef DEBUG_PRINT
+#define dbg_print(...)                                                         \
+  do {                                                                         \
+    fprintf(stderr, "    \033[96;1mparse: \033[0m");                           \
+    fprintf(stderr, __VA_ARGS__);                                              \
+  } while (0)
+#else
+#define dbg_print(...)
+#endif
+
+#define panic(...)                                                             \
+  do {                                                                         \
+    fprintf(stderr, "panic at %s:%d: ", __FILE_NAME__, __LINE__);              \
+    fprintf(stderr, __VA_ARGS__);                                              \
+    fprintf(stderr, "\n");                                                     \
+    exit(1);                                                                   \
+  } while (0);
+
+#define assertf(condition, ...)                                                \
+  do {                                                                         \
+    if (__builtin_expect(!(condition), 0)) {                                   \
+      panic(__VA_ARGS__);                                                      \
+    }                                                                          \
+  } while (0);
+
+#ifndef __GNUC__
+#define __builtin_expect(a, b) a
 #endif
 
 #define SBYTES sizeof(Scanner)
@@ -18,7 +53,12 @@ enum TokenType {
   NEWLINE,
   TEXT,
   ERROR_RECOVERY,
+  TOKEN_TYPE_END,
 };
+
+void assert_valid_token(const TSSymbol sym) {
+  assertf(sym >= INDENT && sym < TOKEN_TYPE_END, "invalid symbol %d", sym);
+}
 
 typedef struct Scanner {
   uint32_t prev_indent;
@@ -33,7 +73,7 @@ typedef struct Scanner {
 // doesn’t need to maintain any state, it’s ok to return NULL.
 void *tree_sitter_just_external_scanner_create(void) {
   Scanner *ptr = (Scanner *)calloc(SBYTES, 1);
-  assert(ptr);
+  assertf(ptr, "memory allocation failed");
   return ptr;
 }
 
@@ -42,7 +82,8 @@ void *tree_sitter_just_external_scanner_create(void) {
 // argument the same pointer that was returned from the create function. If your
 // create function didn’t allocate any memory, this function can be a noop.
 void tree_sitter_just_external_scanner_destroy(void *payload) {
-  free((Scanner *)payload);
+  assertf(payload, "got null payload at destroy");
+  free(payload);
 }
 
 // Serialize the state of the scanner. This is called when the parser is
@@ -50,7 +91,8 @@ void tree_sitter_just_external_scanner_destroy(void *payload) {
 // from the create function.
 unsigned tree_sitter_just_external_scanner_serialize(void *payload,
                                                      char *buffer) {
-  assert(SBYTES < TREE_SITTER_SERIALIZATION_BUFFER_SIZE);
+  assertf(SBYTES < TREE_SITTER_SERIALIZATION_BUFFER_SIZE,
+          "invalid scanner size");
   memcpy(buffer, payload, SBYTES);
   return SBYTES;
 }
@@ -78,7 +120,7 @@ static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 // An EOF works as a dedent
 static bool handle_eof(TSLexer *lexer, Scanner *state,
                        const bool *valid_symbols) {
-  assert(lexer->eof(lexer));
+  assertf(lexer->eof(lexer), "expected EOF");
   lexer->mark_end(lexer);
 
   if (valid_symbols[DEDENT]) {
