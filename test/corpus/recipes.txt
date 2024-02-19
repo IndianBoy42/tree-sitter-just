@@ -396,22 +396,37 @@ bar:
       (recipe_body
         (recipe_line
           (text))
-        (recipe_line
-          (text))
-        (recipe_line
-          (text))
-        (recipe_line
-          (text)))))
+        (MISSING _dedent))))
   (item
     (recipe
       (recipe_header
-        (identifier))
-      (recipe_body
-        (recipe_line
-          (text))
-        (recipe_line
-          (text))
-        (recipe_line
-          (text))
-        (recipe_line
-          (text))))))
+        (identifier)
+        (parameters
+          (parameter
+            (identifier))
+          (comment)
+          (parameter
+            (identifier))
+          (parameter
+            (identifier))
+          (parameter
+            (identifier))
+          (parameter
+            (identifier))))))
+  (item
+    (recipe
+      (recipe_header
+        (identifier)
+        (parameters
+          (parameter
+            (identifier))
+          (parameter
+            (identifier))
+          (comment)
+          (parameter
+            (identifier))
+          (parameter
+            (identifier))
+          (parameter
+            (identifier)))
+        (MISSING ":")))))

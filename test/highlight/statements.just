@@ -79,8 +79,8 @@ def \"
 
 foo2 := 'a'
 # <- variable
-#   ^^ operator
-#      ^^^ string
+#    ^^ operator
+#       ^^^ string
 
 bar2 := 'b
   c
@@ -89,13 +89,13 @@ bar2 := 'b
 
 baz2 := 'a\"\t'
 # <- variable
-#   ^^ operator
-#      ^^^ string
+#    ^^ operator
+#       ^^^ string
 
 foo3 := '''a'''
 # <- variable
-#   ^^ operator
-#      ^^^^^^^ string
+#    ^^ operator
+#       ^^^^^^^ string
 
 bar3 := '''b
   c
@@ -115,7 +115,7 @@ bar4 := `echo hi
 
 foo5 := ```echo hi```
 # <- variable
-#   ^^ operator
+#    ^^ operator
 
 bar5 := ```
 echo bye  
