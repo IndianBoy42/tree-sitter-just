@@ -8,6 +8,7 @@ general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 
 # FIXME: there are errors running with ASAN, we ideally want `,address` here
 fuzzer_flags := env("FUZZER_FLAGS", "-fsanitize=fuzzer,undefined")
+fuzz_time := env("FUZZ_TOTAL_TIME", "1200")
 
 # Source files needed to build a parser
 parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_src + "/lib/src/lib.c"
@@ -53,7 +54,11 @@ setup:
 	check_installed clang-tidy
 	check_installed clang-format
 
-	npm install --include=dev
+	if which npm > /dev/null; then
+		npm install --include=dev
+	else
+		echo "npm not found: skipping install"
+	fi
 
 # Lint with more minimal dependencies that can be run during pre-commit
 _lint-min: tree-sitter-clone configure-compile-database
@@ -312,7 +317,7 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 
 	printf "$cache_key" > "$keyfile"
 
-	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{ nproc }}"
+	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time={{ fuzz_time }} -jobs={{ nproc }}"
 
 	echo "Starting fuzzing at $(date -u -Is)"
 	LD_LIBRARY_PATH="{{ts_src}}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
