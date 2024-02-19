@@ -1258,9 +1258,65 @@
         }
       ]
     },
-    "shebang": {
+    "lang": {
       "type": "PATTERN",
-      "value": "\\s*#!.*"
+      "value": "[a-z]+\\d?"
+    },
+    "_sheflag": {
+      "type": "PATTERN",
+      "value": "--?\\w*"
+    },
+    "shebang": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "#!"
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\/.*\\/"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "env "
+                },
+                {
+                  "type": "REPEAT",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "_sheflag"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "FIELD",
+          "name": "lang",
+          "content": {
+            "type": "SYMBOL",
+            "name": "lang"
+          }
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_sheflag"
+          }
+        }
+      ]
     },
     "string": {
       "type": "CHOICE",

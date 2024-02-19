@@ -615,6 +615,22 @@
     }
   },
   {
+    "type": "shebang",
+    "named": true,
+    "fields": {
+      "lang": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "lang",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "source_file",
     "named": true,
     "fields": {},
@@ -746,6 +762,10 @@
     "named": false
   },
   {
+    "type": "#!",
+    "named": false
+  },
+  {
     "type": "$",
     "named": false
   },
@@ -850,6 +870,10 @@
     "named": false
   },
   {
+    "type": "env ",
+    "named": false
+  },
+  {
     "type": "escape_sequence",
     "named": true
   },
@@ -874,16 +898,16 @@
     "named": false
   },
   {
+    "type": "lang",
+    "named": true
+  },
+  {
     "type": "mod",
     "named": false
   },
   {
     "type": "set",
     "named": false
-  },
-  {
-    "type": "shebang",
-    "named": true
   },
   {
     "type": "shell",

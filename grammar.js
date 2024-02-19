@@ -287,7 +287,26 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    shebang: (_) => /\s*#!.*/,
+    lang: ($) => /[a-z]+\d?/,
+    _sheflag: ($) => /--?\w*/,
+
+    // #!/path/to/interpreter arg*
+    //
+    // #!/bin/bash
+    // #!/bin/bash -
+    // #!/bin/bash --
+    // #!/bin/bash -v
+    // #!/usr/bin/bash
+    // #!/usr/bin/python3
+    // #!/usr/bin/env -i bash
+    // #!/usr/bin/env bash -v
+    // #!/usr/local/bin/bash
+    shebang: ($) => seq("#!", /\/.*\//,
+      optional(seq("env ", repeat($._sheflag))),
+      // defer dilemma: python3 => python, but json5 => json5
+      field("lang", $.lang),
+      repeat($._sheflag),
+    ),
 
     // string        : STRING
     //               | INDENTED_STRING
