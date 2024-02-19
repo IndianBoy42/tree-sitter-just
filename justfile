@@ -23,41 +23,54 @@ format:
 	npm run format:write
 	find src/ -name '*.c' ! -name 'parser.c' | \
 		xargs -IFNAME sh -c \
-		'echo && echo "checking file FNAME" && \
+		'echo && echo "formatting 'FNAME'" && \
 		clang-format -i FNAME -Werror --verbose'
+	cargo fmt
 	black .
 
 # Check formatting without editing
 format-check:
 	npm run format:check
-	clang-format --Werror --verbose src/scanner.c | diff -up - src/scanner.c
+	find src/ -name '*.c' ! -name 'parser.c' | \
+		xargs -IFNAME sh -c \
+		'echo && echo "checking formatting for 'FNAME'" && \
+		clang-format FNAME -Werror --verbose | diff -up - FNAME'
+	cargo fmt --check
 
 # Generate the parser
 gen *extra-args:
 	npx tree-sitter generate {{ extra-args }}
 	python3 build-flavored-queries.py
 
-alias t := test-ts
+alias t := test
 
-# Run tests that are built into tree-sitter
-test-ts *ts-test-args: gen
+# Run tests that are built into tree-sitter, as well as integration and Cargo tests
+test *ts-test-args: gen
 	npm test -- {{ ts-test-args }}
+	just test-parse-highlight
+
+	echo && echo Running Cargo tests
+
+	# FIXME: xfail CI on Windows because we are getting STATUS_DLL_NOT_FOUND
+	{{ if os_family() + env("CI", "1") == "windows1" { "cargo test" } else { "" } }}
 
 # Verify that tree-sitter can parse and highlight all files in the repo. Requires a tree-sitter configuration.
 test-parse-highlight:
 	#!/bin/sh
-	set -eaux
+	set -eau
+
+	echo Checking all files in the repo...
 
 	# skip readme.just because it is broken but works for testing, and skip files
 	# from the fuzzer
-	find {{justfile_directory()}} -type f -iregex '.*[\./]just[^\./]*' |
+	find {{ justfile_directory() }} -type f -iregex '.*[\./]just[^\./]*' |
 		grep -v readme.just |
 		grep -v test.just |
 		grep -vE 'timeout-.*' |
 		grep -vE 'crash-.*' |
 		while read -r fname
 	do
-		printf '\n\n\n'
+		printf '\n\n'
 		echo "::group::Parse and highlight testing for $fname"
 	
 		npx tree-sitter parse "$fname" > /dev/null
