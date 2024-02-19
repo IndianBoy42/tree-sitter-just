@@ -5,6 +5,7 @@ fuzzer := justfile_directory() / "fuzzer"
 nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
 include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
+fuzzer_flags := "-fsanitize=fuzzer,address,undefined"
 # Source files needed to build a parser
 parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_src + "/lib/src/lib.c"
 
@@ -12,6 +13,8 @@ bin_dir := src / "target" / "bin"
 obj_dir := src / "target" / "obj"
 debug_out := bin_dir / "debug.out"
 fuzz_out := bin_dir / "fuzz.out"
+
+ts_tag := "v0.20.9"
 
 # List all recipes
 default:
@@ -192,19 +195,24 @@ pre-commit-install:
 # Download and build upstream tree-sitter
 tree-sitter-clone:
 	#!/bin/sh
+	set -eaux
+
 	if [ ! -d "{{ ts_src }}" ]; then
 		git clone https://github.com/tree-sitter/tree-sitter "{{ ts_src }}" \
-			--depth=1
+			--branch {{ ts_tag }} --depth=1
 	fi
 
+# Build a simple debug executable
 debug-build: tree-sitter-clone _out-dirs
-	clang -O3 -g ${CFLAGS:-} {{ include_args }} \
+	clang -O1 -g {{ fuzzer_flags }} ${CFLAGS:-} {{ include_args }} \
 	{{ parser_sources }} "{{bindings}}/debug.c" \
 	-o {{ debug_out }}
 
-run *file-names: debug-build
+# # Run the debug executable with one or more files
+debug-run *file-names: debug-build
 	{{ debug_out }} {{file-names}}
 
+# Build and run the fuzzer
 fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 	#!/bin/sh
 	set -eaux
@@ -215,7 +223,7 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 	corpus="{{fuzzer}}/corpus"
 	mkdir -p "$artifacts"
 
-	flags="-fsanitize=fuzzer,address,undefined"
+	flags="{{ fuzzer_flags }}"
 	flags="$flags -g -O1 -std=gnu99"
 	flags="$flags {{ include_args }}"
 

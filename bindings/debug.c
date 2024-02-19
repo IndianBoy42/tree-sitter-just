@@ -26,7 +26,14 @@ int main(int argc, char **argv) {
   assert(data);
 
   for (int i = 1; i < argc; ++i) {
+    memset(data, 0, alloc_size);
+
     FILE *fp = fopen(argv[i], "r");
+    if (!fp) {
+      printf("failed to open file %s\n", argv[i]);
+      exit(1);
+    }
+
     fseek(fp, 0L, SEEK_END);
     size_t file_size = ftell(fp);
     rewind(fp);
@@ -36,6 +43,10 @@ int main(int argc, char **argv) {
       assert(data);
       alloc_size = file_size;
     }
+
+    size_t readlen = fread(data, sizeof(char), alloc_size, fp);
+    assert(readlen == file_size);
+    assert(!ferror(fp));
 
     // Build a syntax tree based on source code stored in a string.
     TSTree *tree = ts_parser_parse_string(parser, NULL, data, file_size);
