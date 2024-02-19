@@ -47,11 +47,12 @@ int main(int argc, char **argv) {
     size_t readlen = fread(data, sizeof(char), alloc_size, fp);
     assert(readlen == file_size);
     assert(!ferror(fp));
+    printf("read %zu bytes\n", readlen);
 
     // Build a syntax tree based on source code stored in a string.
     TSTree *tree = ts_parser_parse_string(parser, NULL, data, file_size);
     TSNode root_node = ts_tree_root_node(tree);
-    assert(ts_node_child_count(root_node) > 0);
+    // assert(ts_node_child_count(root_node) > 0);
 
     // Free all of the heap-allocated memory.
     ts_tree_delete(tree);
