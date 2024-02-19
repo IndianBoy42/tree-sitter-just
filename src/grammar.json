@@ -59,11 +59,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "eol"
+          "name": "_eol"
         }
       ]
     },
-    "eol": {
+    "_eol": {
       "type": "CHOICE",
       "members": [
         {
@@ -130,7 +130,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "eol"
+          "name": "_eol"
         }
       ]
     },
@@ -350,7 +350,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "eol"
+              "name": "_eol"
             }
           ]
         },
@@ -458,7 +458,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "eol"
+              "name": "_eol"
             }
           ]
         }
@@ -882,7 +882,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "eol"
+          "name": "_eol"
         }
       ]
     },

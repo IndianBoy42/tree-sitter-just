@@ -66,12 +66,12 @@ module.exports = grammar({
         $.import,
         $.module,
         $.setting,
-        $.eol,
+        $._eol,
       ),
 
     // eol           : NEWLINE
     //               | COMMENT NEWLINE
-    eol: ($) => choice($._newline, $.comment),
+    _eol: ($) => choice($._newline, $.comment),
 
     // alias         : 'alias' NAME ':=' NAME
     alias: ($) =>
@@ -88,7 +88,7 @@ module.exports = grammar({
         field("left", $.identifier),
         ":=",
         field("right", $.expression),
-        $.eol,
+        $._eol,
       ),
 
     // export        : 'export' assignment
@@ -124,14 +124,14 @@ module.exports = grammar({
               ),
             ),
           ),
-          $.eol,
+          $._eol,
         ),
         seq(
           "set",
           "shell",
           ":=",
           field("right", array($.string_literal)),
-          $.eol,
+          $._eol,
         ),
       ),
 
@@ -216,7 +216,7 @@ module.exports = grammar({
         "[",
         field("contents", comma_sep1(field("attr_item", $.identifier))),
         "]",
-        $.eol,
+        $._eol,
       ),
 
     // A complete recipe

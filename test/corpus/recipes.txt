@@ -11,15 +11,7 @@ bar:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (recipe
-      (recipe_header
-        (identifier))
-      (recipe_body
-        (recipe_line
-          (text)))))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -28,7 +20,13 @@ bar:
         (recipe_line
           (text)))))
   (item
-    (eol)))
+    (recipe
+      (recipe_header
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text)))))
+  (item))
 
 ================================================================================
 quiet
@@ -40,8 +38,7 @@ quiet
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -49,8 +46,7 @@ quiet
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 dependencies
@@ -62,8 +58,7 @@ foo: bar baz
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -76,8 +71,7 @@ foo: bar baz
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 arguments
@@ -95,8 +89,7 @@ corge *grault:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -131,8 +124,7 @@ corge *grault:
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 dependency call
@@ -153,8 +145,7 @@ corge: foo (quux corge + banana)
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -221,8 +212,7 @@ corge: foo (quux corge + banana)
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 subsequent dependencies
@@ -240,8 +230,7 @@ baz: foo && (bar "x")
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -289,8 +278,7 @@ baz: foo && (bar "x")
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 attribute
@@ -303,20 +291,17 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (attribute
-        (identifier)
-        (eol))
+        (identifier))
       (recipe_header
         (identifier))
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 stacked attributes
@@ -330,23 +315,19 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (attribute
-        (identifier)
-        (eol))
+        (identifier))
       (attribute
-        (identifier)
-        (eol))
+        (identifier))
       (recipe_header
         (identifier))
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 sequence attributes
@@ -359,21 +340,18 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (attribute
         (identifier)
-        (identifier)
-        (eol))
+        (identifier))
       (recipe_header
         (identifier))
       (recipe_body
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 body shebang
@@ -388,8 +366,7 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -402,8 +379,7 @@ foo:
           (text))
         (recipe_line
           (text)))))
-  (item
-    (eol)))
+  (item))
 
 ================================================================================
 longer bodies
@@ -428,21 +404,7 @@ bar:
 --------------------------------------------------------------------------------
 
 (source_file
-  (item
-    (eol))
-  (item
-    (recipe
-      (recipe_header
-        (identifier))
-      (recipe_body
-        (recipe_line
-          (text))
-        (recipe_line
-          (text))
-        (recipe_line
-          (text))
-        (recipe_line
-          (text)))))
+  (item)
   (item
     (recipe
       (recipe_header
@@ -457,4 +419,16 @@ bar:
         (recipe_line
           (text)))))
   (item
-    (eol)))
+    (recipe
+      (recipe_header
+        (identifier))
+      (recipe_body
+        (recipe_line
+          (text))
+        (recipe_line
+          (text))
+        (recipe_line
+          (text))
+        (recipe_line
+          (text)))))
+  (item))
