@@ -55,7 +55,9 @@ module.exports = grammar({
     $.error_recovery,
   ],
 
-  extras: ($) => [$.comment, /\s/],
+  // Allow comments, backslash-escaped newlines (with optional trailing whitespace),
+  // and whitespace anywhere
+  extras: ($) => [$.comment, /\\(\n|\r\n)\s*/, /\s/],
 
   inline: ($) => [
     $._string,
