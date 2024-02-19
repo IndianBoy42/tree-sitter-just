@@ -5,10 +5,12 @@ on:
     paths:
       - src/scanner.c
       - .github/workflows/fuzz.yaml
+      - fuzzer/
   pull_request:
     paths:
       - src/scanner.c
       - .github/workflows/fuzz.yaml
+      - fuzzer/
   workflow_dispatch:
 
 env:
