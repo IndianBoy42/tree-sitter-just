@@ -126,6 +126,7 @@ static bool handle_eof(TSLexer *lexer, Scanner *state,
     lexer->result_symbol = DEDENT;
     return true;
   }
+
   if (valid_symbols[NEWLINE]) {
     if (state->has_seen_eof) {
       // allow EOF to count for a single symbol. Don't return true more than

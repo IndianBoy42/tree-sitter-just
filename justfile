@@ -145,9 +145,6 @@ test-parse-highlight:
 		echo "::endgroup::"
 	done
 	
-
-	
-
 # Verify that the `just` tool parses all files we are using
 verify-just-parsing:
 	#!/bin/sh
@@ -274,13 +271,13 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 	artifacts="{{fuzzer}}/failures/"
 	corpus="{{fuzzer}}/corpus"
 	mkdir -p "$artifacts"
+	opt_level="-O0"
 
 	flags="{{ fuzzer_flags }}"
-	flags="$flags -g -O1 -std=gnu99"
+	flags="$flags -g $opt_level -std=gnu99"
 	flags="$flags {{ include_args }}"
 
 	sources="{{ parser_sources }} {{ fuzzer }}/entry.c"
-
 
 	cache_key='{{ base_cache_key + sha256_file(fuzzer/ "entry.c") }}'
 	keyfile="{{ obj_dir }}/fuzz.cachekey"
