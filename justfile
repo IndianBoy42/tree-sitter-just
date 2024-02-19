@@ -2,14 +2,17 @@
 default:
 	just --list
 
-# Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
-lint:
+# Lint with more minimal dependencies that can be run during pre-commit
+_lint-min:
 	npm run lint:check
 	find src/ -name '*.c' ! -name 'parser.c' | \
 		xargs -IFNAME sh -c \
 		'echo && echo "checking file FNAME" && \
 		clang-tidy FNAME -- -I src/  -Wall -Werror --pedantic  \
 		-Wno-format-pedantic'
+
+# Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
+lint: _lint-min
 	cargo clippy
 	ruff .
 
@@ -23,6 +26,11 @@ format:
 		'echo && echo "checking file FNAME" && \
 		clang-format -i FNAME -Werror --verbose'
 	black .
+
+# Check formatting without editing
+format-check:
+	npm run format:check
+	clang-format --Werror --verbose src/scanner.c | diff -up - src/scanner.c
 
 # Generate the parser
 gen *extra-args:
@@ -111,10 +119,7 @@ configure-tree-sitter:
 		f.truncate()
 
 # Run lint and check formatting
-ci-codestyle: lint
-	# Check formatting without changing
-	npm run format:check
-	clang-format --Werror --verbose src/scanner.c | diff -up - src/scanner.c
+ci-codestyle: lint format-check
 
 # Make sure that files have not changed
 ci-validate-generated-files:
@@ -136,7 +141,7 @@ ci-validate-generated-files:
 	git tag -d ci-tmp-pre-updates
 
 # Run a subset of CI checks before committing.
-pre-commit: ci-codestyle
+pre-commit: _lint-min format-check
 
 # Install pre-commit hooks
 pre-commit-install:
@@ -159,18 +164,23 @@ fuzz *extra-args: (gen "--debug-build")
 
 	flags="-fsanitize=fuzzer,address,undefined"
 	flags="$flags -g -O1"
-	flags="$flags -Isrc/ -I$ts_source/lib/include"
+	flags="$flags -Isrc/ -I$ts_source/lib/include -I$ts_source/lib/src"
 	flags="$flags -o $out/fuzzer"
 
 	mkdir -p "$out"
 
-	[ ! -d "$ts_source" ] &&
+	if [ ! -d "$ts_source" ]; then
 		git clone https://github.com/tree-sitter/tree-sitter "$ts_source" \
-		--depth=1
+			--depth=1
+	else
+		git -C "$ts_source" pull
+	fi
 
-	make -C "$ts_source"
+	# FIXME: ideally we use the makefile, but this gives us undefined symbol
+	# errors in CI. So, we build ts ourselves.
+	# make -C "$ts_source"
 
-	cat << EOF | clang $flags "$ts_source/libtree-sitter.a" "src/scanner.c" "src/parser.c" -x c -
+	cat << EOF | clang $flags "$ts_source/lib/src/lib.c" "src/scanner.c" "src/parser.c" -x c -
 	#include <stdio.h>
 	#include <stdlib.h>
 	#include "tree_sitter/api.h"
