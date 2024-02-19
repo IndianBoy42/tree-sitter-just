@@ -54,31 +54,16 @@
   {
     "type": "attribute",
     "named": true,
-    "fields": {
-      "attr_item": {
-        "multiple": true,
-        "required": true,
-        "types": [
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      },
-      "contents": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "identifier",
-            "named": true
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -120,7 +105,7 @@
     "type": "dependency",
     "named": true,
     "fields": {
-      "recipe": {
+      "name": {
         "multiple": false,
         "required": false,
         "types": [
@@ -146,17 +131,7 @@
     "type": "dependency_expression",
     "named": true,
     "fields": {
-      "expression": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "expression",
-            "named": true
-          }
-        ]
-      },
-      "recipe": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -166,6 +141,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -237,7 +222,7 @@
     "type": "if_expression",
     "named": true,
     "fields": {
-      "braced_body": {
+      "body": {
         "multiple": true,
         "required": true,
         "types": [
@@ -268,7 +253,7 @@
       "required": true,
       "types": [
         {
-          "type": "string_literal",
+          "type": "string",
           "named": true
         }
       ]
@@ -290,49 +275,10 @@
     }
   },
   {
-    "type": "item",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "alias",
-          "named": true
-        },
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "export",
-          "named": true
-        },
-        {
-          "type": "import",
-          "named": true
-        },
-        {
-          "type": "module",
-          "named": true
-        },
-        {
-          "type": "recipe",
-          "named": true
-        },
-        {
-          "type": "setting",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "module",
     "named": true,
     "fields": {
-      "mod_name": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -348,7 +294,7 @@
       "required": false,
       "types": [
         {
-          "type": "string_literal",
+          "type": "string",
           "named": true
         }
       ]
@@ -368,7 +314,7 @@
           }
         ]
       },
-      "param": {
+      "name": {
         "multiple": false,
         "required": true,
         "types": [
@@ -533,17 +479,7 @@
           }
         ]
       },
-      "array_item": {
-        "multiple": true,
-        "required": false,
-        "types": [
-          {
-            "type": "string_literal",
-            "named": true
-          }
-        ]
-      },
-      "contents": {
+      "content": {
         "multiple": true,
         "required": false,
         "types": [
@@ -552,7 +488,17 @@
             "named": false
           },
           {
-            "type": "string_literal",
+            "type": "string",
+            "named": true
+          }
+        ]
+      },
+      "element": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
             "named": true
           }
         ]
@@ -588,7 +534,7 @@
             "named": true
           },
           {
-            "type": "string_literal",
+            "type": "string",
             "named": true
           }
         ]
@@ -609,7 +555,31 @@
       "required": false,
       "types": [
         {
-          "type": "item",
+          "type": "alias",
+          "named": true
+        },
+        {
+          "type": "assignment",
+          "named": true
+        },
+        {
+          "type": "export",
+          "named": true
+        },
+        {
+          "type": "import",
+          "named": true
+        },
+        {
+          "type": "module",
+          "named": true
+        },
+        {
+          "type": "recipe",
+          "named": true
+        },
+        {
+          "type": "setting",
           "named": true
         },
         {
@@ -620,7 +590,7 @@
     }
   },
   {
-    "type": "string_literal",
+    "type": "string",
     "named": true,
     "fields": {},
     "children": {
@@ -659,7 +629,7 @@
           "named": true
         },
         {
-          "type": "string_literal",
+          "type": "string",
           "named": true
         }
       ]
