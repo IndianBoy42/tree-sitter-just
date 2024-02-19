@@ -313,6 +313,8 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 	printf "$cache_key" > "$keyfile"
 
 	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{ nproc }}"
+
+	echo "Starting fuzzing at $(date -u -Is)"
 	LD_LIBRARY_PATH="{{ts_src}}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
 
 # Configure the database used by clang-format, clang-tidy, and language servers
