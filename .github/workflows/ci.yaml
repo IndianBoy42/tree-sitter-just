@@ -3,6 +3,10 @@ on:
   pull_request:
   push:
 
+env:
+  RUST_BACKTRACE: 1
+  CI: 1
+
 jobs:
   codestyle:
     name: Codestyle (format and lint)
@@ -63,9 +67,7 @@ jobs:
       - name: Check generated files
         run: just --verbose ci-validate-generated-files
       - name: Run tests
-        run: just --verbose test-ts
-      - name: Test parsing and highlighting on all Just files in repo
-        run: just --verbose test-parse-highlight
+        run: just --verbose test
 
   static-validation:
     runs-on: ubuntu-latest
