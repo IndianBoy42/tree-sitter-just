@@ -13,7 +13,7 @@ fuzzer-out/
 
 # Fuzzer items
 tree-sitter-src/
-fuzzer/cache/
+fuzzer/failures/
 fuzzer/corpus
 fuzzer/artifacts
 **.log
