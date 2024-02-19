@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - src/scanner.c
+      - .github/workflows/fuzz.yaml
   pull_request:
     paths:
       - src/scanner.c
+      - .github/workflows/fuzz.yaml
   workflow_dispatch:
 
 jobs:
@@ -34,5 +36,5 @@ jobs:
       - run: just fuzz
       - name: Print failures
         if: always()
-        run: ls .fuzzer-cache/failures/*  |
+        run: ls fuzzer/cache/failures/*  |
           xargs -IFNAME sh -c 'echo "\nContents of FNAME:" && base64 -i FNAME'

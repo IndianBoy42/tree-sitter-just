@@ -1,15 +1,20 @@
+src := justfile_directory() / "src"
+bindings := justfile_directory() / "bindings"
+ts_src := justfile_directory() / "repositories" / "tree-sitter"
+fuzzer := justfile_directory() / "fuzzer"
+nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
+include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
+general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
+
 # List all recipes
 default:
 	just --list
 
 # Lint with more minimal dependencies that can be run during pre-commit
-_lint-min:
+_lint-min: tree-sitter-clone configure-compile-database
 	npm run lint:check
-	find src/ -name '*.c' ! -name 'parser.c' | \
-		xargs -IFNAME sh -c \
-		'echo && echo "checking file FNAME" && \
-		clang-tidy FNAME -- -I src/  -Wall -Werror --pedantic  \
-		-Wno-format-pedantic'
+	git ls-files '**.c' | grep -v 'parser\.c' | \
+		xargs -IFNAME sh -c 'echo "\nchecking file FNAME" && clang-tidy FNAME'
 
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint: _lint-min
@@ -19,30 +24,33 @@ lint: _lint-min
 alias fmt := format
 
 # Autoformat code. Requires Cargo, clang-format, and black.
-format:
+format: configure-compile-database
 	npm run format:write
-	find src/ -name '*.c' ! -name 'parser.c' | \
+	git ls-files '**.c' | grep -v 'parser\.c' | \
 		xargs -IFNAME sh -c \
-		'echo && echo "formatting 'FNAME'" && \
-		clang-format -i FNAME -Werror --verbose'
+		'echo "\nformatting 'FNAME'" && clang-format -i FNAME --verbose'
 	cargo fmt
 	black .
 
 # Check formatting without editing
-format-check:
+format-check: configure-compile-database
 	npm run format:check
-	find src/ -name '*.c' ! -name 'parser.c' | \
+	git ls-files '**.c' | grep -v 'parser\.c' | \
 		xargs -IFNAME sh -c \
-		'echo && echo "checking formatting for 'FNAME'" && \
-		clang-format FNAME -Werror --verbose | diff -up - FNAME'
+		'echo "\nchecking formatting for 'FNAME'" && clang-format FNAME | diff -up - FNAME'
 	cargo fmt --check
 
 # Generate the parser
 gen *extra-args:
 	npx tree-sitter generate {{ extra-args }}
 	python3 build-flavored-queries.py
-	# Do formatting on generated files
+
+	# Run formatting only on generated files
 	npx prettier --write src/
+	# Only clang-format if it is available
+	which clang-format > /dev/null && \
+		clang-format -i src/parser.c || \
+		echo "skipping clang-format"
 
 alias t := test
 
@@ -65,7 +73,7 @@ test-parse-highlight:
 
 	# skip readme.just because it is broken but works for testing, and skip files
 	# from the fuzzer
-	find {{ justfile_directory() }} -type f -iregex '.*[\./]just[^\./]*' |
+	git ls-files '**.just' 'justfile' |
 		grep -v readme.just |
 		grep -v test.just |
 		grep -vE 'timeout-.*' |
@@ -87,7 +95,7 @@ verify-just-parsing:
 	set -eaux
 
 	# skip readme.just because it is broken but works for testing
-	find . -type f -iregex '.*[\./]just[^\./]*' |
+	git ls-files '**.just' 'justfile'
 		grep -v readme.just |
 		grep -vE 'timeout-.*' |
 		grep -vE 'crash-.*' |
@@ -170,57 +178,62 @@ pre-commit-install:
 	just pre-commit
 	EOF
 
-fuzz *extra-args: (gen "--debug-build")
+# Download and build upstream tree-sitter
+tree-sitter-clone:
+	#!/bin/sh
+	if [ ! -d "{{ ts_src }}" ]; then
+		git clone https://github.com/tree-sitter/tree-sitter "{{ ts_src }}" \
+			--depth=1
+	fi
+
+fuzz *extra-args: (gen "--debug-build") tree-sitter-clone
 	#!/bin/sh
 	set -eaux
 
-	out=".fuzzer-cache"
-	testout="$out/failures"
-	ts_source="$out/tree-sitter"
+	"{{ fuzzer / "build-corpus.py" }}"
+
+	artifacts="{{fuzzer}}/cache/failures/"
+	exe="{{fuzzer}}/cache/fuzz.out"
+	corpus="{{fuzzer}}/corpus"
+	mkdir -p "$artifacts"
 
 	flags="-fsanitize=fuzzer,address,undefined"
-	flags="$flags -g -O1"
-	flags="$flags -Isrc/ -I$ts_source/lib/include -I$ts_source/lib/src"
-	flags="$flags -o $out/fuzzer"
+	flags="$flags -g -O1 -std=gnu99"
+	flags="$flags {{ include_args }}"
 
-	mkdir -p "$out"
-	mkdir -p "$testout"
+	sources="{{ src }}/scanner.c {{ src }}/parser.c {{ fuzzer }}/entry.c {{ ts_src }}/lib/src/lib.c"
 
-	if [ ! -d "$ts_source" ]; then
-		git clone https://github.com/tree-sitter/tree-sitter "$ts_source" \
-			--depth=1
-	else
-		git -C "$ts_source" pull
-	fi
+	clang $flags -o "$exe" $sources
 
-	# FIXME: ideally we use the makefile, but this gives us undefined symbol
-	# errors in CI. So, we build ts ourselves.
-	# make -C "$ts_source"
+	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{nproc}}"
+	LD_LIBRARY_PATH="{{ts_src}}" "$exe" "$corpus" $fuzzer_flags {{ extra-args }}
 
-	cat << EOF | clang $flags "$ts_source/lib/src/lib.c" "src/scanner.c" "src/parser.c" -x c -
-	#include <stdio.h>
-	#include <stdlib.h>
-	#include "tree_sitter/api.h"
+# Configure the database used by clang-format, clang-tidy, and language servers
+configure-compile-database:
+	#!/usr/bin/env python3
+	import json
+	# src := justfile_directory() / "src"
+	# bindings := justfile_directory() / "bindings"
+	# ts_src := justfile_directory() / "repositories" / "tree-sitter"
+	# fuzzer := justfile_directory() / "fuzzer"
+	# nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
+	# include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
+	# general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
+	src = "{{ src }}"
+	include_args = "{{ include_args }}"
+	
+	sources = [
+		("bindings/debug.c", "")
+	]
+	results = []
 
-	TSLanguage *tree_sitter_just();
+	for (input, output) in sources:
+		results.append({
+			"directory": f"{src}",
+			"command": f"clang {include_args} {input}",
+			"file": f"{src}/{input}",
+			"output": f"{src}/{output}",
+		})
 
-	int LLVMFuzzerTestOneInput(const uint8_t *data, const size_t len) {
-	  TSParser *parser = ts_parser_new();
-	  ts_parser_set_language(parser, tree_sitter_just());
-
-	  // Build a syntax tree based on source code stored in a string.
-	  TSTree *tree = ts_parser_parse_string(
-	    parser,
-	    NULL,
-	    (const char *)data,
-	    len
-	  );
-	  // Free all of the heap-allocated memory.
-	  ts_tree_delete(tree);
-	  ts_parser_delete(parser);
-	  return 0;
-	}
-	EOF
-
-	fuzzer_flags="-artifact_prefix=$testout/ -timeout=20 -max_total_time=1200"
-	./.fuzzer-cache/fuzzer $fuzzer_flags {{ extra-args }}
+	with open("compile_commands.json", "w") as f:
+		json.dump(results, f, indent=4)
