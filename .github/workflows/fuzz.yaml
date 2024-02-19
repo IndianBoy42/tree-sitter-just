@@ -32,8 +32,7 @@ jobs:
           npx --version
       - run: npm install --locked --include=dev
       - run: just fuzz
-      - name: print tests
+      - name: Print failures
         if: always()
-        run: |
-          find . -name 'timeout-*' |
-            xargs -IFNAME sh -c 'echo "\nPrinting FNAME" && base64 -i FNAME'
+        run: ls .fuzzer-cache/failures/*  |
+          xargs -IFNAME sh -c 'echo "\nContents of FNAME:" && base64 -i FNAME'

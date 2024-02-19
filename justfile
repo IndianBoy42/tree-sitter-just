@@ -160,6 +160,7 @@ fuzz *extra-args: (gen "--debug-build")
 	set -eaux
 
 	out=".fuzzer-cache"
+	testout="$out/failures"
 	ts_source="$out/tree-sitter"
 
 	flags="-fsanitize=fuzzer,address,undefined"
@@ -168,6 +169,7 @@ fuzz *extra-args: (gen "--debug-build")
 	flags="$flags -o $out/fuzzer"
 
 	mkdir -p "$out"
+	mkdir -p "$testout"
 
 	if [ ! -d "$ts_source" ]; then
 		git clone https://github.com/tree-sitter/tree-sitter "$ts_source" \
@@ -205,5 +207,5 @@ fuzz *extra-args: (gen "--debug-build")
 	}
 	EOF
 
-	fuzzer_flags="-artifact_prefix=$out/ -timeout=20 -max_total_time=1200"
+	fuzzer_flags="-artifact_prefix=$testout/ -timeout=20 -max_total_time=1200"
 	./.fuzzer-cache/fuzzer $fuzzer_flags {{ extra-args }}
