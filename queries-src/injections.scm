@@ -9,7 +9,7 @@
 
 (source_file 
     ; (item (setting lang:(identifier) @language))
-    (item (recipe (recipe_body) @content))
+    (recipe (recipe_body) @content)
 ) 
 
 ; (interpolation (expression) @just)
