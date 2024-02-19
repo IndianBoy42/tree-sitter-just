@@ -8,13 +8,13 @@
 ; definition sources
 (alias left: (identifier) @definition.variable)
 (assignment left: (identifier) @definition.variable)
-(module mod_name: (identifier) @definition.namespace)
-(parameter param: (identifier) @definition.variable)
+(module name: (identifier) @definition.namespace)
+(parameter name: (identifier) @definition.variable)
 (recipe_header name: (identifier) @definition.function)
 
 ; reference locations
 (alias right: (identifier) @reference.variable)
 (function_call name: (identifier) @reference.function)
-(dependency recipe: (identifier) @reference.function)
-(dependency_expression recipe: (identifier) @reference.function)
+(dependency name: (identifier) @reference.function)
+(dependency_expression name: (identifier) @reference.function)
 (value (identifier) @reference.variable)

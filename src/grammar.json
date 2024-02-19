@@ -21,12 +21,12 @@
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
-            "name": "item"
+            "name": "_item"
           }
         }
       ]
     },
-    "item": {
+    "_item": {
       "type": "CHOICE",
       "members": [
         {
@@ -151,7 +151,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "string_literal"
+          "name": "string"
         }
       ]
     },
@@ -176,7 +176,7 @@
         },
         {
           "type": "FIELD",
-          "name": "mod_name",
+          "name": "name",
           "content": {
             "type": "SYMBOL",
             "name": "identifier"
@@ -187,7 +187,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "string_literal"
+              "name": "string"
             },
             {
               "type": "BLANK"
@@ -236,7 +236,7 @@
                           },
                           {
                             "type": "SYMBOL",
-                            "name": "string_literal"
+                            "name": "string"
                           },
                           {
                             "type": "FIELD",
@@ -249,12 +249,12 @@
                                   "value": "["
                                 },
                                 {
-                                  "type": "FIELD",
-                                  "name": "contents",
-                                  "content": {
-                                    "type": "CHOICE",
-                                    "members": [
-                                      {
+                                  "type": "CHOICE",
+                                  "members": [
+                                    {
+                                      "type": "FIELD",
+                                      "name": "content",
+                                      "content": {
                                         "type": "SEQ",
                                         "members": [
                                           {
@@ -262,10 +262,10 @@
                                             "members": [
                                               {
                                                 "type": "FIELD",
-                                                "name": "array_item",
+                                                "name": "element",
                                                 "content": {
                                                   "type": "SYMBOL",
-                                                  "name": "string_literal"
+                                                  "name": "string"
                                                 }
                                               },
                                               {
@@ -279,10 +279,10 @@
                                                     },
                                                     {
                                                       "type": "FIELD",
-                                                      "name": "array_item",
+                                                      "name": "element",
                                                       "content": {
                                                         "type": "SYMBOL",
-                                                        "name": "string_literal"
+                                                        "name": "string"
                                                       }
                                                     }
                                                   ]
@@ -295,10 +295,10 @@
                                             "members": [
                                               {
                                                 "type": "FIELD",
-                                                "name": "array_item",
+                                                "name": "element",
                                                 "content": {
                                                   "type": "SYMBOL",
-                                                  "name": "string_literal"
+                                                  "name": "string"
                                                 }
                                               },
                                               {
@@ -307,12 +307,12 @@
                                             ]
                                           }
                                         ]
-                                      },
-                                      {
-                                        "type": "BLANK"
                                       }
-                                    ]
-                                  }
+                                    },
+                                    {
+                                      "type": "BLANK"
+                                    }
+                                  ]
                                 },
                                 {
                                   "type": "STRING",
@@ -366,12 +366,12 @@
                       "value": "["
                     },
                     {
-                      "type": "FIELD",
-                      "name": "contents",
-                      "content": {
-                        "type": "CHOICE",
-                        "members": [
-                          {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "FIELD",
+                          "name": "content",
+                          "content": {
                             "type": "SEQ",
                             "members": [
                               {
@@ -379,10 +379,10 @@
                                 "members": [
                                   {
                                     "type": "FIELD",
-                                    "name": "array_item",
+                                    "name": "element",
                                     "content": {
                                       "type": "SYMBOL",
-                                      "name": "string_literal"
+                                      "name": "string"
                                     }
                                   },
                                   {
@@ -396,10 +396,10 @@
                                         },
                                         {
                                           "type": "FIELD",
-                                          "name": "array_item",
+                                          "name": "element",
                                           "content": {
                                             "type": "SYMBOL",
-                                            "name": "string_literal"
+                                            "name": "string"
                                           }
                                         }
                                       ]
@@ -412,10 +412,10 @@
                                 "members": [
                                   {
                                     "type": "FIELD",
-                                    "name": "array_item",
+                                    "name": "element",
                                     "content": {
                                       "type": "SYMBOL",
-                                      "name": "string_literal"
+                                      "name": "string"
                                     }
                                   },
                                   {
@@ -424,12 +424,12 @@
                                 ]
                               }
                             ]
-                          },
-                          {
-                            "type": "BLANK"
                           }
-                        ]
-                      }
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
                     },
                     {
                       "type": "STRING",
@@ -616,7 +616,7 @@
         },
         {
           "type": "FIELD",
-          "name": "braced_body",
+          "name": "body",
           "content": {
             "type": "SYMBOL",
             "name": "expression"
@@ -708,7 +708,7 @@
           },
           {
             "type": "SYMBOL",
-            "name": "string_literal"
+            "name": "string"
           },
           {
             "type": "SEQ",
@@ -746,20 +746,20 @@
           "value": "("
         },
         {
-          "type": "FIELD",
-          "name": "arguments",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "arguments",
+              "content": {
                 "type": "SYMBOL",
                 "name": "sequence"
-              },
-              {
-                "type": "BLANK"
               }
-            ]
-          }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -823,41 +823,29 @@
           "value": "["
         },
         {
-          "type": "FIELD",
-          "name": "contents",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "FIELD",
-                "name": "attr_item",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "identifier"
-                }
-              },
-              {
-                "type": "REPEAT",
-                "content": {
-                  "type": "SEQ",
-                  "members": [
-                    {
-                      "type": "STRING",
-                      "value": ","
-                    },
-                    {
-                      "type": "FIELD",
-                      "name": "attr_item",
-                      "content": {
-                        "type": "SYMBOL",
-                        "name": "identifier"
-                      }
-                    }
-                  ]
-                }
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SEQ",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": ","
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                ]
               }
-            ]
-          }
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -996,7 +984,7 @@
         },
         {
           "type": "FIELD",
-          "name": "param",
+          "name": "name",
           "content": {
             "type": "SYMBOL",
             "name": "identifier"
@@ -1084,7 +1072,7 @@
       "members": [
         {
           "type": "FIELD",
-          "name": "recipe",
+          "name": "name",
           "content": {
             "type": "SYMBOL",
             "name": "identifier"
@@ -1105,7 +1093,7 @@
         },
         {
           "type": "FIELD",
-          "name": "recipe",
+          "name": "name",
           "content": {
             "type": "SYMBOL",
             "name": "identifier"
@@ -1114,12 +1102,8 @@
         {
           "type": "REPEAT",
           "content": {
-            "type": "FIELD",
-            "name": "expression",
-            "content": {
-              "type": "SYMBOL",
-              "name": "expression"
-            }
+            "type": "SYMBOL",
+            "name": "expression"
           }
         },
         {
@@ -1249,7 +1233,7 @@
         }
       ]
     },
-    "string_literal": {
+    "string": {
       "type": "CHOICE",
       "members": [
         {
@@ -1471,3 +1455,4 @@
   ],
   "supertypes": []
 }
+

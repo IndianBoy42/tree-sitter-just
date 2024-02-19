@@ -11,7 +11,7 @@
   left: (identifier) @variable
   [":="] @operator)
 
-(module mod_name: (identifier) @namespace)
+(module name: (identifier) @namespace)
 
 ; highlight known settings (filtering does not always work)
 (setting
@@ -42,38 +42,38 @@
 
 ; highlight known attributes (filtering does not always work)
 (attribute
-  attr_item: ((identifier) @attribute
-  (#any-of? @attribute
-    "private"
-    "allow-duplicate-recipes"
-    "dotenv-filename"
-    "dotenv-load"
-    "dotenv-path"
-    "export"
-    "fallback"
-    "ignore-comments"
-    "positional-arguments"
-    "shell"
-    "tempdi"
-    "windows-powershell"
-    "windows-shell"
-    )))
+  ((identifier) @attribute
+    (#any-of? @attribute
+      "private"
+      "allow-duplicate-recipes"
+      "dotenv-filename"
+      "dotenv-load"
+      "dotenv-path"
+      "export"
+      "fallback"
+      "ignore-comments"
+      "positional-arguments"
+      "shell"
+      "tempdi"
+      "windows-powershell"
+      "windows-shell"
+      )))
 
 (recipe_header name: (identifier) @function)
 
 ; recipe argument specification
 ; pattern includes variadic_parameter
 (parameter
-  param: (identifier) @parameter
+  name: (identifier) @parameter
   "="? @operator)
 
 (dependencies "&&" @operator)
-(dependency recipe: (identifier) @function)
-(dependency_expression recipe: (identifier) @function)
+(dependency name: (identifier) @function)
+(dependency_expression name: (identifier) @function)
 
 ; handle escape sequences
-(string_literal (escape_sequence) @string.escape)
-(string_literal) @string
+(string (escape_sequence) @string.escape)
+(string) @string
 
 (comment) @comment
 

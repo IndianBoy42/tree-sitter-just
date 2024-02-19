@@ -2,12 +2,9 @@
 
 ; Define collapse points
 
-(
-  [
-    (recipe) 
-    (recipe_body) 
-    (interpolation) 
-    (item (_))
-  ] @fold
-  (#trim! @fold)
-)
+[
+  (recipe)
+  (string)
+  (external_command)
+] @fold
+(#trim! @fold)

@@ -1,6 +1,8 @@
 /**
  * @file Justfile grammar for tree-sitter
- * @author Anshuman Medhi
+ * @author Anshuman Medhi <amedhi@connect.ust.uk>
+ * @author Trevor Gross <tmgross@umich.edu>
+ * @author Amaan Qureshi <amaanq12@gmail.com>
  * @license Apache-2.0
  */
 
@@ -12,22 +14,31 @@
 
 const ESCAPE_SEQUENCE = token(/\\([nrt"\\]|(\r?\n))/);
 
-/** Comma separated list with at least one item */
-function comma_sep1(item) {
-  return seq(item, repeat(seq(",", item)));
+/**
+ * Creates a rule to match one or more of the rules separated by a comma
+ *
+ * @param {RuleOrLiteral} rule
+ *
+ * @return {SeqRule}
+ */
+function comma_sep1(rule) {
+  return seq(rule, repeat(seq(",", rule)));
 }
 
-/** Create an array with the given item as contents */
-function array(item) {
-  const array_item = field("array_item", item);
+/**
+ * Creates a rule to match an array-like structure filled with `item`
+ *
+ * @param {RuleOrLiteral} rule
+ *
+ * @return {Rule}
+ */
+function array(rule) {
+  const item = field("element", rule);
   return field(
     "array",
     seq(
       "[",
-      field(
-        "contents",
-        optional(seq(comma_sep1(array_item), optional(array_item))),
-      ),
+      optional(field("content", seq(comma_sep1(item), optional(item)))),
       "]",
     ),
   );
@@ -57,7 +68,7 @@ module.exports = grammar({
 
   rules: {
     // justfile      : item* EOF
-    source_file: ($) => seq(optional($.shebang), repeat($.item)),
+    source_file: ($) => seq(optional($.shebang), repeat($._item)),
 
     // item          : recipe
     //               | alias
@@ -66,7 +77,7 @@ module.exports = grammar({
     //               | import
     //               | module
     //               | setting
-    item: ($) =>
+    _item: ($) =>
       choice(
         $.recipe,
         $.alias,
@@ -98,15 +109,15 @@ module.exports = grammar({
     export: ($) => seq("export", $.assignment),
 
     // import        : 'import' '?'? string?
-    import: ($) => seq("import", optional("?"), $.string_literal),
+    import: ($) => seq("import", optional("?"), $.string),
 
     // module        : 'mod' '?'? string?
     module: ($) =>
       seq(
         "mod",
         optional("?"),
-        field("mod_name", $.identifier),
-        optional($.string_literal),
+        field("name", $.identifier),
+        optional($.string),
       ),
 
     // setting       : 'set' 'dotenv-load' boolean?
@@ -120,12 +131,10 @@ module.exports = grammar({
           field("left", $.identifier),
           field(
             "right",
-            optional(
-              seq(
-                ":=",
-                choice($.boolean, $.string_literal, array($.string_literal)),
-              ),
-            ),
+            optional(seq(
+              ":=",
+              choice($.boolean, $.string, array($.string)),
+            )),
           ),
           $._newline,
         ),
@@ -133,7 +142,7 @@ module.exports = grammar({
           "set",
           "shell",
           ":=",
-          field("right", array($.string_literal)),
+          field("right", array($.string)),
           $._newline,
         ),
       ),
@@ -168,7 +177,7 @@ module.exports = grammar({
         optional(seq("else", $._braced_expr)),
       ),
 
-    _braced_expr: ($) => seq("{", field("braced_body", $.expression), "}"),
+    _braced_expr: ($) => seq("{", field("body", $.expression), "}"),
 
     // condition     : expression '==' expression
     //               | expression '!=' expression
@@ -194,7 +203,7 @@ module.exports = grammar({
           $.function_call,
           $.external_command,
           $.identifier,
-          $.string_literal,
+          $.string,
           seq("(", $.expression, ")"),
         ),
       ),
@@ -203,7 +212,7 @@ module.exports = grammar({
       seq(
         field("name", $.identifier),
         "(",
-        field("arguments", optional($.sequence)),
+        optional(field("arguments", $.sequence)),
         ")",
       ),
 
@@ -217,7 +226,7 @@ module.exports = grammar({
     attribute: ($) =>
       seq(
         "[",
-        field("contents", comma_sep1(field("attr_item", $.identifier))),
+        comma_sep1($.identifier),
         "]",
         $._newline,
       ),
@@ -250,7 +259,7 @@ module.exports = grammar({
     parameter: ($) =>
       seq(
         optional("$"),
-        field("param", $.identifier),
+        field("name", $.identifier),
         optional(seq("=", field("default", $.value))),
       ),
 
@@ -264,14 +273,17 @@ module.exports = grammar({
     // dependency    : NAME
     //               | '(' NAME expression* ')'
     dependency: ($) =>
-      choice(field("recipe", $.identifier), $.dependency_expression),
+      choice(
+        field("name", $.identifier),
+        $.dependency_expression,
+      ),
 
     // contents of `(recipe expression)`
     dependency_expression: ($) =>
       seq(
         "(",
-        field("recipe", $.identifier),
-        repeat(field("expression", $.expression)),
+        field("name", $.identifier),
+        repeat($.expression),
         ")",
       ),
 
@@ -304,7 +316,7 @@ module.exports = grammar({
     //               | INDENTED_STRING
     //               | RAW_STRING
     //               | INDENTED_RAW_STRING
-    string_literal: ($) =>
+    string: ($) =>
       choice(
         $._string_indented,
         $._raw_string_indented,
