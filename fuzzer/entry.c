@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-TSLanguage *tree_sitter_just();
+TSLanguage *tree_sitter_just(void);
 
 int LLVMFuzzerTestOneInput(const uint8_t *data, const size_t len) {
   TSParser *parser = ts_parser_new();
