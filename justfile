@@ -5,6 +5,13 @@ fuzzer := justfile_directory() / "fuzzer"
 nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
 include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
+# Source files needed to build a parser
+parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_src + "/lib/src/lib.c"
+
+bin_dir := src / "target" / "bin"
+obj_dir := src / "target" / "obj"
+debug_out := bin_dir / "debug.out"
+fuzz_out := bin_dir / "fuzz.out"
 
 # List all recipes
 default:
@@ -15,6 +22,10 @@ _lint-min: tree-sitter-clone configure-compile-database
 	npm run lint:check
 	git ls-files '**.c' | grep -v 'parser\.c' | \
 		xargs -IFNAME sh -c 'echo "\nchecking file FNAME" && clang-tidy FNAME'
+
+_out-dirs:
+	mkdir -p "{{ bin_dir }}"
+	mkdir -p "{{ obj_dir }}"
 
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint: _lint-min
@@ -186,14 +197,21 @@ tree-sitter-clone:
 			--depth=1
 	fi
 
-fuzz *extra-args: (gen "--debug-build") tree-sitter-clone
+debug-build: tree-sitter-clone _out-dirs
+	clang -O3 -g ${CFLAGS:-} {{ include_args }} \
+	{{ parser_sources }} "{{bindings}}/debug.c" \
+	-o {{ debug_out }}
+
+run *file-names: debug-build
+	{{ debug_out }} {{file-names}}
+
+fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 	#!/bin/sh
 	set -eaux
 
 	"{{ fuzzer / "build-corpus.py" }}"
 
 	artifacts="{{fuzzer}}/cache/failures/"
-	exe="{{fuzzer}}/cache/fuzz.out"
 	corpus="{{fuzzer}}/corpus"
 	mkdir -p "$artifacts"
 
@@ -201,36 +219,33 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone
 	flags="$flags -g -O1 -std=gnu99"
 	flags="$flags {{ include_args }}"
 
-	sources="{{ src }}/scanner.c {{ src }}/parser.c {{ fuzzer }}/entry.c {{ ts_src }}/lib/src/lib.c"
+	sources="{{ parser_sources }} {{ fuzzer }}/entry.c"
 
-	clang $flags -o "$exe" $sources
+	clang $flags -o "{{ fuzz_out }}" $sources
 
-	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{nproc}}"
-	LD_LIBRARY_PATH="{{ts_src}}" "$exe" "$corpus" $fuzzer_flags {{ extra-args }}
+	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{ nproc }}"
+	LD_LIBRARY_PATH="{{ts_src}}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
 
 # Configure the database used by clang-format, clang-tidy, and language servers
 configure-compile-database:
 	#!/usr/bin/env python3
 	import json
-	# src := justfile_directory() / "src"
-	# bindings := justfile_directory() / "bindings"
-	# ts_src := justfile_directory() / "repositories" / "tree-sitter"
-	# fuzzer := justfile_directory() / "fuzzer"
-	# nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
-	# include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
-	# general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 	src = "{{ src }}"
 	include_args = "{{ include_args }}"
+	general_cflags = "{{ general_cflags }}"
 	
 	sources = [
-		("bindings/debug.c", "")
+		("bindings/debug.c", "{{ debug_out }}"),
+		("fuzzer/entry.c", "{{ fuzz_out }}"),
+		("src/parser.c", "{{ obj_dir / "parser.o" }}"),
+		("src/scanner.c", "{{ obj_dir / "scanner.o" }}"),
 	]
 	results = []
 
 	for (input, output) in sources:
 		results.append({
 			"directory": f"{src}",
-			"command": f"clang {include_args} {input}",
+			"command": f"clang {include_args} {input} {general_cflags}",
 			"file": f"{src}/{input}",
 			"output": f"{src}/{output}",
 		})

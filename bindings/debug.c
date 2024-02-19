@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-TSLanguage *tree_sitter_just(void);
+#define DEFAULT_ALLOC_SIZE 1024;
 
-#define ALLOC_SIZE 1024;
+TSLanguage *tree_sitter_just(void);
 
 int main(int argc, char **argv) {
   TSParser *parser = ts_parser_new();
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  size_t alloc_size = ALLOC_SIZE;
+  size_t alloc_size = DEFAULT_ALLOC_SIZE;
   char *data = malloc(alloc_size);
   assert(data);
 
