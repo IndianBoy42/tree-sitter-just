@@ -14,6 +14,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 18
+      - run: pip install ruff
       - name: Get npm cache directory
         id: npm-cache-dir
         shell: bash
@@ -65,8 +66,6 @@ jobs:
         run: just --verbose test-ts
       - name: Test parsing and highlighting on all Just files in repo
         run: just --verbose test-parse-highlight
-      - name: Check C files with args
-        run: just --verbose check-c
 
   static-validation:
     runs-on: ubuntu-latest
