@@ -61,6 +61,8 @@ deploy-all:
       --inputs-from . \
       'nixpkgs#deploy-rs' -- -s
 
+a:
+
 clean:
     rm -rf \
       result* \

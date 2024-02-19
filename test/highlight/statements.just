@@ -102,7 +102,7 @@ bar3 := '''b
 '''
 # <- string
 
-baz3 := ''''
+baz3 := '''
   abc \t
   def \"
 '''
@@ -117,9 +117,15 @@ foo5 := ```echo hi```
 # <- variable
 #    ^^ operator
 
+# FIXME
+#       $$$ punctuation.special
+#                 $$$ punctuation.special
+
 bar5 := ```
 echo bye  
 ```
+# FIXME
+# <$ punctuation.special
 
 foo_if := if foo == "x" { "val" } else if "1" != "2" { env("val") } else { bar }
 # <- variable
@@ -192,3 +198,5 @@ set shell := ["powershell.exe", "-c"]
 foo_cmt := bar # + baz
 # <- variable
 #              ^ comment.line
+
+foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch" }
