@@ -65,7 +65,8 @@ just lint
 just fmt
 ```
 
-Note that `just lint` and `just fmt` must pass for all changes.
+Note that `just lint` and `just fmt` must pass for all changes. You can verify
+these automatically before committing by running `just pre-commit-install`.
 
 All our queries are in `queries-src`. This directory is what gets tested by
 tree-sitter, and should be usable by helix. To generate queries for NeoVim,

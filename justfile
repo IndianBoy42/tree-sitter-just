@@ -2,15 +2,27 @@
 default:
 	just --list
 
-# Run the linter
+# Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint:
 	npm run lint:check
+	find src/ -name '*.c' ! -name 'parser.c' | \
+		xargs -IFNAME sh -c \
+		'echo && echo "checking file FNAME" && \
+		clang-tidy FNAME -- -I src/  -Wall -Werror --pedantic  \
+		-Wno-format-pedantic'
+	cargo clippy
+	ruff .
 
 alias fmt := format
 
-# Autoformat code
+# Autoformat code. Requires Cargo, clang-format, and black.
 format:
 	npm run format:write
+	find src/ -name '*.c' ! -name 'parser.c' | \
+		xargs -IFNAME sh -c \
+		'echo && echo "checking file FNAME" && \
+		clang-format -i FNAME -Werror --verbose'
+	black .
 
 # Generate the parser
 gen:
@@ -42,18 +54,6 @@ test-parse-highlight:
 		npx tree-sitter highlight "$fname" > "$fname.highlight.out"
 		echo "::endgroup::"
 	done
-
-# Check C files with more strict arguments
-check-c:
-	#!/bin/sh
-	set -eaux
-
-	find src/ -name '*.c' ! -name 'parser.c' |
-		xargs -IFNAME sh -c \
-		'echo && echo "::notice:: checking file FNAME" &&
-		clang FNAME -c -Wall -Werror --pedantic  \
-		-Wno-format-pedantic \
-		-o/dev/null'
 
 # Verify that the `just` tool parses all files we are using
 verify-just-parsing:
@@ -106,9 +106,10 @@ configure-tree-sitter:
 		f.truncate()
 
 # Run lint and check formatting
-ci-codestyle:
+ci-codestyle: lint
+	# Check formatting without changing
 	npm run format:check
-	npm run lint:check
+	clang-format --Werror --verbose src/scanner.c | diff -up - src/scanner.c
 
 # Make sure that files have not changed
 ci-validate-generated-files:
@@ -117,14 +118,29 @@ ci-validate-generated-files:
 
 	git tag ci-tmp-pre-updates
 	
-	npm run gen
+	just gen
 
 	failed=false
 	git diff ci-tmp-pre-updates --exit-code || failed=true
 
 	if ! [ "$failed" = "false" ]; then
 		echo '::warning::Generated files are out of date!'
-		echo '::warning::run `npm run gen` and commit the changes'
+		echo '::warning::run `just gen` and commit the changes'
 	fi
 
 	git tag -d ci-tmp-pre-updates
+
+# Run a subset of CI checks before committing.
+pre-commit: ci-codestyle
+
+# Install pre-commit hooks
+pre-commit-install:
+	#!/bin/sh
+	fname="{{justfile_directory()}}/.git/hooks/pre-commit"
+	touch "$fname"
+	chmod +x "$fname"
+
+	cat << EOF > "$fname"
+	#!/bin/sh
+	just pre-commit
+	EOF
