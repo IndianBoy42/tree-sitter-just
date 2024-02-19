@@ -32,7 +32,7 @@ jobs:
       - run: |
           npm --version
           npx --version
-      - run: npm install --locked --include=dev
+      - run: just setup
       - run: just --verbose ci-codestyle
 
   test:

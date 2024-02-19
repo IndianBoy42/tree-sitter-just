@@ -36,7 +36,8 @@ jobs:
       - run: |
           npm --version
           npx --version
-      - run: npm install --locked --include=dev
+          clang --version
+      - run: just setup
       - run: just fuzz
       - name: Print failures
         if: always()
