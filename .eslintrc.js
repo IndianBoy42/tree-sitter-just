@@ -24,4 +24,5 @@ module.exports = {
     ],
     "valid-jsdoc": 0,
   },
+  ignorePatterns: ["repositories"],
 };

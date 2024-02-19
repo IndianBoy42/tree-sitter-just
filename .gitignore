@@ -1,7 +1,27 @@
-Cargo.lock
+# Rust build
+target/**
+
+# Node cache
 node_modules
-build
-package-lock.json
-/target/
+
+# Tree-sitter ouptut
+build/
 .build/
-.fuzzer-cache/
+log.html
+*.wasm
+fuzzer-out/
+
+# Fuzzer items
+tree-sitter-src/
+fuzzer/cache/
+fuzzer/corpus
+fuzzer/artifacts
+**.log
+**.out
+**.dSYM
+
+# Other repos
+repositories/
+
+# Clang files
+compile_commands.json
