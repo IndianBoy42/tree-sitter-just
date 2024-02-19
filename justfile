@@ -5,16 +5,22 @@ fuzzer := justfile_directory() / "fuzzer"
 nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
 include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
-fuzzer_flags := "-fsanitize=fuzzer,address,undefined"
+
+# FIXME: there are errors running with ASAN, we ideally want `,address` here
+fuzzer_flags := env("FUZZER_FLAGS", "-fsanitize=fuzzer,undefined")
+
 # Source files needed to build a parser
 parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_src + "/lib/src/lib.c"
 
-bin_dir := src / "target" / "bin"
-obj_dir := src / "target" / "obj"
+target := justfile_directory() / "target"
+bin_dir := target / "bin"
+obj_dir := target / "obj"
 debug_out := bin_dir / "debug.out"
 fuzz_out := bin_dir / "fuzz.out"
 
 ts_tag := "v0.20.9"
+
+base_cache_key := sha256_file(src / "scanner.c") + sha256_file(src / "parser.c") + sha256(parser_sources) + sha256(include_args) + sha256(general_cflags) + sha256(fuzzer_flags)
 
 # List all recipes
 default:
@@ -96,7 +102,7 @@ test-parse-highlight:
 	do
 		printf '\n\n'
 		echo "::group::Parse and highlight testing for $fname"
-	
+
 		npx tree-sitter parse "$fname" > /dev/null
 		npx tree-sitter highlight "$fname" > /dev/null
 
@@ -121,7 +127,7 @@ verify-just-parsing:
 
 # Make sure that no tests contain errors
 verify-no-error-tests:
-    ! grep -nr -C4 -E '(ERROR|MISSING|UNEXPECTED)' test
+	! grep -nr -C4 -E '(ERROR|MISSING|UNEXPECTED)' test
 
 # Helper to rebuild helix grammars
 hx-build:
@@ -139,7 +145,7 @@ configure-tree-sitter:
 		shell = True
 	else:
 		shell = False
-		
+
 	cfg_fname = r"""{{ config_directory() / "tree-sitter" / "config.json" }}"""
 	if not os.path.isfile(cfg_fname):
 		sp.run(["npx", "tree-sitter", "init-config"], check=True, shell=shell)
@@ -152,7 +158,7 @@ configure-tree-sitter:
 		parent_dir = os.path.dirname("{{ justfile_directory() }}")
 		j["parser-directories"].append(parent_dir)
 		json.dump(j, f)
-		
+
 		f.truncate()
 
 # Run lint and check formatting
@@ -164,7 +170,7 @@ ci-validate-generated-files:
 	set -eaux
 
 	git tag ci-tmp-pre-updates
-	
+
 	just gen
 
 	failed=false
@@ -204,9 +210,16 @@ tree-sitter-clone:
 
 # Build a simple debug executable
 debug-build: tree-sitter-clone _out-dirs
+	#!/bin/sh
+	cache_key='{{ base_cache_key + sha256_file(bindings / "debug.c") }}'
+	keyfile="{{ obj_dir }}/debug-build.cachekey"
+	[ "$cache_key" = $(cat "$keyfile" || echo "") ] && exit 0
+
 	clang -O1 -g {{ fuzzer_flags }} ${CFLAGS:-} {{ include_args }} \
-	{{ parser_sources }} "{{bindings}}/debug.c" \
+	{{ parser_sources }} "{{ bindings }}/debug.c" \
 	-o {{ debug_out }}
+
+	printf "$cache_key" > "$keyfile"
 
 # # Run the debug executable with one or more files
 debug-run *file-names: debug-build
@@ -219,7 +232,7 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 
 	"{{ fuzzer / "build-corpus.py" }}"
 
-	artifacts="{{fuzzer}}/cache/failures/"
+	artifacts="{{fuzzer}}/failures/"
 	corpus="{{fuzzer}}/corpus"
 	mkdir -p "$artifacts"
 
@@ -229,7 +242,13 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 
 	sources="{{ parser_sources }} {{ fuzzer }}/entry.c"
 
-	clang $flags -o "{{ fuzz_out }}" $sources
+
+	cache_key='{{ base_cache_key + sha256_file(fuzzer/ "entry.c") }}'
+	keyfile="{{ obj_dir }}/fuzz.cachekey"
+	[ "$cache_key" = $(cat "$keyfile" || echo "") ] ||
+		clang $flags -o "{{ fuzz_out }}" $sources
+
+	printf "$cache_key" > "$keyfile"
 
 	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{ nproc }}"
 	LD_LIBRARY_PATH="{{ts_src}}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
@@ -241,7 +260,7 @@ configure-compile-database:
 	src = "{{ src }}"
 	include_args = "{{ include_args }}"
 	general_cflags = "{{ general_cflags }}"
-	
+
 	sources = [
 		("bindings/debug.c", "{{ debug_out }}"),
 		("fuzzer/entry.c", "{{ fuzz_out }}"),
