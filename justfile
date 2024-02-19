@@ -41,6 +41,7 @@ format-check:
 gen *extra-args:
 	npx tree-sitter generate {{ extra-args }}
 	python3 build-flavored-queries.py
+	npx prettier --write src/
 
 alias t := test
 
@@ -52,7 +53,7 @@ test *ts-test-args: gen
 	echo && echo Running Cargo tests
 
 	# FIXME: xfail CI on Windows because we are getting STATUS_DLL_NOT_FOUND
-	{{ if os_family() + env("CI", "1") == "windows1" { "cargo test" } else { "" } }}
+	{{ if os_family() + env("CI", "1") == "windows1" { "echo skipping tests on Windows" } else { "cargo test" } }}
 
 # Verify that tree-sitter can parse and highlight all files in the repo. Requires a tree-sitter configuration.
 test-parse-highlight:
