@@ -13,11 +13,14 @@ jobs:
   test:
     name: Parser fuzzing
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v3
-      - uses: vigoux/tree-sitter-fuzz-action@v1
-        with:
-          language: bash
-          external-scanner: src/scanner.c
-          time: 60
-          timeout: 5
+      - uses: taiki-e/install-action@just
+      - run: just fuzz
+      - name: print tests
+        if: always()
+        run: |
+          nm -g .fuzzer-cache/tree-sitter/libtree-sitter.a
+          find . -name 'timeout-*' |
+            xargs -IFNAME sh -c 'echo "\nPrinting FNAME" && base64 -i FNAME'

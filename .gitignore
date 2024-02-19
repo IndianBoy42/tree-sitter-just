@@ -4,3 +4,4 @@ build
 package-lock.json
 /target/
 .build/
+.fuzzer-cache/

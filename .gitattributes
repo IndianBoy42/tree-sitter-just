@@ -8,3 +8,6 @@ src/parser.c linguist-generated
 src/grammar.json -diff
 src/node-types.json -diff
 src/parser.c -diff
+
+# These test files are from the fuzzer
+test/highlight/timeout-* binary
