@@ -72,6 +72,21 @@
     "fields": {}
   },
   {
+    "type": "command_body",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "interpolation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "condition",
     "named": true,
     "fields": {},
@@ -232,7 +247,17 @@
   {
     "type": "external_command",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "command_body",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "function_call",

@@ -80,9 +80,11 @@
   "]"
   "("
   ")"
+  "{{"
+  "}}"
 ] @punctuation.bracket
 
-[ "{{" "}}" "`" ] @punctuation.special
+[ "`" "```"] @punctuation.special
 
 ; Literals
 
