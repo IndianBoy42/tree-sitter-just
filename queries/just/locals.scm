@@ -3,18 +3,30 @@
 ; This file tells us about the scope of variables so e.g. local
 ; variables override global functions with the same name
 
+; Scope
+
 (recipe) @scope
 
-; definition sources
+; Definitions
+
 (alias left: (identifier) @definition.variable)
+
 (assignment left: (identifier) @definition.variable)
+
 (module name: (identifier) @definition.namespace)
+
 (parameter name: (identifier) @definition.variable)
+
 (recipe_header name: (identifier) @definition.function)
 
-; reference locations
+; References
+
 (alias right: (identifier) @reference.variable)
+
 (function_call name: (identifier) @reference.function)
+
 (dependency name: (identifier) @reference.function)
+
 (dependency_expression name: (identifier) @reference.function)
+
 (value (identifier) @reference.variable)
