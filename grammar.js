@@ -288,12 +288,15 @@ module.exports = grammar({
 
     _shebang_flag: (_) => /--?\w*/,
 
-    shebang: ($) => seq("#!", /.*\//,
-      optional(seq("env ", repeat($._shebang_flag))),
-      // defer dilemma: python3 => python, but json5 => json5
-      alias($.identifier, $.language),
-      repeat($._shebang_flag),
-    ),
+    shebang: ($) =>
+      seq(
+        "#!",
+        /.*\//,
+        optional(seq("env ", repeat($._shebang_flag))),
+        // defer dilemma: python3 => python, but json5 => json5
+        alias($.identifier, $.language),
+        repeat($._shebang_flag),
+      ),
 
     // string        : STRING
     //               | INDENTED_STRING
