@@ -274,8 +274,7 @@ module.exports = grammar({
       seq(
         $._indent,
         optional(seq($.shebang, $._newline)),
-        repeat(choice(seq($.recipe_line, $._newline), $._newline)),
-        $._newline,
+        repeat1(seq($.recipe_line, $._newline)),
         $._dedent,
       ),
 
@@ -287,25 +286,13 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    lang: ($) => /[a-z]+\d?/,
-    _sheflag: ($) => /--?\w*/,
+    _shebang_flag: ($) => /--?\w*/,
 
-    // #!/path/to/interpreter arg*
-    //
-    // #!/bin/bash
-    // #!/bin/bash -
-    // #!/bin/bash --
-    // #!/bin/bash -v
-    // #!/usr/bin/bash
-    // #!/usr/bin/python3
-    // #!/usr/bin/env -i bash
-    // #!/usr/bin/env bash -v
-    // #!/usr/local/bin/bash
-    shebang: ($) => seq("#!", /\/.*\//,
-      optional(seq("env ", repeat($._sheflag))),
+    shebang: ($) => seq("#!", /.*\//,
+      optional(seq("env ", repeat($._shebang_flag))),
       // defer dilemma: python3 => python, but json5 => json5
-      field("lang", $.lang),
-      repeat($._sheflag),
+      field("lang", alias($.identifier, $.lang)),
+      repeat($._shebang_flag),
     ),
 
     // string        : STRING

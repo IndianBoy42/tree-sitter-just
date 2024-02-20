@@ -1170,22 +1170,13 @@
           ]
         },
         {
-          "type": "REPEAT",
+          "type": "REPEAT1",
           "content": {
-            "type": "CHOICE",
+            "type": "SEQ",
             "members": [
               {
-                "type": "SEQ",
-                "members": [
-                  {
-                    "type": "SYMBOL",
-                    "name": "recipe_line"
-                  },
-                  {
-                    "type": "SYMBOL",
-                    "name": "_newline"
-                  }
-                ]
+                "type": "SYMBOL",
+                "name": "recipe_line"
               },
               {
                 "type": "SYMBOL",
@@ -1193,10 +1184,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_newline"
         },
         {
           "type": "SYMBOL",
@@ -1258,11 +1245,7 @@
         }
       ]
     },
-    "lang": {
-      "type": "PATTERN",
-      "value": "[a-z]+\\d?"
-    },
-    "_sheflag": {
+    "_shebang_flag": {
       "type": "PATTERN",
       "value": "--?\\w*"
     },
@@ -1275,7 +1258,7 @@
         },
         {
           "type": "PATTERN",
-          "value": "\\/.*\\/"
+          "value": ".*\\/"
         },
         {
           "type": "CHOICE",
@@ -1291,7 +1274,7 @@
                   "type": "REPEAT",
                   "content": {
                     "type": "SYMBOL",
-                    "name": "_sheflag"
+                    "name": "_shebang_flag"
                   }
                 }
               ]
@@ -1305,15 +1288,20 @@
           "type": "FIELD",
           "name": "lang",
           "content": {
-            "type": "SYMBOL",
-            "name": "lang"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            "named": true,
+            "value": "lang"
           }
         },
         {
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
-            "name": "_sheflag"
+            "name": "_shebang_flag"
           }
         }
       ]
