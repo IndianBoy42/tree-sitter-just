@@ -34,7 +34,7 @@ combined := "foo" / os() / bar
 #        ^^ operator
 #           ^^^^^ string
 #                 ^ operator
-#                   ^^ function
+#                   ^^ function.call
 #                      ^^ punctuation.bracket
 #                        ^ operator
 #                          ^^^ variable
@@ -143,7 +143,7 @@ foo_if := if foo == "x" { "val" } else if "1" != "2" { env("val") } else { bar }
 #                                             ^^ operator
 #                                                ^^^ string
 #                                                    ^ punctuation.bracket
-#                                                      ^^^ function
+#                                                      ^^^ function.call
 #                                                         ^ punctuation.bracket
 #                                                           ^^^^^ string
 #                                                                 ^ punctuation.bracket
@@ -153,7 +153,7 @@ foo_if := if foo == "x" { "val" } else if "1" != "2" { env("val") } else { bar }
 foo_fn := env("abc", foo)
 # <- variable
 #      ^^ operator
-#         ^^^ function
+#         ^^^ function.call
 #            ^ punctuation.bracket
 #             ^^^^ string
 #                  ^ punctuation.delimiter
@@ -161,28 +161,28 @@ foo_fn := env("abc", foo)
 #                       ^ punctuation.bracket
 
 export fooexp := "abc"
-# <- keyword
+# <- keyword.import
 #      ^^^^^^ variable
 #             ^^ operator
 #                 ^^^^ string
 
 import? 'baz.just'
-# <- keyword
+# <- keyword.import
 #     ^ operator
 #       ^^^^^^^^^^ string
 
 mod? foomod
-# <- keyword
+# <- keyword.module
 #  ^ operator
 #    ^^^^^^ namespace
 
 mod barmod 'recipes.just'
-# <- keyword
+# <- keyword.module
 #   ^^^^^^ namespace
 #           ^^^^^ string
 
 mod? qux "PATH"
-# <- keyword
+# <- keyword.module
 #  ^ operator
 #    ^^^ namespace
 #        ^^^^^ string

@@ -14,8 +14,8 @@ foo:
 baz: foo bar
 # <- function
 #  ^ operator
-#     ^ function
-#          ^ function
+#     ^ function.call
+#          ^ function.call
 
 qux var1:
 # <- function
@@ -34,9 +34,9 @@ corge +quux: baz (quux quux)
 #     ^ operator
 #      ^^^^ variable.parameter
 #          ^ operator
-#            ^^^ function
+#            ^^^ function.call
 #                ^ punctuation.bracket
-#                 ^^^^ function
+#                 ^^^^ function.call
 #                      ^^^ variable
 #                          ^ punctuation.bracket
 
@@ -50,9 +50,9 @@ grault abc="def":
 garply: foo && bar
 # <- function
 #     ^ operator
-#       ^^^ function
+#       ^^^ function.call
 #           ^^ operator
-#              ^^^ function
+#              ^^^ function.call
 
 waldo a="b": foo bar && baz
 # <- function
@@ -60,17 +60,17 @@ waldo a="b": foo bar && baz
 #      ^ operator
 #       ^^^ string
 #          ^ operator
-#            ^^^ function
-#                ^^^ function
+#            ^^^ function.call
+#                ^^^ function.call
 #                    ^^ operator
-#                       ^^^ function
+#                       ^^^ function.call
 
 fred: garply && (waldo "x")
 # <- function
-#     ^^^^^^ function
+#     ^^^^^^ function.call
 #            ^^ operator
 #               ^ punctuation.bracket
-#                 ^^^^ function
+#                 ^^^^ function.call
 #                      ^^^ string
 #                         ^ punctuation.bracket
 
