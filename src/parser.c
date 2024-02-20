@@ -12,7 +12,7 @@
 #define ALIAS_COUNT 2
 #define TOKEN_COUNT 56
 #define EXTERNAL_TOKEN_COUNT 5
-#define FIELD_COUNT 13
+#define FIELD_COUNT 12
 #define MAX_ALIAS_SEQUENCE_LENGTH 9
 #define PRODUCTION_ID_COUNT 37
 
@@ -124,7 +124,7 @@ enum {
   aux_sym__raw_string_indented_repeat1 = 105,
   aux_sym__string_repeat1 = 106,
   anon_alias_sym_expression = 107,
-  alias_sym_lang = 108,
+  alias_sym_language = 108,
 };
 
 static const char *const ts_symbol_names[] = {
@@ -236,7 +236,7 @@ static const char *const ts_symbol_names[] = {
     [aux_sym__raw_string_indented_repeat1] = "_raw_string_indented_repeat1",
     [aux_sym__string_repeat1] = "_string_repeat1",
     [anon_alias_sym_expression] = "expression",
-    [alias_sym_lang] = "lang",
+    [alias_sym_language] = "language",
 };
 
 static const TSSymbol ts_symbol_map[] = {
@@ -350,7 +350,7 @@ static const TSSymbol ts_symbol_map[] = {
         aux_sym__raw_string_indented_repeat1,
     [aux_sym__string_repeat1] = aux_sym__string_repeat1,
     [anon_alias_sym_expression] = anon_alias_sym_expression,
-    [alias_sym_lang] = alias_sym_lang,
+    [alias_sym_language] = alias_sym_language,
 };
 
 static const TSSymbolMetadata ts_symbol_metadata[] = {
@@ -894,7 +894,7 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
             .visible = true,
             .named = false,
         },
-    [alias_sym_lang] =
+    [alias_sym_language] =
         {
             .visible = true,
             .named = true,
@@ -911,10 +911,9 @@ enum {
   field_default = 7,
   field_element = 8,
   field_kleene = 9,
-  field_lang = 10,
-  field_left = 11,
-  field_name = 12,
-  field_right = 13,
+  field_left = 10,
+  field_name = 11,
+  field_right = 12,
 };
 
 static const char *const ts_field_names[] = {
@@ -928,7 +927,6 @@ static const char *const ts_field_names[] = {
     [field_default] = "default",
     [field_element] = "element",
     [field_kleene] = "kleene",
-    [field_lang] = "lang",
     [field_left] = "left",
     [field_name] = "name",
     [field_right] = "right",
@@ -937,22 +935,20 @@ static const char *const ts_field_names[] = {
 static const TSFieldMapSlice ts_field_map_slices[PRODUCTION_ID_COUNT] = {
     [1] = {.index = 0, .length = 1},   [2] = {.index = 1, .length = 1},
     [3] = {.index = 2, .length = 1},   [4] = {.index = 3, .length = 1},
-    [5] = {.index = 4, .length = 1},   [6] = {.index = 5, .length = 1},
-    [7] = {.index = 6, .length = 2},   [8] = {.index = 8, .length = 1},
-    [9] = {.index = 9, .length = 2},   [10] = {.index = 11, .length = 2},
-    [11] = {.index = 13, .length = 3}, [12] = {.index = 16, .length = 1},
-    [13] = {.index = 17, .length = 2}, [15] = {.index = 19, .length = 2},
-    [16] = {.index = 21, .length = 2}, [17] = {.index = 23, .length = 4},
-    [18] = {.index = 27, .length = 1}, [19] = {.index = 28, .length = 3},
-    [20] = {.index = 31, .length = 3}, [21] = {.index = 34, .length = 2},
-    [22] = {.index = 36, .length = 1}, [23] = {.index = 37, .length = 3},
-    [24] = {.index = 40, .length = 2}, [25] = {.index = 42, .length = 5},
-    [26] = {.index = 47, .length = 1}, [27] = {.index = 48, .length = 1},
-    [28] = {.index = 49, .length = 4}, [29] = {.index = 53, .length = 2},
-    [30] = {.index = 55, .length = 4}, [31] = {.index = 59, .length = 5},
-    [32] = {.index = 64, .length = 6}, [33] = {.index = 70, .length = 7},
-    [34] = {.index = 77, .length = 6}, [35] = {.index = 83, .length = 8},
-    [36] = {.index = 91, .length = 1},
+    [6] = {.index = 4, .length = 1},   [7] = {.index = 5, .length = 2},
+    [9] = {.index = 7, .length = 2},   [10] = {.index = 9, .length = 2},
+    [11] = {.index = 11, .length = 3}, [13] = {.index = 14, .length = 2},
+    [15] = {.index = 16, .length = 2}, [16] = {.index = 18, .length = 2},
+    [17] = {.index = 20, .length = 4}, [18] = {.index = 24, .length = 1},
+    [19] = {.index = 25, .length = 3}, [20] = {.index = 28, .length = 3},
+    [21] = {.index = 31, .length = 2}, [22] = {.index = 33, .length = 1},
+    [23] = {.index = 34, .length = 3}, [24] = {.index = 37, .length = 2},
+    [25] = {.index = 39, .length = 5}, [26] = {.index = 44, .length = 1},
+    [27] = {.index = 45, .length = 1}, [28] = {.index = 46, .length = 4},
+    [29] = {.index = 50, .length = 2}, [30] = {.index = 52, .length = 4},
+    [31] = {.index = 56, .length = 5}, [32] = {.index = 61, .length = 6},
+    [33] = {.index = 67, .length = 7}, [34] = {.index = 74, .length = 6},
+    [35] = {.index = 80, .length = 8}, [36] = {.index = 88, .length = 1},
 };
 
 static const TSFieldMapEntry ts_field_map_entries[] = {
@@ -960,86 +956,83 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     [1] = {field_name, 0},
     [2] = {field_name, 2},
     [3] = {field_left, 1},
-    [4] = {field_lang, 2},
-    [5] = {field_kleene, 0},
-    [6] = {field_left, 1},
+    [4] = {field_kleene, 0},
+    [5] = {field_left, 1},
     {field_right, 3},
-    [8] = {field_lang, 3},
-    [9] = {field_left, 0},
+    [7] = {field_left, 0},
     {field_right, 2},
-    [11] = {field_default, 2},
+    [9] = {field_default, 2},
     {field_name, 0},
-    [13] = {field_left, 1},
+    [11] = {field_left, 1},
     {field_right, 2},
     {field_right, 3},
-    [16] = {field_lang, 4},
-    [17] = {field_body, 2, .inherited = true},
+    [14] = {field_body, 2, .inherited = true},
     {field_consequence, 2},
-    [19] = {field_default, 3},
+    [16] = {field_default, 3},
     {field_name, 1},
-    [21] = {field_right, 3},
+    [18] = {field_right, 3},
     {field_right, 4},
-    [23] = {field_array, 3},
+    [20] = {field_array, 3},
     {field_array, 4},
     {field_left, 1},
     {field_right, 2},
-    [27] = {field_alternative, 0},
-    [28] = {field_alternative, 3},
+    [24] = {field_alternative, 0},
+    [25] = {field_alternative, 3},
     {field_body, 2, .inherited = true},
     {field_consequence, 2},
-    [31] = {field_alternative, 3, .inherited = true},
+    [28] = {field_alternative, 3, .inherited = true},
     {field_body, 2, .inherited = true},
     {field_consequence, 2},
-    [34] = {field_arguments, 2},
+    [31] = {field_arguments, 2},
     {field_name, 0},
-    [36] = {field_element, 1},
-    [37] = {field_element, 4},
+    [33] = {field_element, 1},
+    [34] = {field_element, 4},
     {field_right, 3},
     {field_right, 5},
-    [40] = {field_element, 0, .inherited = true},
+    [37] = {field_element, 0, .inherited = true},
     {field_element, 1, .inherited = true},
-    [42] = {field_array, 3},
+    [39] = {field_array, 3},
     {field_array, 5},
     {field_element, 4},
     {field_left, 1},
     {field_right, 2},
-    [47] = {field_body, 1},
-    [48] = {field_body, 1, .inherited = true},
-    [49] = {field_alternative, 3, .inherited = true},
+    [44] = {field_body, 1},
+    [45] = {field_body, 1, .inherited = true},
+    [46] = {field_alternative, 3, .inherited = true},
     {field_alternative, 4},
     {field_body, 2, .inherited = true},
     {field_consequence, 2},
-    [53] = {field_alternative, 0, .inherited = true},
+    [50] = {field_alternative, 0, .inherited = true},
     {field_alternative, 1, .inherited = true},
-    [55] = {field_element, 4},
+    [52] = {field_element, 4},
     {field_element, 5},
     {field_right, 3},
     {field_right, 6},
-    [59] = {field_content, 5},
+    [56] = {field_content, 5},
     {field_element, 4},
     {field_element, 5, .inherited = true},
     {field_right, 3},
     {field_right, 6},
-    [64] = {field_array, 3},
+    [61] = {field_array, 3},
     {field_array, 6},
     {field_element, 4},
     {field_element, 5},
     {field_left, 1},
     {field_right, 2},
-    [70] = {field_array, 3},
+    [67] = {field_array, 3},
     {field_array, 6},
     {field_content, 5},
     {field_element, 4},
     {field_element, 5, .inherited = true},
     {field_left, 1},
     {field_right, 2},
-    [77] = {field_content, 5},
+    [74] = {field_content, 5},
     {field_element, 4},
     {field_element, 5, .inherited = true},
     {field_element, 6},
     {field_right, 3},
     {field_right, 7},
-    [83] = {field_array, 3},
+    [80] = {field_array, 3},
     {field_array, 7},
     {field_content, 5},
     {field_element, 4},
@@ -1047,7 +1040,7 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_element, 6},
     {field_left, 1},
     {field_right, 2},
-    [91] = {field_body, 3, .inherited = true},
+    [88] = {field_body, 3, .inherited = true},
 };
 
 static const TSSymbol
@@ -1055,15 +1048,15 @@ static const TSSymbol
         [0] = {0},
         [5] =
             {
-                [2] = alias_sym_lang,
+                [2] = alias_sym_language,
             },
         [8] =
             {
-                [3] = alias_sym_lang,
+                [3] = alias_sym_language,
             },
         [12] =
             {
-                [4] = alias_sym_lang,
+                [4] = alias_sym_language,
             },
         [14] =
             {

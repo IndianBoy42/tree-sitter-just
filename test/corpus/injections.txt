@@ -7,4 +7,4 @@ global shebang
 
 (source_file
   (shebang
-    (lang)))
+    (language)))

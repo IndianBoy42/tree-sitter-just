@@ -617,17 +617,16 @@
   {
     "type": "shebang",
     "named": true,
-    "fields": {
-      "lang": {
-        "multiple": false,
-        "required": true,
-        "types": [
-          {
-            "type": "lang",
-            "named": true
-          }
-        ]
-      }
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "language",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -898,7 +897,7 @@
     "named": false
   },
   {
-    "type": "lang",
+    "type": "language",
     "named": true
   },
   {

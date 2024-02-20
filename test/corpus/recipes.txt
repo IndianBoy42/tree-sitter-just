@@ -334,7 +334,7 @@ foo:
       (identifier))
     (recipe_body
       (shebang
-        (lang))
+        (language))
       (recipe_line
           (text)))))
 
@@ -354,7 +354,7 @@ foo:
       (identifier))
     (recipe_body
       (shebang
-        (lang))
+        (language))
       (recipe_line
           (text)))))
 
@@ -376,7 +376,7 @@ foo:
       (identifier))
     (recipe_body
       (shebang
-        (lang))
+        (language))
       (recipe_line
         (text))
       (recipe_line

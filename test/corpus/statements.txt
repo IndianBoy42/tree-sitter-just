@@ -490,7 +490,7 @@ foo:
 
 (source_file
   (shebang
-    (lang))
+    (language))
   (recipe
     (recipe_header
       (identifier))

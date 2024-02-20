@@ -1285,17 +1285,13 @@
           ]
         },
         {
-          "type": "FIELD",
-          "name": "lang",
+          "type": "ALIAS",
           "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "identifier"
-            },
-            "named": true,
-            "value": "lang"
-          }
+            "type": "SYMBOL",
+            "name": "identifier"
+          },
+          "named": true,
+          "value": "language"
         },
         {
           "type": "REPEAT",

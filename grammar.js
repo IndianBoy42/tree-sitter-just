@@ -286,12 +286,12 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    _shebang_flag: ($) => /--?\w*/,
+    _shebang_flag: (_) => /--?\w*/,
 
     shebang: ($) => seq("#!", /.*\//,
       optional(seq("env ", repeat($._shebang_flag))),
       // defer dilemma: python3 => python, but json5 => json5
-      field("lang", alias($.identifier, $.lang)),
+      alias($.identifier, $.language),
       repeat($._shebang_flag),
     ),
 
