@@ -8,6 +8,7 @@ general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 
 # FIXME: there are errors running with ASAN, we ideally want `,address` here
 fuzzer_flags := env("FUZZER_FLAGS", "-fsanitize=fuzzer,undefined")
+fuzz_time := env("FUZZ_TOTAL_TIME", "1200")
 
 # Source files needed to build a parser
 parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_src + "/lib/src/lib.c"
@@ -31,20 +32,48 @@ verbose_flag := if env("CI", "") == "1" { "--verbose" } else { "" }
 default:
 	just --list
 
+# Install needed packages and make sure tools are setup
+setup:
+	#!/bin/bash
+	set -eau
+
+	function check_installed() {
+		printf "checking $1... "
+		if "$1" --version 2> /dev/null ; then
+			echo "tool $1 found!"
+		else
+			echo
+			echo "tool $1 NOT found. This may be needed for some functionality"
+		fi
+		echo
+	}
+
+	check_installed npm
+	check_installed cargo
+	check_installed clang
+	check_installed clang-tidy
+	check_installed clang-format
+
+	if which npm > /dev/null; then
+		npm install --include=dev
+	else
+		echo "npm not found: skipping install"
+	fi
+
 # Lint with more minimal dependencies that can be run during pre-commit
 _lint-min: tree-sitter-clone configure-compile-database
 	npm run lint:check
 	git ls-files '**.c' | grep -v 'parser\.c' | \
 		xargs -IFNAME sh -c 'echo "\nchecking file FNAME" && clang-tidy FNAME'
 
-_out-dirs:
-	mkdir -p "{{ bin_dir }}"
-	mkdir -p "{{ obj_dir }}"
-
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint: _lint-min
 	cargo clippy
 	ruff .
+
+_out-dirs:
+	mkdir -p "{{ bin_dir }}"
+	mkdir -p "{{ obj_dir }}"
 
 alias fmt := format
 
@@ -247,11 +276,13 @@ tree-sitter-clone:
 # Build a simple debug executable
 debug-build: tree-sitter-clone _out-dirs
 	#!/bin/sh
+	set -eau
+
 	cache_key='{{ base_cache_key + sha256_file(bindings / "debug.c") }}'
 	keyfile="{{ obj_dir }}/debug-build.cachekey"
 	[ "$cache_key" = $(cat "$keyfile" 2> /dev/null || echo "") ] && exit 0
 
-	clang -O0 -g {{ fuzzer_flags }} ${CFLAGS:-} {{ include_args }} \
+	clang -O0 -g -fsanitize=undefined ${CFLAGS:-} {{ include_args }} \
 	{{ parser_sources }} "{{ bindings }}/debug.c" \
 	-o {{ debug_out }}
 
@@ -286,7 +317,9 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 
 	printf "$cache_key" > "$keyfile"
 
-	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time=1200 -jobs={{ nproc }}"
+	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time={{ fuzz_time }} -jobs={{ nproc }}"
+
+	echo "Starting fuzzing at $(date -u -Is)"
 	LD_LIBRARY_PATH="{{ts_src}}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
 
 # Configure the database used by clang-format, clang-tidy, and language servers

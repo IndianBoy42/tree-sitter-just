@@ -22,23 +22,29 @@ jobs:
     name: Parser fuzzing
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    # Run in a container because we had some issues reproducing failures
+    container:
+      image: node:lts-slim
+    env:
+      # Just 10 minutes as a sanity check, should run longer locally.
+      # For whatever reason, this time is always wayyyy exceeded
+      # (hence the longer workflow timeout)
+      FUZZ_TOTAL_TIME: 600
     steps:
       - uses: actions/checkout@v4
-      - uses: taiki-e/install-action@just
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-      - uses: actions/cache@v4
-        id: npm-cache
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: ${{ runner.os }}-node-
       - run: |
-          npm --version
-          npx --version
-      - run: npm install --locked --include=dev
+          if [ -f /.dockerenv ]; then
+              echo "Running in docker"
+          else
+              echo "Not in a docker container!"
+              exit 1
+          fi
+
+          apt-get update
+          apt-get install -y clang curl make g++ git
+          curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh |
+            bash -s -- --to /usr/bin
+      - run: just setup
       - run: just fuzz
       - name: Print failures
         if: always()
