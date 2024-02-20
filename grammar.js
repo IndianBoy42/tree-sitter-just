@@ -318,8 +318,10 @@ module.exports = grammar({
 
     escape_sequence: (_) => ESCAPE_SEQUENCE,
 
-    _backticked: (_) => seq("`", repeat(/./), "`"),
-    _indented_backticked: (_) => seq("```", repeat(/./), "```"),
+    _backticked: ($) => seq("`", optional($.command_body), "`"),
+    _indented_backticked: ($) => seq("```", optional($.command_body), "```"),
+
+    command_body: ($) => repeat1(choice($.interpolation, /./)),
 
     // interpolation : '{{' expression '}}'
     interpolation: ($) => seq("{{", $.expression, "}}"),

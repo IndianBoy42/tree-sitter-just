@@ -1,15 +1,105 @@
 ; This file specifies how matched syntax patterns should be highlighted
-;
-; This file is ordered roughly the same as grammar.js
 
-(shebang) @comment
+[
+  "export"
+  "import"
+] @keyword.import
+
+"mod" @keyword.module
+
+[
+  "alias"
+  "set"
+  "shell"
+] @keyword
+
+[
+  "if"
+  "else"
+] @keyword.control.conditional
+
+(boolean ["true" "false"]) @constant.builtin.boolean
+
+; Variables
+
+(value (identifier) @variable)
 
 (alias left: (identifier) @variable)
-(assignment
-  left: (identifier) @variable
-  [":="] @operator)
+
+(assignment left: (identifier) @variable)
+
+; Functions
+
+(recipe_header name: (identifier) @function)
+
+(dependency name: (identifier) @function.call)
+
+(dependency_expression name: (identifier) @function.call)
+
+(function_call name: (identifier) @function.call)
+
+; Parameters
+
+(parameter name: (identifier) @variable.parameter)
+
+; Namespaces
 
 (module name: (identifier) @namespace)
+
+; Operators
+
+[
+  ":="
+  "?"
+  "=="
+  "!="
+  "=~"
+  "@"
+  "="
+  "$"
+  "*"
+  "+"
+  "&&"
+  "@-"
+  "-@"
+  "-"
+  "/"
+  ":"
+] @operator
+
+; Punctuation
+
+[ "," ] @punctuation.delimiter
+
+[
+  "{"
+  "}"
+  "["
+  "]"
+  "("
+  ")"
+  "{{"
+  "}}"
+] @punctuation.bracket
+
+[ "`" "```"] @punctuation.special
+
+; Literals
+
+(boolean) @boolean
+
+[
+  (string)
+  (external_command)
+] @string
+
+(escape_sequence) @constant.character.escape
+
+; Comments
+
+(comment) @comment.line @spell
+
+(shebang) @comment
 
 ; highlight known settings (filtering does not always work)
 (setting
@@ -29,15 +119,6 @@
     "windows-shell"
     )))
 
-(boolean ["true" "false"]) @constant.builtin.boolean
-
-["if" "else"] @keyword.control.conditional
-
-(value (identifier) @variable)
-
-(function_call
-  name: (identifier) @function)
-
 ; highlight known attributes (filtering does not always work)
 (attribute
   ((identifier) @attribute
@@ -56,46 +137,3 @@
       "windows-powershell"
       "windows-shell"
       )))
-
-(recipe_header name: (identifier) @function)
-
-; recipe argument specification
-; pattern includes variadic_parameter
-(parameter
-  name: (identifier) @variable.parameter
-  "="? @operator)
-
-(dependencies "&&" @operator)
-(dependency name: (identifier) @function)
-(dependency_expression name: (identifier) @function)
-
-; handle escape sequences
-(string (escape_sequence) @constant.character.escape)
-(string) @string
-
-(comment) @comment.line
-
-; (interpolation) @string
-
-; FIXME: interpreter
-; (shebang interpreter:(TEXT) @keyword ) @comment
-
-[
-  "alias"
-  "export"
-  "import"
-  "mod"
-  "set"
-] @keyword
-
-; exclude `=` and `&&` since they are valid in more normal scopes
-; (matching is covered in their parent nodes)
-["@" "==" "!=" "+" "*" ":" "/" "?"] @operator
-
-["(" ")" "[" "]" "{{" "}}" "{" "}"] @punctuation.bracket
-
-["," ":"] @punctuation.delimiter
-
-"`" @punctuation.special
-
-(ERROR) @error

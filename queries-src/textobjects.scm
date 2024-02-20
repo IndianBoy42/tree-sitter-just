@@ -1,7 +1,17 @@
-(recipe_body) @block.inner
-(recipe_body) @block.outer
-(recipe_body) @function.inner
-(recipe) @function.outer
+(recipe 
+  (recipe_body) @function.inside) @function.around
+
+(parameters 
+  ((_) @parameter.inside . ","? @parameter.around)) @parameter.around
+
+(dependency_expression
+  (_) @parameter.inside) @parameter.around
+
+(function_call
+  arguments: (sequence (expression) @parameter.inside) @parameter.around) @function.around
+
+(comment) @comment.around
+
 ; (expression 
 ;     if:(expression) @block.inner 
 ; ) 
@@ -10,13 +20,6 @@
 ; ) 
 ; (interpolation (expression) @block.inner) @block.outer
 ; ; (string_array (stringlist) @block.inner) @block.outer
-
-; (call (identifier) @call.inner) @call.outer
-; (dependency (identifier) @call.inner) @call.outer
-
-; (dependency) @parameter.outer
-; ; (dependency_call) @parameter.inner
-; ; (dependency_call (expression) @parameter.inner) 
 
 ; ; (stringlist 
 ; ;     (string) @parameter.inner
@@ -32,18 +35,7 @@
 ;     (#make-range! "parameter.outer" @parameter.inner @_end)
 ; )
 
-; (expression 
-;     (condition) @conditional.inner
-; ) @conditional.outer
-; (expression 
-;     if:(expression) @conditional.inner 
-; )
-; (expression 
-;     else:(expression) @conditional.inner
-; )
-
 ; (item [(alias) (assignment) (export) (setting)]) @statement.outer
 ; (recipe_header) @statement.outer
 ; (line) @statement.outer
 
-; (comment) @comment.outer

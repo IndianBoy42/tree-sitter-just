@@ -231,12 +231,14 @@ bar := `echo hi
     (identifier)
     (expression
       (value
-        (external_command))))
+        (external_command
+          (command_body)))))
   (assignment
     (identifier)
     (expression
       (value
-        (external_command)))))
+        (external_command
+          (command_body))))))
 
 ================================================================================
 indented backticks
@@ -253,12 +255,14 @@ echo bye
     (identifier)
     (expression
       (value
-        (external_command))))
+        (external_command
+          (command_body)))))
   (assignment
     (identifier)
     (expression
       (value
-        (external_command)))))
+        (external_command
+          (command_body))))))
 
 ================================================================================
 if

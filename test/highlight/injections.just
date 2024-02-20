@@ -11,21 +11,19 @@ foo := `[ {{ dir(localhost) }} = "hi" ] && "bye"`
 # <- variable
 #   ^^ operator
 #      ^ punctuation.special
-# FIXME
-#         $$ punctuation.bracket
-#            $$$ function
-#               $ punctuation.bracket
-#                $$$$$$$$$ variable
-#                         $ punctuation.bracket
-#                           $$ punctuation.bracket
-#                                               $ punctuation.special
+#         ^^ punctuation.bracket
+#            ^^^ function.call
+#               ^ punctuation.bracket
+#                ^^^^^^^^^ variable
+#                         ^ punctuation.bracket
+#                           ^^ punctuation.bracket
+#                                               ^ punctuation.special
 
 stuff := ```
 	echo foo
 	echo bar
 ```
-# FIXME
-# <$ punctuation.special
+# <- punctuation.special
 
 # These have to be verified manually, no automated tests are available
 
