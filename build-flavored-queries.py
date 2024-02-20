@@ -25,6 +25,10 @@ REPLACEMENTS = [
     ("@comment.line", "@comment"),
     ("@constant.character.escape", "@string.escape"),
     ("@keyword.module", "@module"),
+    ("@function.inside", "@function.inner"),
+    ("@function.around", "@function.outer"),
+    ("@parameter.around", "@parameter.outer"),
+    ("@comment.around", "@comment.outer"),
 ]
 
 REPLACEMENTS_RE = [
