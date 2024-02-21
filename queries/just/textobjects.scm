@@ -9,9 +9,6 @@
 (dependency_expression
   (_) @parameter.inside) @parameter.outer
 
-(function_call
-  arguments: (sequence (expression) @parameter.inside) @parameter.outer) @function.outer
-
 (comment) @comment.outer
 
 ; (expression 
@@ -22,6 +19,13 @@
 ; ) 
 ; (interpolation (expression) @block.inner) @block.outer
 ; ; (string_array (stringlist) @block.inner) @block.outer
+
+; (call (identifier) @call.inner) @call.outer
+; (dependency (identifier) @call.inner) @call.outer
+
+; (dependency) @parameter.outer
+; ; (dependency_call) @parameter.inner
+; ; (dependency_call (expression) @parameter.inner) 
 
 ; ; (stringlist 
 ; ;     (string) @parameter.inner
