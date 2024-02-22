@@ -54,6 +54,7 @@ jobs:
           set -x
           git config core.autocrlf || echo unset
           git config core.lf || echo unset
+          xxd test/corpus/recipes.txt
       - uses: taiki-e/install-action@just
       - uses: actions/setup-node@v4
         with:
