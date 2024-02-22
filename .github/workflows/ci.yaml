@@ -44,12 +44,14 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
       - run: |
-          git config core.autocrlf
-          git config core.lf
+          set -x
+          git config core.autocrlf || echo unset
+          git config core.lf || echo unset
       - uses: actions/checkout@v4
       - run: |
-          git config core.autocrlf
-          git config core.lf
+          set -x
+          git config core.autocrlf || echo unset
+          git config core.lf || echo unset
       - uses: taiki-e/install-action@just
       - uses: actions/setup-node@v4
         with:
