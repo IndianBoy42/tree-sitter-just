@@ -59,6 +59,7 @@
   "@"
   "="
   "$"
+
   "*"
   "+"
   "&&"
@@ -99,7 +100,7 @@
 
 ; Comments
 
-(comment) @comment @spell
+(comment) @comment
 
 (shebang) @comment
 

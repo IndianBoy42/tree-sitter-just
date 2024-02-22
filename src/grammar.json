@@ -1558,7 +1558,6 @@
     "_string",
     "_string_indented",
     "_raw_string_indented",
-    "ReferenceError",
     "_expression_recurse"
   ],
   "supertypes": []
