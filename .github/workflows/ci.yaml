@@ -9,7 +9,7 @@ env:
 
 jobs:
   codestyle:
-    name: Codestyle (format and lint)
+    name: codestyle & generated files
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -29,11 +29,11 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
-      - run: |
-          npm --version
-          npx --version
       - run: just setup
-      - run: just --verbose ci-codestyle
+      - name: Verify generated files are up to date (error)
+        run: just --verbose ci-validate-generated-files
+      - name: Check codestyle
+        run: just --verbose ci-codestyle
 
   test:
     runs-on: ${{ matrix.os }}
@@ -58,16 +58,13 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
-      - run: |
-          npm --version
-          npx --version
-      - run: npm install --locked
+      - run: just setup --locked
       - name: Configure
         run: just --verbose configure-tree-sitter
-      - name: Check generated files
-        run: just --verbose ci-validate-generated-files
       - name: Run tests
         run: just --verbose test
+      - name: Check if generated files are up to date (warn only)
+        run: just --verbose ci-validate-generated-files 0
 
   static-validation:
     runs-on: ubuntu-latest
