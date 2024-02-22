@@ -1,6 +1,9 @@
 # Rust build
 target/**
 
+# C/C++ language server cache
+.ccls-cache/**
+
 # Node cache
 node_modules
 

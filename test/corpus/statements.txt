@@ -246,7 +246,7 @@ indented backticks
 
 foo := ```echo hi```
 bar := ```
-echo bye  
+echo bye
 ```
 --------------------------------------------------------------------------------
 
@@ -493,7 +493,8 @@ foo:
 --------------------------------------------------------------------------------
 
 (source_file
-  (shebang)
+  (shebang
+    (language))
   (recipe
     (recipe_header
       (identifier))
