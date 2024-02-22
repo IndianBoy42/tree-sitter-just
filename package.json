@@ -1,10 +1,14 @@
 {
   "name": "tree-sitter-just",
-  "author": "Anshuman Medhi",
+  "author": "Anshuman Medhi <amedhi@connect.ust.uk>",
+  "contributors": [
+    "Trevor Gross <tmgross@umich.edu>",
+    "Amaan Qureshi <amaanq12@gmail.com>"
+  ],
   "license": "MIT",
   "version": "0.1.0",
-  "description": "Treesitter grammar for Justfiles (casey/just)",
-  "main": "grammar.js",
+  "description": "Justfiles grammar for tree-sitter",
+  "main": "bindings/node",
   "repository": {
     "type": "git",
     "url": "https://github.com/IndianBoy42/tree-sitter-just"
@@ -22,9 +26,9 @@
     "tree-sitter": "^0.20.6"
   },
   "devDependencies": {
-    "eslint": ">=5.16.0",
+    "eslint": ">=8.56.0",
     "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "^0.20.8"
+    "tree-sitter-cli": "^0.21.0"
   },
   "scripts": {
     "format:check": "prettier --check .",
