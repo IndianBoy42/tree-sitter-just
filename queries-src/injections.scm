@@ -3,8 +3,7 @@
 
 (recipe_body
   (shebang (language) @injection.language)
-  (#set! injection.include-children)
-) @injection.content
+  (#set! injection.include-children)) @injection.content
 
 (comment) @comment
 ; Defaults if language is not set elsewhere
