@@ -43,12 +43,14 @@ jobs:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
-      - run: |
+      - shell: bash
+        run: |
           set -x
           git config core.autocrlf || echo unset
           git config core.lf || echo unset
       - uses: actions/checkout@v4
-      - run: |
+      - shell: bash
+        run: |
           set -x
           git config core.autocrlf || echo unset
           git config core.lf || echo unset
