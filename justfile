@@ -2,7 +2,6 @@ src := justfile_directory() / "src"
 bindings := justfile_directory() / "bindings"
 ts_src := justfile_directory() / "repositories" / "tree-sitter"
 fuzzer := justfile_directory() / "fuzzer"
-nproc := if os() == "macos" { `sysctl -n hw.logicalcpu` } else { `nproc` }
 include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 
@@ -317,7 +316,7 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 
 	printf "$cache_key" > "$keyfile"
 
-	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time={{ fuzz_time }} -jobs={{ nproc }}"
+	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time={{ fuzz_time }} -jobs={{ num_cpus() }}"
 
 	echo "Starting fuzzing at $(date -u -Is)"
 	LD_LIBRARY_PATH="{{ts_src}}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
