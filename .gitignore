@@ -20,8 +20,15 @@ fuzzer/artifacts
 **.out
 **.dSYM
 
+# Windows things
+*.exp
+*.lib
+*.obj
+
 # Other repos
 repositories/
 
-# Clang files
+# Editor files
 compile_commands.json
+.vscode/
+*.swp
