@@ -100,7 +100,7 @@
 
 ; Comments
 
-(comment) @comment
+(comment) @spell @comment
 
 (shebang) @comment
 

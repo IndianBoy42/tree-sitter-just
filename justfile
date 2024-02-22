@@ -32,7 +32,7 @@ default:
 	just --list
 
 # Install needed packages and make sure tools are setup
-setup:
+setup *npm-args:
 	#!/bin/bash
 	set -eau
 
@@ -54,7 +54,7 @@ setup:
 	check_installed clang-format
 
 	if which npm > /dev/null; then
-		npm install --include=dev
+		npm install --include=dev {{ npm-args }}
 	else
 		echo "npm not found: skipping install"
 	fi
@@ -229,7 +229,7 @@ configure-tree-sitter:
 ci-codestyle: lint format-check
 
 # Make sure that files have not changed
-ci-validate-generated-files:
+ci-validate-generated-files exit-code="1":
 	#!/bin/sh
 	set -eaux
 
@@ -239,13 +239,15 @@ ci-validate-generated-files:
 
 	failed=false
 	git diff ci-tmp-pre-updates --exit-code || failed=true
+	git tag -d ci-tmp-pre-updates
 
 	if ! [ "$failed" = "false" ]; then
 		echo '::warning::Generated files are out of date!'
 		echo '::warning::run `just gen` and commit the changes'
-	fi
 
-	git tag -d ci-tmp-pre-updates
+		# We use an exit code so that we can use this as either a warning or error
+		exit {{ exit-code }}
+	fi
 
 # Run a subset of CI checks before committing.
 pre-commit: _lint-min format-check
