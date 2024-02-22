@@ -275,7 +275,6 @@ module.exports = grammar({
         $._indent,
         optional(seq($.shebang, $._newline)),
         repeat(choice(seq($.recipe_line, $._newline), $._newline)),
-        $._newline,
         $._dedent,
       ),
 

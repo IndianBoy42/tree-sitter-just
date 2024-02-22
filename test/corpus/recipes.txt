@@ -443,3 +443,33 @@ bar:
         (text))
       (recipe_line
         (text)))))
+
+================================================================================
+recipes without multiple newline separation
+================================================================================
+
+# foo
+foo:
+  echo "foo"
+# bar
+bar:
+  echo "bar"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (comment)
+  (recipe
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text))))
+  (comment)
+  (recipe
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text)))))
+

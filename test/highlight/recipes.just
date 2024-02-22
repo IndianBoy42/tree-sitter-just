@@ -74,6 +74,13 @@ fred: garply && (waldo "x")
 #                      ^^^ string
 #                         ^ punctuation.bracket
 
+# foo
+foo:
+  echo "foo"
+# bar
+bar:
+  echo "bar"
+
 # FIXME: can't test these because we can't place comments between
 [private]
 [confirm, no-cd]
