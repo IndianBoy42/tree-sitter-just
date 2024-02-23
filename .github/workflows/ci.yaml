@@ -65,14 +65,3 @@ jobs:
         run: just --verbose test
       - name: Check if generated files are up to date (warn only)
         run: just --verbose ci-validate-generated-files 0
-
-  static-validation:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: taiki-e/install-action@just
-      - name: Verify Just can parse test files
-        run: just --verbose verify-just-parsing
-      - name: Look for tests that contain errors
-        run: just --verbose verify-no-error-tests

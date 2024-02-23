@@ -1,8 +1,21 @@
 src := justfile_directory() / "src"
 bindings := justfile_directory() / "bindings"
-ts_src := justfile_directory() / "repositories" / "tree-sitter"
 fuzzer := justfile_directory() / "fuzzer"
-include_args := "-Isrc/ -I" + ts_src + "/lib/include -Inode_modules/nan"
+target := justfile_directory() / "target"
+bin_dir := target / "bin"
+obj_dir := target / "obj"
+debug_out := bin_dir / "debug.out"
+fuzz_out := bin_dir / "fuzz.out"
+
+ts_path := justfile_directory() / "repositories" / "tree-sitter"
+ts_repo := "https://github.com/tree-sitter/tree-sitter"
+ts_sha := "1c55abb5308fe3891da545662e5df7ba28ade275" # v0.21.0
+
+just_path := justfile_directory() / "repositories" / "just"
+just_repo := "https://github.com/casey/just.git"
+just_sha := "a2ff42e6c37ba5c429d444f3a18d3633e59f9a34" # 1.24.0
+
+include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 
 # FIXME: there are errors running with ASAN, we ideally want `,address` here
@@ -10,22 +23,30 @@ fuzzer_flags := env("FUZZER_FLAGS", "-fsanitize=fuzzer,undefined")
 fuzz_time := env("FUZZ_TOTAL_TIME", "1200")
 
 # Source files needed to build a parser
-parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_src + "/lib/src/lib.c"
-
-target := justfile_directory() / "target"
-bin_dir := target / "bin"
-obj_dir := target / "obj"
-debug_out := bin_dir / "debug.out"
-fuzz_out := bin_dir / "fuzz.out"
-
-ts_tag := "v0.20.9"
+parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_path + "/lib/src/lib.c"
 
 base_cache_key := sha256_file(src / "scanner.c") + sha256_file(src / "parser.c") + sha256(parser_sources) + sha256(include_args) + sha256(general_cflags) + sha256(fuzzer_flags)
 
+verbose_flag := if env("CI", "") == "1" { "--verbose" } else { "" }
+
 # `timeout` is not available on all platforms, but perl often is. This needs a
 # bash shell.
-make_timeout_fn := '''function timeout() { perl -e 'alarm shift; exec @ARGV' "$@"; }'''
-verbose_flag := if env("CI", "") == "1" { "--verbose" } else { "" }
+make_timeout_fn := '''timeout () { perl -e 'alarm shift; exec @ARGV' "$@"; }'''
+
+# Files that should parse with errors but not crash
+errors_expected := '''
+	test/timeout-1aa6bf37e914715f4aa49e6cf693f7abf81aaf8e
+
+	# FIXME: xfail files, these should parse correctly
+	test/test.just
+	repositories/just/examples/kitchen-sink.just
+	repositories/just/examples/powershell.just
+'''
+
+# Files used for testing that Just itself might not understand
+no_just_parsing := '''
+	test/readme.just
+'''
 
 # List all recipes
 default:
@@ -33,10 +54,10 @@ default:
 
 # Install needed packages and make sure tools are setup
 setup *npm-args:
-	#!/bin/bash
+	#!/bin/sh
 	set -eau
 
-	function check_installed() {
+	check_installed () {
 		printf "checking $1... "
 		if "$1" --version 2> /dev/null ; then
 			echo "tool $1 found!"
@@ -60,7 +81,7 @@ setup *npm-args:
 	fi
 
 # Lint with more minimal dependencies that can be run during pre-commit
-_lint-min: tree-sitter-clone configure-compile-database
+_lint-min: _clone-repo-tree-sitter configure-compile-database
 	npm run lint:check
 	git ls-files '**.c' | grep -v 'parser\.c' | \
 		xargs -IFNAME sh -c 'echo "\nchecking file FNAME" && clang-tidy FNAME'
@@ -112,82 +133,112 @@ alias t := test
 test *ts-test-args: gen
 	npx tree-sitter test {{ ts-test-args }}
 	just {{ verbose_flag }} test-parse-highlight
+	just {{ verbose_flag }} verify-no-error-tests
 
 	echo '\nRunning Cargo tests'
 
-	# FIXME: xfail CI on Windows because we are getting STATUS_DLL_NOT_FOUND
+	# FIXME: xfail Rust CI on Windows because we are getting STATUS_DLL_NOT_FOUND
 	{{ if os_family() + env("CI", "1") == "windows1" { "echo skipping tests on Windows" } else { "cargo test" } }}
 
 # Verify that tree-sitter can parse and highlight all files in the repo. Requires a tree-sitter configuration.
-test-parse-highlight:
-	#!/bin/bash
-	set -eau
-	{{ if env("CI", "") == "1" { "set -x && echo running in CI" } else { "" } }}
+test-parse-highlight: _clone-repo-just
+	#!/usr/bin/env python3
+	import re
+	import os
+	import subprocess as sp
+	from pathlib import Path
 
-	{{ make_timeout_fn }}
+	# Windows doesn't seem to evaluate PATH unless `shell=True`.
+	if os.name == "nt":
+		shell = True
+	else:
+		shell = False
 
-	echo Checking all files in the repo...
+	justfile_directory = Path(r"{{ justfile_directory() }}")
+	just_path = Path(r"{{ just_path }}")
 
-	# skip readme.just because it is broken but works for testing, and skip files
-	# from the fuzzer
-	git ls-files '**.just' 'justfile' |
-		grep -v readme.just |
-		grep -v test.just |
-		grep -vE '(timeout|crash)-.*' |
-		while read -r fname
-	do
-		echo "::group::Parse and highlight testing for $fname"
+	repo_files = sp.check_output(
+		["git", "ls-files", "*.just", "*justfile", "*timeout", "*crash"],
+		encoding="utf8", shell=shell
+	)
+	just_repo_files =  sp.check_output(
+		["git", "-C", just_path, "ls-files", "*.just", "*justfile"],
+		encoding="utf8", shell=shell
+	)
 
-		timeout 10 npx tree-sitter parse "$fname" > /dev/null
-		timeout 10 npx tree-sitter highlight "$fname" > /dev/null
+	files = set()
+	error_files = set()
+	skip_just = []
 
-		echo "::endgroup::"
-	done
+	for line in repo_files.splitlines():
+		files.add(justfile_directory / line)
 
-	# Parse files with expected errors 
-	git ls-files test | grep -E '(timeout-.*|crash-.*)' |
-		while read -r fname
-	do
-		echo "::group::Parse and highlight testing for invalid source $fname"
+	for line in just_repo_files.splitlines():
+		files.add(just_path / line)
+
+	for line in """{{ errors_expected }}""".splitlines():
+		line = re.sub("#.*", "", line).strip()
+		if len(line) == 0:
+			continue
+
+		error_files.add(justfile_directory / line)
+
+	for line in """{{ no_just_parsing }}""".splitlines():
+		line = re.sub("#.*", "", line).strip()
+		if len(line) == 0:
+			continue
+
+		skip_just.append(justfile_directory / line)
+
+	files -= error_files
+
+	print("Checking parsing and highlighting...")
+
+	ts_cmd = ["npx", "tree-sitter"]
+	scope_args = ["--scope", "source.just"]
+
+	for fname in files:
+		print(f"Checking '{fname}': parse'")
+		sp.check_output(
+			ts_cmd + ["parse", fname] + scope_args, timeout=10, shell=shell
+		)
 	
-		exitcode=0
-		# Run with a timeout
-		timeout 10 npx tree-sitter parse --scope=source.just "$fname" > /dev/null ||
-			exitstat=$?
-	
-		# Failed highlighting returns exit code 1, syntax errors are 2. We are
-		# looking for SIGBUS/SIGSEGV/SIGALRM (timeout), 135/138/142
-		if [ "$exitcode" -gt 2 ]; then
-			echo "exited with code $exitcode"
-			exit "$exitcode"
-		fi
-	
-		# Try the same for highlighting
-		timeout 10 npx tree-sitter highlight --scope=source.just "$fname" > /dev/null ||
-			exitcode=$?
-		if [ "$exitcode" -gt 2 ]; then
-			echo "exited with code $exitcode"
-			exit "$exitcode"
-		fi
-	
-		echo "::endgroup::"
-	done
-	
-# Verify that the `just` tool parses all files we are using
-verify-just-parsing:
-	#!/bin/sh
-	set -eaux
+		print(f"Checking '{fname}': highlight'")
+		sp.check_output(
+			ts_cmd + ["highlight", fname] + scope_args,	timeout=10, shell=shell
+		)
 
-	# skip readme.just because it is broken but works for testing
-	git ls-files '**.just' 'justfile'
-		grep -v readme.just |
-		grep -vE 'timeout-.*' |
-		grep -vE 'crash-.*' |
-		while read -r fname
-	do
-		echo "::notice:: checking Just parsing"
-		just --list --unstable --justfile "$fname"
-	done
+		# Verify that the `just` tool parses all files we are using
+		if not fname in skip_just:
+			sp.check_output(
+				["just", "--list", "--unstable", "--justfile", fname],
+				timeout=10, shell=shell
+			)
+
+	print("Checking parsing and highlighting for invalid files...")
+
+	for fname in error_files:
+		cmd = ts_cmd + ["parse", fname] + scope_args
+		try:
+			print(f"Checking invalid source '{fname}': parse'")
+			res = sp.check_output(cmd, timeout=10, shell=shell)
+		except sp.CalledProcessError as e:
+			if e.returncode != 1: # error code 1 is a highlight failure
+				print("command completed with non-1 exit status")
+				raise e
+		else:
+			raise AssertionError(f"failure expected but not found: {cmd} -> {res}")
+
+		# Highlighting should always succeed
+		print(f"Checking invalid source '{fname}': highlight'")
+		sp.check_output(
+			ts_cmd + ["highlight",  fname] + scope_args, timeout=10, shell=shell
+		)
+	
+	print(
+		f"Successfully parsed {len(files) + len(error_files)} example files "
+		f"with {len(error_files)} expected failures"
+	)
 
 # Make sure that no tests contain errors
 verify-no-error-tests:
@@ -219,7 +270,7 @@ configure-tree-sitter:
 		f.seek(0)
 
 		# Add ths tree-sitter-just directory to the config file
-		parent_dir = os.path.dirname("{{ justfile_directory() }}")
+		parent_dir = os.path.dirname(r"{{ justfile_directory() }}")
 		j["parser-directories"].append(parent_dir)
 		json.dump(j, f)
 
@@ -255,7 +306,7 @@ pre-commit: _lint-min format-check
 # Install pre-commit hooks
 pre-commit-install:
 	#!/bin/sh
-	fname="{{justfile_directory()}}/.git/hooks/pre-commit"
+	fname="{{ justfile_directory() }}/.git/hooks/pre-commit"
 	touch "$fname"
 	chmod +x "$fname"
 
@@ -264,18 +315,31 @@ pre-commit-install:
 	just pre-commit
 	EOF
 
-# Download and build upstream tree-sitter
-tree-sitter-clone:
+# Clone or update a repo
+_clone-repo url path sha:
 	#!/bin/sh
 	set -eaux
 
-	if [ ! -d "{{ ts_src }}" ]; then
-		git clone https://github.com/tree-sitter/tree-sitter "{{ ts_src }}" \
-			--branch {{ ts_tag }} --depth=1
+	if [ ! -d '{{ path }}' ]; then
+		echo "Cloning {{ url }}"
+		git clone '{{ url }}' '{{ path }}' --depth=100
 	fi
 
+	actual_sha=$(git -C '{{ path }}' rev-parse HEAD)
+	if [ "$actual_sha" != "{{ sha }}" ]; then
+		echo "Updating {{ url }} to {{ sha }}"
+		git -C '{{ path }}' fetch
+		git -C '{{ path }}' reset --hard '{{ sha }}'
+	fi
+
+# Clone the tree-sitter repo
+_clone-repo-tree-sitter: (_clone-repo ts_repo ts_path ts_sha)
+
+# Clone the just repo
+_clone-repo-just: (_clone-repo just_repo just_path just_sha)
+
 # Build a simple debug executable
-debug-build: tree-sitter-clone _out-dirs
+debug-build: _clone-repo-tree-sitter _out-dirs
 	#!/bin/sh
 	set -eau
 
@@ -294,7 +358,7 @@ debug-run *file-names: debug-build
 	{{ debug_out }} {{file-names}}
 
 # Build and run the fuzzer
-fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
+fuzz *extra-args: (gen "--debug-build") _clone-repo-tree-sitter _out-dirs
 	#!/bin/sh
 	set -eaux
 
@@ -321,21 +385,21 @@ fuzz *extra-args: (gen "--debug-build") tree-sitter-clone _out-dirs
 	fuzzer_flags="-artifact_prefix=$artifacts -timeout=20 -max_total_time={{ fuzz_time }} -jobs={{ num_cpus() }}"
 
 	echo "Starting fuzzing at $(date -u -Is)"
-	LD_LIBRARY_PATH="{{ts_src}}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
+	LD_LIBRARY_PATH="{{ ts_path }}" "{{ fuzz_out }}" "$corpus" $fuzzer_flags {{ extra-args }}
 
 # Configure the database used by clang-format, clang-tidy, and language servers
 configure-compile-database:
 	#!/usr/bin/env python3
 	import json
-	src = "{{ src }}"
-	include_args = "{{ include_args }}"
-	general_cflags = "{{ general_cflags }}"
+	src = r"{{ src }}"
+	include_args = r"{{ include_args }}"
+	general_cflags = r"{{ general_cflags }}"
 
 	sources = [
-		("bindings/debug.c", "{{ debug_out }}"),
-		("fuzzer/entry.c", "{{ fuzz_out }}"),
-		("src/parser.c", "{{ obj_dir / "parser.o" }}"),
-		("src/scanner.c", "{{ obj_dir / "scanner.o" }}"),
+		("bindings/debug.c", r"{{ debug_out }}"),
+		("fuzzer/entry.c", r"{{ fuzz_out }}"),
+		("src/parser.c", r"{{ obj_dir / "parser.o" }}"),
+		("src/scanner.c", r"{{ obj_dir / "scanner.o" }}"),
 	]
 	results = []
 
