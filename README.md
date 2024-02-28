@@ -22,9 +22,9 @@ Manual
 git clone https://github.com/IndianBoy42/tree-sitter-just ~/.local/share/nvim/site/pack/tree-sitter-queries/start/tree-sitter-just
 ```
 
-You can then do `require('tree-sitter-just').setup()` to register the parser with tree-sitter. You can then do `TSInstall`/`TSUpdate` as usual to install the parser
+You can then do `require('tree-sitter-just').setup({})` to register the parser with tree-sitter. You can then do `TSInstall`/`TSUpdate` as usual to install the parser
 
-You can also add the parser manually using (This is similar to what is done in `require"tree-sitter-just".setup()`)
+You can also add the parser manually using (This is similar to what is done in `require"tree-sitter-just".setup({})`)
 
 ```lua
 require("nvim-treesitter.parsers").get_parser_configs().just = {
