@@ -664,7 +664,7 @@
     "fields": {},
     "children": {
       "multiple": false,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "language",
@@ -917,7 +917,7 @@
     "named": false
   },
   {
-    "type": "env ",
+    "type": "env",
     "named": false
   },
   {

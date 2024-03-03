@@ -38,7 +38,6 @@ errors_expected := '''
 
 	# FIXME: xfail files, these should parse correctly
 	repositories/just/examples/kitchen-sink.just
-	repositories/just/examples/powershell.just
 '''
 
 # Files used for testing that Just itself might not understand
