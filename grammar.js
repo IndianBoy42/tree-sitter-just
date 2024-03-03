@@ -200,6 +200,7 @@ module.exports = grammar({
           $.external_command,
           $.identifier,
           $.string,
+          $.numeric_error,
           seq("(", $.expression, ")"),
         ),
       ),
@@ -327,6 +328,10 @@ module.exports = grammar({
     interpolation: ($) => seq("{{", $.expression, "}}"),
 
     identifier: (_) => /[a-zA-Z_][a-zA-Z0-9_-]*/,
+
+    // Numbers aren't allowed as values, but we capture them anyway as errors so
+    // they don't mess up the whole syntax
+    numeric_error: (_) => /(\d+\.\d*|\d+)/,
 
     // `# ...` comment
     comment: (_) => token(prec(-1, /#.*/)),

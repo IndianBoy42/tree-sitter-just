@@ -141,3 +141,6 @@
       "windows-powershell"
       "windows-shell"
       )))
+
+; Numbers are part of the syntax tree, even if disallowed
+(numeric_error) @error

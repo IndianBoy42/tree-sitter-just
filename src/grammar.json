@@ -740,6 +740,10 @@
             "name": "string"
           },
           {
+            "type": "SYMBOL",
+            "name": "numeric_error"
+          },
+          {
             "type": "SEQ",
             "members": [
               {
@@ -1503,6 +1507,10 @@
     "identifier": {
       "type": "PATTERN",
       "value": "[a-zA-Z_][a-zA-Z0-9_-]*"
+    },
+    "numeric_error": {
+      "type": "PATTERN",
+      "value": "(\\d+\\.\\d*|\\d+)"
     },
     "comment": {
       "type": "TOKEN",
