@@ -16,6 +16,12 @@
 #define __FILE_NAME__ __FILE__
 #endif
 
+#ifdef __GNUC__
+#define unused_attr __attribute__((unused))
+#else
+#define unused_attr
+#endif
+
 #ifdef DEBUG_PRINT
 #define dbg_print(...)                                                         \
   do {                                                                         \
@@ -56,7 +62,7 @@ enum TokenType {
   TOKEN_TYPE_END,
 };
 
-void assert_valid_token(const TSSymbol sym) {
+unused_attr static inline void assert_valid_token(const TSSymbol sym) {
   assertf(sym >= INDENT && sym < TOKEN_TYPE_END, "invalid symbol %d", sym);
 }
 

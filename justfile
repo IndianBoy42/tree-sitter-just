@@ -18,8 +18,7 @@ just_sha := "a2ff42e6c37ba5c429d444f3a18d3633e59f9a34" # 1.24.0
 include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 
-# FIXME: there are errors running with ASAN, we ideally want `,address` here
-fuzzer_flags := env("FUZZER_FLAGS", "-fsanitize=fuzzer,undefined")
+fuzzer_flags := env("FUZZER_FLAGS", "-fsanitize=fuzzer,address,undefined")
 fuzz_time := env("FUZZ_TOTAL_TIME", "1200")
 
 # Source files needed to build a parser
