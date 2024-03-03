@@ -97,6 +97,10 @@
         {
           "type": "expression",
           "named": true
+        },
+        {
+          "type": "regex_literal",
+          "named": true
         }
       ]
     }
@@ -543,6 +547,21 @@
     "type": "recipe_line_prefix",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "regex_literal",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "sequence",

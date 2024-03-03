@@ -3,11 +3,16 @@
 ((comment) @injection.content
   (#set! injection.language "comment"))
 
+(comment) @comment
+
 (recipe_body
   (shebang (language) @injection.language)
   (#set! injection.include-children)) @injection.content
 
-(comment) @comment
+; Highlight the RHS of `=~` as regex
+((regex_literal (_) @injection.content)
+  (#set! injection.language "regex"))
+
 ; Defaults if language is not set elsewhere
 
 ; (recipe_line

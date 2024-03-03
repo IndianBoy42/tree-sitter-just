@@ -199,4 +199,17 @@ foo_cmt := bar # + baz
 # <- variable
 #              ^ comment.line
 
+# FIXME: the RHS string should parse as an injection, if we ever have a way to test that
 foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch" }
+# <- variable
+#      ^^ operator
+#         ^^ keyword.control.conditional
+#            ^^^^^^^^^^^ string
+#                        ^^ operator
+#                           ^^^^^^^^^^^^^^^^^^^^^^ string
+#                                                  ^ punctuation.bracket
+#                                                            ^ punctuation.bracket
+#                                                              ^^^^ keyword.control.conditional
+#                                                                   ^ punctuation.bracket
+#                                                                     ^^^^^^^^^ string
+#                                                                                ^ punctuation.bracket

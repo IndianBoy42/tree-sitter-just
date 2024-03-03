@@ -706,8 +706,17 @@
               "value": "=~"
             },
             {
-              "type": "SYMBOL",
-              "name": "expression"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "regex_literal"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "expression"
+                }
+              ]
             }
           ]
         },
@@ -716,6 +725,14 @@
           "name": "expression"
         }
       ]
+    },
+    "regex_literal": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SYMBOL",
+        "name": "string"
+      }
     },
     "value": {
       "type": "PREC_LEFT",
