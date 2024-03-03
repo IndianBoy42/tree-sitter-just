@@ -18,7 +18,7 @@
   "else"
 ] @keyword.control.conditional
 
-(boolean ["true" "false"]) @constant.builtin.boolean
+(boolean [ "true" "false" ]) @constant.builtin.boolean
 
 ; Variables
 
@@ -57,7 +57,6 @@
   "@"
   "="
   "$"
-
   "*"
   "+"
   "&&"
@@ -83,7 +82,7 @@
   "}}"
 ] @punctuation.bracket
 
-[ "`" "```"] @punctuation.special
+[ "`" "```" ] @punctuation.special
 
 ; Literals
 
