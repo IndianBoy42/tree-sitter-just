@@ -13,6 +13,8 @@
 // @ts-check
 
 const ESCAPE_SEQUENCE = token(/\\([nrt"\\]|(\r?\n))/);
+// Flags to `/usr/bin/env`, anything that starts with a dash
+const SHEBANG_ENV_FLAG = token(/-\S*/);
 
 /**
  * Creates a rule to match one or more of the rules separated by a comma
@@ -292,16 +294,14 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    _shebang_flag: (_) => /--?\w*/,
-
     shebang: ($) =>
       seq(
         "#!",
         /.*\//,
-        optional(seq("env ", repeat($._shebang_flag))),
+        optional(seq("env ", repeat(SHEBANG_ENV_FLAG))),
         // defer dilemma: python3 => python, but json5 => json5
         alias($.identifier, $.language),
-        repeat($._shebang_flag),
+        /.*/,
       ),
 
     // string        : STRING
