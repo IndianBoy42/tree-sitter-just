@@ -501,3 +501,30 @@ foo:
     (recipe_body
       (recipe_line
         (text)))))
+
+================================================================================
+regex literal
+================================================================================
+
+foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch" }
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    (identifier)
+    (expression
+      (if_expression
+        (condition
+          (expression
+            (value
+              (string)))
+          (regex_literal
+            (string)))
+        (expression
+          (value
+            (string)))
+        (else_clause
+          (expression
+            (value
+              (string))))))))
