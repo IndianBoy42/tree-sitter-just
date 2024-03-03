@@ -1275,10 +1275,6 @@
         }
       ]
     },
-    "_shebang_flag": {
-      "type": "PATTERN",
-      "value": "--?\\w*"
-    },
     "shebang": {
       "type": "SEQ",
       "members": [
@@ -1303,8 +1299,11 @@
                 {
                   "type": "REPEAT",
                   "content": {
-                    "type": "SYMBOL",
-                    "name": "_shebang_flag"
+                    "type": "TOKEN",
+                    "content": {
+                      "type": "PATTERN",
+                      "value": "-\\S*"
+                    }
                   }
                 }
               ]
@@ -1324,11 +1323,8 @@
           "value": "language"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_shebang_flag"
-          }
+          "type": "PATTERN",
+          "value": ".*"
         }
       ]
     },
