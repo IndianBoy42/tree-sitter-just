@@ -16,9 +16,8 @@ from glob import glob
 from pathlib import Path
 
 REPLACEMENTS = [
-    ("@local.definition", "@definition"),
-    ("@local.reference", "@reference"),
-    ("@local.scope", "@scope"),
+    # nvim uses `var` instead of variable
+    ("@local.definition.variable", "@local.definiton.var"),
     ("@constants.builtin.boolean", "@boolean"),
     ("@keyword.control.conditional", "@conditional"),
     ("@variable.parameter", "@parameter"),

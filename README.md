@@ -40,11 +40,11 @@ require("nvim-treesitter.parsers").get_parser_configs().just = {
 
 Don't forget to `:TSInstall` after adding this. With this method you do not have to add this repo as a plugin.
 
-If you run into problems relating to C++ 11 features, try including this in your setup (you may have to `brew install gcc@11`):
+## Compatibility
 
-```lua
-require"nvim-treesitter.install".compilers = {"gcc-11"}
-```
+Note that for locals to work correctly, you need a pretty recent version of
+`nvim-treesitter` since after the capture names changed. Any version at or after
+0.9.3 (currently unreleased) should work.
 
 ## Contributing
 
@@ -125,6 +125,6 @@ readable.
   - [ ] Write the queries
 - [x] Implement support for code folding using `nvim-treesitter` (`folds.scm`)
   - [x] Write the queries
-- [ ] Write Tests
+- [x] Write Tests
 - [x] Highlight the fish/bash/etc inside recipes (use tree-sitter injections)
 - [ ] Fix weirdness around trailing whitespace (don't leave trailing whitespace after the recipe header)
