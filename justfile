@@ -37,7 +37,6 @@ errors_expected := '''
 	test/timeout-1aa6bf37e914715f4aa49e6cf693f7abf81aaf8e
 
 	# FIXME: xfail files, these should parse correctly
-	test/test.just
 	repositories/just/examples/kitchen-sink.just
 	repositories/just/examples/powershell.just
 '''
