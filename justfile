@@ -46,6 +46,7 @@ errors_expected := '''
 # Files used for testing that Just itself might not understand
 no_just_parsing := '''
 	test/readme.just
+	test/highlight/invalid-syntax.just
 '''
 
 # List all recipes

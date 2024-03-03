@@ -737,6 +737,10 @@
           "named": true
         },
         {
+          "type": "numeric_error",
+          "named": true
+        },
+        {
           "type": "string",
           "named": true
         }
@@ -928,6 +932,10 @@
   {
     "type": "mod",
     "named": false
+  },
+  {
+    "type": "numeric_error",
+    "named": true
   },
   {
     "type": "set",
