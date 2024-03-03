@@ -1283,8 +1283,26 @@
           "value": "#!"
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_shebang_with_lang"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_opaque_shebang"
+            }
+          ]
+        }
+      ]
+    },
+    "_shebang_with_lang": {
+      "type": "SEQ",
+      "members": [
+        {
           "type": "PATTERN",
-          "value": ".*\\/"
+          "value": "\\S*\\/"
         },
         {
           "type": "CHOICE",
@@ -1294,7 +1312,7 @@
               "members": [
                 {
                   "type": "STRING",
-                  "value": "env "
+                  "value": "env"
                 },
                 {
                   "type": "REPEAT",
@@ -1327,6 +1345,10 @@
           "value": ".*"
         }
       ]
+    },
+    "_opaque_shebang": {
+      "type": "PATTERN",
+      "value": "[^/]+"
     },
     "string": {
       "type": "CHOICE",

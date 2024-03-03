@@ -65,7 +65,6 @@ module.exports = grammar({
     $._string,
     $._string_indented,
     $._raw_string_indented,
-    $._expression_braced,
     $._expression_recurse,
   ],
   word: ($) => $.identifier,
@@ -294,15 +293,19 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
-    shebang: ($) =>
+    shebang: ($) => seq("#!", choice($._shebang_with_lang, $._opaque_shebang)),
+
+    // Shebang with a nested `language` token that we can extract
+    _shebang_with_lang: ($) =>
       seq(
-        "#!",
-        /.*\//,
-        optional(seq("env ", repeat(SHEBANG_ENV_FLAG))),
-        // defer dilemma: python3 => python, but json5 => json5
+        /\S*\//,
+        optional(seq("env", repeat(SHEBANG_ENV_FLAG))),
         alias($.identifier, $.language),
         /.*/,
       ),
+
+    // Fallback shebang, any string
+    _opaque_shebang: (_) => /[^/]+/,
 
     // string        : STRING
     //               | INDENTED_STRING
