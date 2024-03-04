@@ -471,6 +471,10 @@ ci-setup-nvim:
 	#!/bin/sh
 	set -eaux
 
+	echo in_ci: {{ in_ci }}
+	printenv
+	echo CI: $CI
+
 	# Exit if installed
 	if ! command -v nvim; then
 		if [ {{ in_ci }} != '1' ]; then
