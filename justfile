@@ -472,7 +472,7 @@ ci-setup-nvim:
 	set -eaux
 
 	echo in_ci: {{ in_ci }}
-	printenv
+	printenv | sort
 	echo CI: $CI
 
 	# Exit if installed

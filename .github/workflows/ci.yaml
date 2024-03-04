@@ -63,9 +63,9 @@ jobs:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
-      - name: Setup nvim (requires sudo)
+      - name: Setup nvim
         run: |
-          printenv
+          printenv | sort
           JUST=$(which just)
           sudo "$JUST" --verbose ci-setup-nvim
       - run: just setup --locked
