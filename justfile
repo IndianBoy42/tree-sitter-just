@@ -471,9 +471,9 @@ ci-setup-nvim:
 	#!/bin/sh
 	set -eaux
 
-	echo in_ci: {{ in_ci }}
+	echo PRINTING in_ci: {{ in_ci }}
 	printenv | sort
-	echo CI: $CI
+	echo PRINTING CI: $CI
 
 	# Exit if installed
 	if ! command -v nvim; then
