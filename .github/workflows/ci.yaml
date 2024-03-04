@@ -66,8 +66,10 @@ jobs:
       - name: Setup nvim
         run: |
           printenv | sort
-          JUST=$(which just)
-          CI="$CI" sudo "$JUST" --verbose ci-setup-nvim
+          # Run with sudo so we can do the install
+          just_exe=$(which just)
+          CI="$CI" sudo "$just_exe" --verbose ci-setup-nvim
+          CI="$CI" sudo echo "$CI"
       - run: just setup --locked
       - name: Configure
         run: just --verbose configure-tree-sitter

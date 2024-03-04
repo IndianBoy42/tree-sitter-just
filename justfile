@@ -473,6 +473,7 @@ ci-setup-nvim:
 
 	echo PRINTING in_ci: {{ in_ci }}
 	printenv | sort
+	echo PRINTING PRE CI
 	echo PRINTING CI: $CI
 
 	# Exit if installed
