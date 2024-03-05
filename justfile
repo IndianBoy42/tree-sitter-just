@@ -490,7 +490,7 @@ ci-setup-nvim:
 	fi
 
 	# nvim --version
-	{{ nvim_install_path }}/bin/nvim
+	{{ nvim_install_path }}/bin/nvim --version
 
 # Run lint and check formatting
 ci-codestyle: lint format-check
