@@ -65,7 +65,8 @@ nvim_sha := if os() == "linux" {
 	}
 nvim_url := "https://github.com/neovim/neovim/releases/download/" + nvim_tag + "/nvim-" + nvim_fsfx
 nvim_default_path := downloads_path / "nvim"
-nvim_install_path := "$HOME/.local"
+nvim_install_prefix := "$HOME/.local"
+nvim_exe := "VIM='" + nvim_install_prefix + "/share nvim"
 nvim_download_fname := downloads_path / "nvim-linux64.tar.gz"
 
 # Files that should parse with errors but not crash
@@ -478,19 +479,18 @@ ci-setup-nvim:
 			exit 1
 		fi
 	
-		mkdir -p "{{ nvim_install_path }}"
+		mkdir -p "{{ nvim_install_prefix }}"
 		just {{ verbose_flag }} _ensure-downloaded '{{ nvim_url }}' \
 			'{{ nvim_sha }}' '{{ nvim_download_fname }}'
 
-		tar -xzf "{{ nvim_download_fname }}" -C "{{ nvim_install_path }}" \
+		tar -xzf "{{ nvim_download_fname }}" -C "{{ nvim_install_prefix }}" \
 			--strip-components=1
 
 		echo 'To link nvim to path run:'
-		echo 'ln -s "{{ nvim_install_path }}/bin/nvim" /usr/bin/nvim'
+		echo 'ln -s "{{ nvim_install_prefix }}/bin/nvim" /usr/bin/nvim'
 	fi
 
-	# nvim --version
-	{{ nvim_install_path }}/bin/nvim --version
+	{{ nvim_exe }} --version
 
 # Run lint and check formatting
 ci-codestyle: lint format-check
