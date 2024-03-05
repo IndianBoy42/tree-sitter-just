@@ -327,7 +327,7 @@ configure-tree-sitter:
 	else:
 		shell = False
 
-	cfg_fname = r"""{ config_directory() / "tree-sitter" / "config.json" }}"""
+	cfg_fname = r"""{{ config_directory() / "tree-sitter" / "config.json" }}"""
 	if not os.path.isfile(cfg_fname):
 		sp.run(["npx", "tree-sitter", "init-config"], check=True, shell=shell)
 
