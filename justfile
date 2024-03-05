@@ -66,7 +66,7 @@ nvim_sha := if os() == "linux" {
 nvim_url := "https://github.com/neovim/neovim/releases/download/" + nvim_tag + "/nvim-" + nvim_fsfx
 nvim_default_path := downloads_path / "nvim"
 nvim_install_prefix := "$HOME/.local"
-nvim_exe := "VIM='" + nvim_install_prefix + "'/share nvim"
+nvim_exe := "VIM='" + nvim_install_prefix + "'/share " + nvim_install_prefix + "/bin/nvim"
 nvim_download_fname := downloads_path / "nvim-linux64.tar.gz"
 
 # Files that should parse with errors but not crash
