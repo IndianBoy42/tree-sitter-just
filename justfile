@@ -482,14 +482,15 @@ ci-setup-nvim:
 		just {{ verbose_flag }} _ensure-downloaded '{{ nvim_url }}' \
 			'{{ nvim_sha }}' '{{ nvim_download_fname }}'
 
-		tar -vxzf "{{ nvim_download_fname }}" -C "{{ nvim_install_path }}" \
+		tar -xzf "{{ nvim_download_fname }}" -C "{{ nvim_install_path }}" \
 			--strip-components=1
 
 		echo 'To link nvim to path run:'
 		echo 'ln -s "{{ nvim_install_path }}/bin/nvim" /usr/bin/nvim'
 	fi
 
-	nvim --version
+	# nvim --version
+	{{ nvim_install_path }}/bin/nvim
 
 # Run lint and check formatting
 ci-codestyle: lint format-check
