@@ -471,11 +471,6 @@ ci-setup-nvim:
 	#!/bin/sh
 	set -eaux
 
-	echo PRINTING in_ci: {{ in_ci }}
-	printenv | sort
-	echo PRINTING PRE CI
-	echo PRINTING CI: $CI
-
 	# Exit if installed
 	if ! command -v nvim; then
 		if [ {{ in_ci }} != '1' ]; then
@@ -490,7 +485,8 @@ ci-setup-nvim:
 		tar -vxzf "{{ nvim_download_fname }}" -C "{{ nvim_install_path }}" \
 			--strip-components=1
 
-		ln -s "{{ nvim_install_path }}/bin/nvim" /usr/bin/nvim
+		echo 'To link nvim to path run:'
+		echo 'ln -s "{{ nvim_install_path }}/bin/nvim" /usr/bin/nvim'
 	fi
 
 	nvim --version

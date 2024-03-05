@@ -65,10 +65,9 @@ jobs:
           restore-keys: ${{ runner.os }}-node-
       - name: Setup nvim
         run: |
-          printenv | sort
           # Run with sudo so we can do the install
           just --verbose ci-setup-nvim
-          ln -s "$HOME/.local/binnvim" /usr/bin/nvim
+          sudo ln -s "$HOME/.local/binnvim" /usr/bin/nvim
       - run: just setup --locked
       - name: Configure
         run: just --verbose configure-tree-sitter
