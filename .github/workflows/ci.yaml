@@ -67,9 +67,8 @@ jobs:
         run: |
           printenv | sort
           # Run with sudo so we can do the install
-          just_exe=$(which just)
-          CI="$CI" sudo "$just_exe" --verbose ci-setup-nvim
-          CI="$CI" sudo echo "$CI"
+          just --verbose ci-setup-nvim
+          ln -s "$HOME/.local/binnvim" /usr/bin/nvim
       - run: just setup --locked
       - name: Configure
         run: just --verbose configure-tree-sitter
