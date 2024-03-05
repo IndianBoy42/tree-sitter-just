@@ -485,11 +485,9 @@ ci-setup-nvim:
 
 		tar -xzf "{{ nvim_download_fname }}" -C "{{ nvim_install_prefix }}" \
 			--strip-components=1
-
-		echo 'To link nvim to path run:'
-		echo 'ln -s "{{ nvim_install_prefix }}/bin/nvim" /usr/bin/nvim'
 	fi
 
+	echo 'installed version:'
 	{{ nvim_exe }} --version
 
 # Run lint and check formatting

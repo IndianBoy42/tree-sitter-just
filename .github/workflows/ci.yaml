@@ -64,10 +64,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
       - name: Setup nvim
-        run: |
-          # Run with sudo so we can do the install
-          just --verbose ci-setup-nvim
-          # sudo ln -s "$HOME/.local/binnvim" /usr/bin/nvim
+        run: just --verbose ci-setup-nvim
       - run: just setup --locked
       - name: Configure
         run: just --verbose configure-tree-sitter
