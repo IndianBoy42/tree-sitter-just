@@ -17,7 +17,8 @@
 
 ; Default everything to be bash
 (recipe_body
-  (#set! injection.language "bash")) @injection.content
+  (#set! injection.language "bash")
+  (#set! injection.include-children)) @injection.content
 
 (external_command
   (command_body) @injection.content
@@ -48,7 +49,7 @@
     (#set! injection.language "powershell"))
   [
     (recipe
-      (recipe_body) @injection.content)
+      (recipe_body (#set! injection.include-children)) @injection.content)
 
     (assignment
       (expression (value (external_command (command_body) @injection.content))))
@@ -59,7 +60,7 @@
     (#not-match? @injection.language ".*(powershell|pwsh|cmd).*"))
   [
     (recipe
-      (recipe_body) @injection.content)
+      (recipe_body (#set! injection.include-children)) @injection.content)
 
     (assignment
       (expression (value (external_command (command_body) @injection.content))))
@@ -69,4 +70,5 @@
 
 ; Set highlighting for recipes that specify a language
 (recipe_body
-  (shebang (language) @injection.language)) @injection.content
+  (shebang (language) @injection.language)
+  (#set! injection.include-children)) @injection.content
