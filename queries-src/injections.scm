@@ -42,8 +42,8 @@
 ; See https://github.com/tree-sitter/tree-sitter/issues/880 for more on that.
 
 (source_file
-  (setting "shell" ":=" "[" (string) @langstr
-    (#match? @langstr ".*(powershell|pwsh|cmd).*")
+  (setting "shell" ":=" "[" (string) @_langstr
+    (#match? @_langstr ".*(powershell|pwsh|cmd).*")
     (#set! injection.language "powershell"))
   [
     (recipe
@@ -55,7 +55,7 @@
 
 (source_file
   (setting "shell" ":=" "[" (string) @injection.language
-    (#not-match? @langstr ".*(powershell|pwsh|cmd).*"))
+    (#not-match? @injection.language ".*(powershell|pwsh|cmd).*"))
   [
     (recipe
       (recipe_body (#set! injection.include-children)) @injection.content)

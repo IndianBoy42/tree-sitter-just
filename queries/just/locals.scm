@@ -9,24 +9,24 @@
 
 ; Definitions
 
-(alias left: (identifier) @definition.variable)
+(alias left: (identifier) @definition.var)
 
-(assignment left: (identifier) @definition.variable)
+(assignment left: (identifier) @definition.var)
 
 (module name: (identifier) @definition.namespace)
 
-(parameter name: (identifier) @definition.variable)
+(parameter name: (identifier) @definition.var)
 
 (recipe_header name: (identifier) @definition.function)
 
 ; References
 
-(alias right: (identifier) @reference.variable)
+(alias right: (identifier) @reference)
 
-(function_call name: (identifier) @reference.function)
+(function_call name: (identifier) @reference)
 
-(dependency name: (identifier) @reference.function)
+(dependency name: (identifier) @reference)
 
-(dependency_expression name: (identifier) @reference.function)
+(dependency_expression name: (identifier) @reference)
 
-(value (identifier) @reference.variable)
+(value (identifier) @reference)

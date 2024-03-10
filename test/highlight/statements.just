@@ -161,13 +161,13 @@ foo_fn := env("abc", foo)
 #                       ^ punctuation.bracket
 
 export fooexp := "abc"
-# <- keyword.import
+# <- keyword.control.import
 #      ^^^^^^ variable
 #             ^^ operator
 #                 ^^^^ string
 
 import? 'baz.just'
-# <- keyword.import
+# <- keyword.control.import
 #     ^ operator
 #       ^^^^^^^^^^ string
 

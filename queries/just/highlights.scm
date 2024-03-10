@@ -5,9 +5,9 @@
 [
   "export"
   "import"
-] @keyword.import
+] @keyword
 
-"mod" @module
+"mod" @keyword
 
 [
   "alias"
@@ -19,8 +19,6 @@
   "if"
   "else"
 ] @conditional
-
-(boolean [ "true" "false" ]) @constant.builtin.boolean
 
 ; Variables
 
