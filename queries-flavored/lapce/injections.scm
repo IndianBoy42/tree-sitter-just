@@ -74,29 +74,29 @@
             (command_body) @injection.content))))
   ])
 
-; ================ Recipe language specified ================                           
-                                                                                        
-; Set highlighting for recipes that specify a language, using the exact name by default 
-(recipe_body ;                                                                          
-  (shebang ;                                                                            
-    (language) @injection.language) ;                                                   
-  (#not-any-of? @injection.language "python3" "nodejs" "node")                          
-  (#set! injection.include-children)) @injection.content                                
-                                                                                        
-; Transform some known executables                                                      
-                                                                                        
-; python3 -> python                                                                     
-(recipe_body                                                                            
-  (shebang                                                                              
-    (language) @_lang)                                                                  
-  (#eq? @_lang "python3")                                                               
-  (#set! injection.language "python")                                                   
-  (#set! injection.include-children)) @injection.content                                
-                                                                                        
-; node/nodejs -> javascript                                                             
-(recipe_body                                                                            
-  (shebang                                                                              
-    (language) @_lang)                                                                  
-  (#any-of? @_lang "node" "nodejs")                                                     
-  (#set! injection.language "javascript")                                               
+; ================ Recipe language specified ================
+
+; Set highlighting for recipes that specify a language, using the exact name by default
+(recipe_body ;
+  (shebang ;
+    (language) @injection.language) ;
+  (#not-any-of? @injection.language "python3" "nodejs" "node")
+  (#set! injection.include-children)) @injection.content
+
+; Transform some known executables
+
+; python3 -> python
+(recipe_body
+  (shebang
+    (language) @_lang)
+  (#eq? @_lang "python3")
+  (#set! injection.language "python")
+  (#set! injection.include-children)) @injection.content
+
+; node/nodejs -> javascript
+(recipe_body
+  (shebang
+    (language) @_lang)
+  (#any-of? @_lang "node" "nodejs")
+  (#set! injection.language "javascript")
   (#set! injection.include-children)) @injection.content

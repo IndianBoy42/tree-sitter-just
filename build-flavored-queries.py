@@ -542,6 +542,7 @@ def main():
 
             # Remove trailing whitespace and duplicate newlines
             contents = re.sub(r"[\s;]+$", "", contents)
+            contents = "\n".join((line.rstrip() for line in contents.splitlines()))
             contents = re.sub(r"((?:\r?\n){2,})(?:\r?\n)+", r"\1", contents)
 
             if not contents.endswith("\n"):

@@ -74,9 +74,9 @@
             (command_body) @injection.content))))
   ])
 
-; ================ Recipe language specified - Helix only ================              
-                                                                                        
-; Set highlighting for recipes that specify a language using builtin shebang matching   
-(recipe_body                                                                            
-  (shebang) @injection.shebang                                                          
+; ================ Recipe language specified - Helix only ================
+
+; Set highlighting for recipes that specify a language using builtin shebang matching
+(recipe_body
+  (shebang) @injection.shebang
   (#set! injection.include-children)) @injection.content
