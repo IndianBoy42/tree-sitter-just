@@ -338,7 +338,7 @@ REPLACEMENTS_NVIM = [
     (r"(@[\w.]+).inside", "\1.inner"),
     (r"(@[\w.]+).around", "\1.outer"),
     # nvim does not have `injection.include-children`
-    (r"\n?\s*\(\s*#set!\s*injection\.include-children\s*\)", "", re.MULTILINE),
+    (r"\s*\n?\s*\(\s*#set!\s*injection\.include-children\s*\)", "", re.MULTILINE),
     # nvim uses `var` rather than `variable`
     (r"(@[\w.]+)\.variable", r"\1.var"),
     # nothing more specific than reference
@@ -523,7 +523,18 @@ def main():
             allowed_settings,
             basepath,
         ) in FLAVOR_MAPPINGS:
-            contents = base_contents
+            # Remove lines as indicated by directives
+            contents = "\n".join(
+                (
+                    line
+                    for line in base_contents.splitlines()
+                    if f"SKIP-{tag}" not in line
+                )
+            )
+
+            # Delete other directives
+            contents = re.sub(r";?\s*SKIP-[\w-]+", "", contents)
+
             for rep in replacements:
                 pat = rep[0]
                 sub = rep[1]
@@ -532,14 +543,8 @@ def main():
                     flags = rep[2]
                 contents = re.sub(pat, sub, contents, flags=flags)
 
-            contents = "\n".join(
-                (line for line in contents.splitlines() if f"SKIP-{tag}" not in line)
-            )
-
-            # Delete directives
-            contents = re.sub(r"SKIP-[\w-]+", "", contents)
             # Remove trailing whitespace and duplicate newlines
-            contents = re.sub(r"\s*;?\s+$", "", contents)
+            contents = re.sub(r"[\s;]+$", "", contents)
             contents = re.sub(r"((?:\r?\n){2,})(?:\r?\n)+", r"\1", contents)
 
             if not contents.endswith("\n"):

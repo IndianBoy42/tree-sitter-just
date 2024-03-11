@@ -9,24 +9,34 @@
 
 ; Definitions
 
-(alias left: (identifier) @local.definition.variable)
+(alias
+  left: (identifier) @local.definition.variable)
 
-(assignment left: (identifier) @local.definition.variable)
+(assignment
+  left: (identifier) @local.definition.variable)
 
-(module name: (identifier) @local.definition.namespace)
+(module
+  name: (identifier) @local.definition.namespace)
 
-(parameter name: (identifier) @local.definition.variable)
+(parameter
+  name: (identifier) @local.definition.variable)
 
-(recipe_header name: (identifier) @local.definition.function)
+(recipe_header
+  name: (identifier) @local.definition.function)
 
 ; References
 
-(alias right: (identifier) @local.reference)
+(alias
+  right: (identifier) @local.reference)
 
-(function_call name: (identifier) @local.reference)
+(function_call
+  name: (identifier) @local.reference)
 
-(dependency name: (identifier) @local.reference)
+(dependency
+  name: (identifier) @local.reference)
 
-(dependency_expression name: (identifier) @local.reference)
+(dependency_expression
+  name: (identifier) @local.reference)
 
-(value (identifier) @local.reference)
+(value
+  (identifier) @local.reference)

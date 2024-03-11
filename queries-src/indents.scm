@@ -1,6 +1,6 @@
-; This query 
+; This query specifies how to auto-indent logical blocks.
 ;
-; Better documentation is in https://docs.helix-editor.com/guides/indent.html
+; Better documentation with diagrams is in https://docs.helix-editor.com/guides/indent.html SKIP-NVIM SKIP-NVIM-NEXT
 
 [
   (recipe)
