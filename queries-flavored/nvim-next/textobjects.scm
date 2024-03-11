@@ -3,16 +3,16 @@
 ; Specify how to navigate around logical blocks in code
 
 (recipe 
-  (recipe_body) .inner) .outer
+  (recipe_body) @function.inner) @function.outer
 
 (parameters 
-  ((_) .inner . ","? .outer)) .outer
+  ((_) @parameter.inner . ","? @parameter.outer)) @parameter.outer
 
 (dependency_expression
-  (_) .inner) .outer
+  (_) @parameter.inner) @parameter.outer
 
 (function_call
   arguments: (sequence
-    (expression) .inner) .outer) .outer
+    (expression) @parameter.inner) @parameter.outer) @function.outer
 
-(comment) .outer
+(comment) @comment.outer

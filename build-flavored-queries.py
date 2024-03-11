@@ -186,23 +186,22 @@ ALLOWED_SETTINGS_NVIM_OLD = {
 # Old nvim-treesitter before updates
 REPLACEMENTS_NVIM_OLD = [
     # Changes to local captures
-    (r"@local.definition", "@definition"),
-    (r"@local.reference[\w.]*", "@reference"),
-    (r"@local.scope", "@scope"),
+    (r"@local.definition", r"@definition"),
+    (r"@local.reference[\w.]*", r"@reference"),
+    (r"@local.scope", r"@scope"),
     # Changes to highlight queries
-    (r"@comment.line", "@comment"),
-    (r"@comment.around", "@comment.outer"),
-    (r"@constant.builtin.boolean", "@boolean"),
+    (r"@comment.line", r"@comment"),
+    (r"@constant.builtin.boolean", r"@boolean"),
     (r"@constant.character.escape", "@string.escape"),
-    (r"@keyword.control.conditional", "@conditional"),
-    (r"@keyword.control.import", "@keyword"),
-    (r"@keyword.module", "@keyword"),
-    (r"@variable.parameter", "@parameter"),
+    (r"@keyword.control.conditional", r"@conditional"),
+    (r"@keyword.control.import", r"@keyword"),
+    (r"@keyword.module", r"@keyword"),
+    (r"@variable.parameter", r"@parameter"),
     # Changes to indent queries
-    (r"@indent\s+@extend", "@indent.begin"),
+    (r"@indent\s+@extend", r"@indent.begin"),
     # Changes to textobject queries
-    (r"(@[\w.]+.)inside", r"\1inner"),
-    (r"(@[\w.]+.)around", r"\1outer"),
+    (r"(@[\w.]+\.)inside", r"\1inner"),
+    (r"(@[\w.]+\.)around", r"\1outer"),
     # nvim uses `var` rather than `variable`
     (r"(@[\w.]+)\.variable", r"\1.var"),
 ]
@@ -326,17 +325,17 @@ ALLOWED_SETTINGS_NVIM = {
 # Old nvim-treesitter before updates
 REPLACEMENTS_NVIM = [
     # Changes to highlight queries
-    (r"@comment.line", "@comment"),
-    (r"@constant.builtin.boolean", "@boolean"),
-    (r"@constant.character.escape", "@string.escape"),
-    (r"@keyword.module", "@module"),
-    (r"@keyword.control.", "@keyword."),
-    (r"@namespace", "@module"),
+    (r"@comment.line", r"@comment"),
+    (r"@constant.builtin.boolean", r"@boolean"),
+    (r"@constant.character.escape", r"@string.escape"),
+    (r"@keyword.module", r"@module"),
+    (r"@keyword.control.", r"@keyword."),
+    (r"@namespace", r"@module"),
     # Changes to indent queries
-    (r"@indent\s+@extend", "@indent.begin"),
+    (r"@indent\s+@extend", r"@indent.begin"),
     # Changes to textobject queries
-    (r"(@[\w.]+).inside", "\1.inner"),
-    (r"(@[\w.]+).around", "\1.outer"),
+    (r"(@[\w.]+\.)inside", r"\1inner"),
+    (r"(@[\w.]+\.)around", r"\1outer"),
     # nvim uses `var` rather than `variable`
     (r"(@[\w.]+)\.variable", r"\1.var"),
     # nothing more specific than reference
@@ -443,9 +442,9 @@ ALLOWED_SETTINGS_HELIX = {
 }
 
 REPLACEMENTS_HELIX = [
-    (r"@keyword.module", "@keyword.directive"),
-    (r"@function.call", "@function"),
-    (r"@spell ?", ""),
+    (r"@keyword.module", r"@keyword.directive"),
+    (r"@function.call", r"@function"),
+    (r"@spell ?", r""),
     # nothing more specific than reference
     (r"(@local.reference)[\w.]+", r"\1"),
 ]
