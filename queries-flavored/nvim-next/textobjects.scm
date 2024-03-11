@@ -12,6 +12,7 @@
   (_) .inner) .outer
 
 (function_call
-  arguments: (sequence (expression) .inner) .outer) .outer
+  arguments: (sequence
+    (expression) .inner) .outer) .outer
 
 (comment) .outer

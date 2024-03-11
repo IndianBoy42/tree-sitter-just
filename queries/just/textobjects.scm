@@ -12,6 +12,7 @@
   (_) @parameter.inner) @parameter.outer
 
 (function_call
-  arguments: (sequence (expression) @parameter.inner) @parameter.outer) @function.outer
+  arguments: (sequence
+    (expression) @parameter.inner) @parameter.outer) @function.outer
 
 (comment) @comment.outer
