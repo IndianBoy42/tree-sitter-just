@@ -97,8 +97,7 @@
 
 ; Comments
 
-; FIXME: add @spell once all editors support it
-(comment) @comment
+(comment) @spell @comment
 
 (shebang) @comment
 

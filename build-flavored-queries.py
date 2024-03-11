@@ -447,7 +447,7 @@ ALLOWED_SETTINGS_HELIX = {
 REPLACEMENTS_HELIX = [
     (r"@keyword.module", "@keyword.directive"),
     (r"@function.call", "@function"),
-    (r"@spell", ""),
+    (r"@spell ?", ""),
     # nothing more specific than reference
     (r"(@local.reference)[\w.]+", r"\1"),
 ]
