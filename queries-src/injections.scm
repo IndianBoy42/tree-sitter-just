@@ -8,7 +8,8 @@
   (#set! injection.language "comment"))
 
 ; Highlight the RHS of `=~` as regex
-((regex_literal (_) @injection.content)
+((regex_literal
+  (_) @injection.content)
   (#set! injection.language "regex"))
 
 ; ================ Global defaults ================
