@@ -97,7 +97,6 @@
 
 ; Comments
 
-; FIXME: add  once all editors support it
 (comment) @comment.line
 
 (shebang) @comment
