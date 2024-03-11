@@ -78,7 +78,7 @@
 
 ; Punctuation
 
-[ "," ] @punctuation.delimiter
+"," @punctuation.delimiter
 
 [
   "{"
