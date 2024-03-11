@@ -1,3 +1,5 @@
+; Specify how to navigate around logical blocks in code
+
 (recipe 
   (recipe_body) @function.inside) @function.around
 
