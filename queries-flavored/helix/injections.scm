@@ -2,14 +2,12 @@
 
 ; Specify nested languages that live within a `justfile`
 
-; FIXME: these are not compatible with helix due to precedence  
+; FIXME: these are not compatible with helix due to precedence
 
 ; ================ Always applicable ================
 
 ((comment) @injection.content
   (#set! injection.language "comment"))
-
-(comment) @comment
 
 ; Highlight the RHS of `=~` as regex
 ((regex_literal (_) @injection.content)
@@ -54,7 +52,10 @@
       (recipe_body (#set! injection.include-children)) @injection.content)
 
     (assignment
-      (expression (value (external_command (command_body) @injection.content))))
+      (expression
+        (value
+          (external_command
+            (command_body) @injection.content))))
   ])
 
 (source_file
@@ -62,15 +63,19 @@
     (#not-match? @injection.language ".*(powershell|pwsh|cmd).*"))
   [
     (recipe
-      (recipe_body (#set! injection.include-children)) @injection.content)
+      (recipe_body
+      (#set! injection.include-children)) @injection.content)
 
     (assignment
-      (expression (value (external_command (command_body) @injection.content))))
+      (expression
+        (value
+          (external_command
+            (command_body) @injection.content))))
   ])
 
-; ================ Recipe language specified ================
-
-; Set highlighting for recipes that specify a language
-(recipe_body
-  (shebang (language) @injection.language)
+; ================ Recipe language specified - Helix only ================              
+                                                                                        
+; Set highlighting for recipes that specify a language using builtin shebang matching   
+(recipe_body                                                                            
+  (shebang) @injection.shebang                                                          
   (#set! injection.include-children)) @injection.content

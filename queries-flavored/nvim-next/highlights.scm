@@ -22,29 +22,38 @@
 
 ; Variables
 
-(value (identifier) @variable)
+(value
+  (identifier) @variable)
 
-(alias left: (identifier) @variable)
+(alias
+  left: (identifier) @variable)
 
-(assignment left: (identifier) @variable)
+(assignment
+  left: (identifier) @variable)
 
 ; Functions
 
-(recipe_header name: (identifier) @function)
+(recipe_header
+  name: (identifier) @function)
 
-(dependency name: (identifier) @function.call)
+(dependency
+  name: (identifier) @function.call)
 
-(dependency_expression name: (identifier) @function.call)
+(dependency_expression
+  name: (identifier) @function.call)
 
-(function_call name: (identifier) @function.call)
+(function_call
+  name: (identifier) @function.call)
 
 ; Parameters
 
-(parameter name: (identifier) @variable.parameter)
+(parameter
+  name: (identifier) @variable.parameter)
 
 ; Namespaces
 
-(module name: (identifier) @module)
+(module
+  name: (identifier) @module)
 
 ; Operators
 
@@ -103,7 +112,7 @@
 
 ; highlight known settings (filtering does not always work)
 (setting
-  left: ((identifier) @keyword
+  left: (identifier) @keyword
   (#any-of? @keyword
     "allow-duplicate-recipes"
     "dotenv-filename"
@@ -116,27 +125,25 @@
     "shell"
     "tempdi"
     "windows-powershell"
-    "windows-shell"
-    )))
+    "windows-shell"))
 
 ; highlight known attributes (filtering does not always work)
 (attribute
-  ((identifier) @attribute
-    (#any-of? @attribute
-      "private"
-      "allow-duplicate-recipes"
-      "dotenv-filename"
-      "dotenv-load"
-      "dotenv-path"
-      "export"
-      "fallback"
-      "ignore-comments"
-      "positional-arguments"
-      "shell"
-      "tempdi"
-      "windows-powershell"
-      "windows-shell"
-      )))
+  (identifier) @attribute
+  (#any-of? @attribute
+    "private"
+    "allow-duplicate-recipes"
+    "dotenv-filename"
+    "dotenv-load"
+    "dotenv-path"
+    "export"
+    "fallback"
+    "ignore-comments"
+    "positional-arguments"
+    "shell"
+    "tempdi"
+    "windows-powershell"
+    "windows-shell"))
 
 ; Numbers are part of the syntax tree, even if disallowed
 (numeric_error) @error

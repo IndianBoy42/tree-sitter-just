@@ -7,8 +7,6 @@
 ((comment) @injection.content
   (#set! injection.language "comment"))
 
-(comment) @comment
-
 ; Highlight the RHS of `=~` as regex
 ((regex_literal (_) @injection.content)
   (#set! injection.language "regex"))
@@ -52,7 +50,10 @@
       (recipe_body (#set! injection.include-children)) @injection.content)
 
     (assignment
-      (expression (value (external_command (command_body) @injection.content))))
+      (expression
+        (value
+          (external_command
+            (command_body) @injection.content))))
   ])
 
 (source_file
@@ -60,16 +61,46 @@
     (#not-match? @injection.language ".*(powershell|pwsh|cmd).*"))
   [
     (recipe
-      (recipe_body (#set! injection.include-children)) @injection.content)
+      (recipe_body
+      (#set! injection.include-children)) @injection.content)
 
     (assignment
-      (expression (value (external_command (command_body) @injection.content))))
+      (expression
+        (value
+          (external_command
+            (command_body) @injection.content))))
   ])
 
-; ================ Recipe language specified ================
+; ================ Recipe language specified ================                           ; SKIP-HELIX
+                                                                                        ; SKIP-HELIX
+; Set highlighting for recipes that specify a language, using the exact name by default ; SKIP-HELIX
+(recipe_body ;                                                                          ; SKIP-HELIX
+  (shebang ;                                                                            ; SKIP-HELIX
+    (language) @injection.language) ;                                                   ; SKIP-HELIX
+  (#not-any-of? @injection.language "python3" "nodejs" "node")                          ; SKIP-HELIX
+  (#set! injection.include-children)) @injection.content                                ; SKIP-HELIX
+                                                                                        ; SKIP-HELIX
+; Transform some known executables                                                      ; SKIP-HELIX
+                                                                                        ; SKIP-HELIX
+; python3 -> python                                                                     ; SKIP-HELIX
+(recipe_body                                                                            ; SKIP-HELIX
+  (shebang                                                                              ; SKIP-HELIX
+    (language) @_lang)                                                                  ; SKIP-HELIX
+  (#eq? @_lang "python3")                                                               ; SKIP-HELIX
+  (#set! injection.language "python")                                                   ; SKIP-HELIX
+  (#set! injection.include-children)) @injection.content                                ; SKIP-HELIX
+                                                                                        ; SKIP-HELIX
+; node/nodejs -> javascript                                                             ; SKIP-HELIX
+(recipe_body                                                                            ; SKIP-HELIX
+  (shebang                                                                              ; SKIP-HELIX
+    (language) @_lang)                                                                  ; SKIP-HELIX
+  (#any-of? @_lang "node" "nodejs")                                                     ; SKIP-HELIX
+  (#set! injection.language "javascript")                                               ; SKIP-HELIX
+  (#set! injection.include-children)) @injection.content                                ; SKIP-HELIX
 
-; Set highlighting for recipes that specify a language
-(recipe_body
-  (shebang (language) @injection.language)
-  (#set! injection.include-children)) @injection.content
-
+; ================ Recipe language specified - Helix only ================              ; SKIP-NVIM SKIP-NVIM-OLD SKIP-LAPCE SKIP-ZED
+                                                                                        ; SKIP-NVIM SKIP-NVIM-OLD SKIP-LAPCE SKIP-ZED
+; Set highlighting for recipes that specify a language using builtin shebang matching   ; SKIP-NVIM SKIP-NVIM-OLD SKIP-LAPCE SKIP-ZED
+(recipe_body                                                                            ; SKIP-NVIM SKIP-NVIM-OLD SKIP-LAPCE SKIP-ZED
+  (shebang) @injection.shebang                                                          ; SKIP-NVIM SKIP-NVIM-OLD SKIP-LAPCE SKIP-ZED
+  (#set! injection.include-children)) @injection.content                                ; SKIP-NVIM SKIP-NVIM-OLD SKIP-LAPCE SKIP-ZED

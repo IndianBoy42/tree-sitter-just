@@ -7,8 +7,6 @@
 ((comment) @injection.content
   (#set! injection.language "comment"))
 
-(comment) @comment
-
 ; Highlight the RHS of `=~` as regex
 ((regex_literal (_) @injection.content)
   (#set! injection.language "regex"))
@@ -51,7 +49,10 @@
       (recipe_body) @injection.content)
 
     (assignment
-      (expression (value (external_command (command_body) @injection.content))))
+      (expression
+        (value
+          (external_command
+            (command_body) @injection.content))))
   ])
 
 (source_file
@@ -62,11 +63,32 @@
       (recipe_body) @injection.content)
 
     (assignment
-      (expression (value (external_command (command_body) @injection.content))))
+      (expression
+        (value
+          (external_command
+            (command_body) @injection.content))))
   ])
 
-; ================ Recipe language specified ================
-
-; Set highlighting for recipes that specify a language
-(recipe_body
-  (shebang (language) @injection.language)) @injection.content
+; ================ Recipe language specified ================                           
+                                                                                        
+; Set highlighting for recipes that specify a language, using the exact name by default 
+(recipe_body ;                                                                          
+  (shebang ;                                                                            
+    (language) @injection.language) ;                                                   
+  (#not-any-of? @injection.language "python3" "nodejs" "node")) @injection.content                                
+                                                                                        
+; Transform some known executables                                                      
+                                                                                        
+; python3 -> python                                                                     
+(recipe_body                                                                            
+  (shebang                                                                              
+    (language) @_lang)                                                                  
+  (#eq? @_lang "python3")                                                               
+  (#set! injection.language "python")) @injection.content                                
+                                                                                        
+; node/nodejs -> javascript                                                             
+(recipe_body                                                                            
+  (shebang                                                                              
+    (language) @_lang)                                                                  
+  (#any-of? @_lang "node" "nodejs")                                                     
+  (#set! injection.language "javascript")) @injection.content
