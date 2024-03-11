@@ -537,10 +537,10 @@ def main():
             )
 
             # Delete directives
-            contents = re.sub(r"SKIP-\w+", "", contents)
+            contents = re.sub(r"SKIP-[\w-]+", "", contents)
             # Remove trailing whitespace and duplicate newlines
             contents = re.sub(r"\s*;?\s+$", "", contents)
-            contents = re.sub(r"((?:\r?\n){2,})(?:\r?\n)+", "\1", contents)
+            contents = re.sub(r"((?:\r?\n){2,})(?:\r?\n)+", r"\1", contents)
 
             if not contents.endswith("\n"):
                 contents += "\n"

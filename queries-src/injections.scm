@@ -1,4 +1,6 @@
-; FIXME: these are not compatible with helix due to precedence
+; Specify nested languages that live within a `justfile`
+
+; FIXME: these are not compatible with helix due to precedence SKIP-NVIM SKIP-NVIM-OLD
 
 ; ================ Always applicable ================
 
