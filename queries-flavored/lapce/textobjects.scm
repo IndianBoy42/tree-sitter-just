@@ -2,10 +2,10 @@
 
 ; Specify how to navigate around logical blocks in code
 
-(recipe 
+(recipe
   (recipe_body) @function.inside) @function.around
 
-(parameters 
+(parameters
   ((_) @parameter.inside . ","? @parameter.around)) @parameter.around
 
 (dependency_expression
