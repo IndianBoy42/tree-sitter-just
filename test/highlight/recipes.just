@@ -1,6 +1,6 @@
 #!/use/bin/env just
-# <- comment
-# ^^^^^^^^^^^^^^^^^ comment
+# <- keyword.directive
+# ^^^^^^^^^^^^^^^^^ keyword.directive
 
 foo:
 # <- function

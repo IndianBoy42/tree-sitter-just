@@ -1,5 +1,5 @@
 #!/usr/bin/env just
-# <- comment
+# <- keyword.directive
 
 foo := "abc"
 # <- variable

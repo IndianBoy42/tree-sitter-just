@@ -196,6 +196,7 @@ REPLACEMENTS_NVIM_OLD = [
     (r"@keyword.control.conditional", r"@conditional"),
     (r"@keyword.control.import", r"@keyword"),
     (r"@keyword.module", r"@keyword"),
+    (r"@keyword.directive", r"@comment"),
     (r"@variable.parameter", r"@parameter"),
     # Changes to indent queries
     (r"@indent\s+@extend", r"@indent.begin"),

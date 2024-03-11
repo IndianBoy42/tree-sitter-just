@@ -76,7 +76,7 @@
 
 ; Punctuation
 
-[ "," ] @punctuation.delimiter
+"," @punctuation.delimiter
 
 [
   "{"
@@ -106,7 +106,7 @@
 
 (comment) @spell @comment.line
 
-(shebang) @comment
+(shebang) @keyword.directive
 
 ; highlight known settings (filtering does not always work)
 (setting
