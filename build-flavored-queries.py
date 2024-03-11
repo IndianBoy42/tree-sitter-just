@@ -179,6 +179,7 @@ ALLOWED_SETTINGS_NVIM_OLD = {
     "injections.scm": [
         "injection.combined",
         "injection.language",
+        "injection.include-children",
     ]
 }
 
@@ -202,8 +203,6 @@ REPLACEMENTS_NVIM_OLD = [
     # Changes to textobject queries
     (r"(@[\w.]+.)inside", r"\1inner"),
     (r"(@[\w.]+.)around", r"\1outer"),
-    # nvim does not have `injection.include-children`
-    (r"\n?\s*\(\s*#set!\s*injection\.include-children\s*\)", "", re.MULTILINE),
     # nvim uses `var` rather than `variable`
     (r"(@[\w.]+)\.variable", r"\1.var"),
 ]
@@ -320,6 +319,7 @@ ALLOWED_SETTINGS_NVIM = {
     "injections.scm": [
         "injection.combined",
         "injection.language",
+        "injection.include-children",
     ]
 }
 
@@ -337,8 +337,6 @@ REPLACEMENTS_NVIM = [
     # Changes to textobject queries
     (r"(@[\w.]+).inside", "\1.inner"),
     (r"(@[\w.]+).around", "\1.outer"),
-    # nvim does not have `injection.include-children`
-    (r"\s*\n?\s*\(\s*#set!\s*injection\.include-children\s*\)", "", re.MULTILINE),
     # nvim uses `var` rather than `variable`
     (r"(@[\w.]+)\.variable", r"\1.var"),
     # nothing more specific than reference
