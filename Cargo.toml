@@ -10,7 +10,7 @@ license = "MIT"
 autoexamples = false
 
 build = "bindings/rust/build.rs"
-include = ["bindings/rust/*", "grammar.js", "queries/*", "src/*"]
+include = ["bindings/rust/*", "grammar.js", "queries-flavored/helix/*", "src/*"]
 
 [lib]
 path = "bindings/rust/lib.rs"

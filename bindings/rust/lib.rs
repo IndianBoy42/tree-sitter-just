@@ -33,9 +33,9 @@ pub fn language() -> Language {
 /// [`node-types.json`]: https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types
 pub const NODE_TYPES: &str = include_str!("../../src/node-types.json");
 
-pub const HIGHLIGHTS_QUERY: &str = include_str!("../../queries-src/highlights.scm");
-pub const INJECTIONS_QUERY: &str = include_str!("../../queries-src/injections.scm");
-pub const LOCALS_QUERY: &str = include_str!("../../queries-src/locals.scm");
+pub const HIGHLIGHTS_QUERY: &str = include_str!("../../queries-flavored/helix/highlights.scm");
+pub const INJECTIONS_QUERY: &str = include_str!("../../queries-flavored/helix/injections.scm");
+pub const LOCALS_QUERY: &str = include_str!("../../queries-flavored/helix/locals.scm");
 
 // FIXME: add tags when available
 // pub const TAGS_QUERY: &'static str = include_str!("../../queries-src/tags.scm");
