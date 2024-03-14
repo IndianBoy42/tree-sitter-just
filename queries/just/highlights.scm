@@ -5,9 +5,9 @@
 [
   "export"
   "import"
-] @keyword
+] @keyword.import
 
-"mod" @keyword
+"mod" @module
 
 [
   "alias"
@@ -18,7 +18,7 @@
 [
   "if"
   "else"
-] @conditional
+] @keyword.conditional
 
 ; Variables
 
@@ -48,12 +48,12 @@
 ; Parameters
 
 (parameter
-  name: (identifier) @parameter)
+  name: (identifier) @variable.parameter)
 
 ; Namespaces
 
 (module
-  name: (identifier) @namespace)
+  name: (identifier) @module)
 
 ; Operators
 
@@ -108,7 +108,7 @@
 
 (comment) @spell @comment
 
-(shebang) @comment
+(shebang) @keyword.directive
 
 ; highlight known settings (filtering does not always work)
 (setting
