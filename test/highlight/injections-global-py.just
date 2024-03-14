@@ -1,11 +1,7 @@
-set shell := ["python", "-c"]
+set shell := ["python3", "-c"]
 set dotenv-filename := ".env-local"
 set dotenv-load
 
 recipe:
-	print("foo") \
-	if bar: \
-		a += b \
-	if (baz) { \
-		abcd() \
-	}
+	if True: print(100)
+	if "foo" != None: print("foo")

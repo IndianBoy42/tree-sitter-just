@@ -18,6 +18,7 @@
 
 ; Default everything to be bash
 (recipe_body
+  !shebang
   (#set! injection.language "bash")
   (#set! injection.include-children)) @injection.content
 
@@ -50,7 +51,9 @@
     (#set! injection.language "powershell"))
   [
     (recipe
-      (recipe_body (#set! injection.include-children)) @injection.content)
+      (recipe_body
+        !shebang
+        (#set! injection.include-children)) @injection.content)
 
     (assignment
       (expression
@@ -65,7 +68,8 @@
   [
     (recipe
       (recipe_body
-      (#set! injection.include-children)) @injection.content)
+        !shebang
+        (#set! injection.include-children)) @injection.content)
 
     (assignment
       (expression
@@ -79,7 +83,7 @@
 ; Set highlighting for recipes that specify a language, using the exact name by default
 (recipe_body ;
   (shebang ;
-    (language) @injection.language) ;
+    (language) @injection.language)
   (#not-any-of? @injection.language "python3" "nodejs" "node")
   (#set! injection.include-children)) @injection.content
 

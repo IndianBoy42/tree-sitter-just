@@ -280,7 +280,7 @@ module.exports = grammar({
     recipe_body: ($) =>
       seq(
         $._indent,
-        optional(seq($.shebang, $._newline)),
+        optional(seq(field("shebang", $.shebang), $._newline)),
         repeat(choice(seq($.recipe_line, $._newline), $._newline)),
         $._dedent,
       ),
@@ -293,6 +293,7 @@ module.exports = grammar({
 
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
+    // Any shebang. Needs a named field to apply injection queries correctly.
     shebang: ($) => seq("#!", choice($._shebang_with_lang, $._opaque_shebang)),
 
     // Shebang with a nested `language` token that we can extract

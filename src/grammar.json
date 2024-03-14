@@ -1176,8 +1176,12 @@
               "type": "SEQ",
               "members": [
                 {
-                  "type": "SYMBOL",
-                  "name": "shebang"
+                  "type": "FIELD",
+                  "name": "shebang",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "shebang"
+                  }
                 },
                 {
                   "type": "SYMBOL",
