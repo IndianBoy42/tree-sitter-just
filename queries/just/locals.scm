@@ -5,38 +5,38 @@
 
 ; Scope
 
-(recipe) @scope
+(recipe) @local.scope
 
 ; Definitions
 
 (alias
-  left: (identifier) @definition.var)
+  left: (identifier) @local.definition.var)
 
 (assignment
-  left: (identifier) @definition.var)
+  left: (identifier) @local.definition.var)
 
 (module
-  name: (identifier) @definition.namespace)
+  name: (identifier) @local.definition.namespace)
 
 (parameter
-  name: (identifier) @definition.var)
+  name: (identifier) @local.definition.var)
 
 (recipe_header
-  name: (identifier) @definition.function)
+  name: (identifier) @local.definition.function)
 
 ; References
 
 (alias
-  right: (identifier) @reference)
+  right: (identifier) @local.reference)
 
 (function_call
-  name: (identifier) @reference)
+  name: (identifier) @local.reference)
 
 (dependency
-  name: (identifier) @reference)
+  name: (identifier) @local.reference)
 
 (dependency_expression
-  name: (identifier) @reference)
+  name: (identifier) @local.reference)
 
 (value
-  (identifier) @reference)
+  (identifier) @local.reference)
