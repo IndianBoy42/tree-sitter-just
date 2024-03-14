@@ -18,6 +18,7 @@
 
 ; Default everything to be bash
 (recipe_body
+  !shebang
   (#set! injection.language "bash")
   (#set! injection.include-children)) @injection.content
 
@@ -50,7 +51,9 @@
     (#set! injection.language "powershell"))
   [
     (recipe
-      (recipe_body (#set! injection.include-children)) @injection.content)
+      (recipe_body
+        !shebang
+        (#set! injection.include-children)) @injection.content)
 
     (assignment
       (expression
@@ -65,7 +68,8 @@
   [
     (recipe
       (recipe_body
-      (#set! injection.include-children)) @injection.content)
+        !shebang
+        (#set! injection.include-children)) @injection.content)
 
     (assignment
       (expression

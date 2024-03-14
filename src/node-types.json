@@ -474,17 +474,24 @@
   {
     "type": "recipe_body",
     "named": true,
-    "fields": {},
+    "fields": {
+      "shebang": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "shebang",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
       "types": [
         {
           "type": "recipe_line",
-          "named": true
-        },
-        {
-          "type": "shebang",
           "named": true
         }
       ]
