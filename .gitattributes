@@ -10,5 +10,5 @@ src/node-types.json -diff
 src/parser.c -diff
 
 # These test files are from the fuzzer
-test/**/timeout-* binary
-test/**/crash-* binary
+test/**timeout-* binary
+test/**crash-* binary
