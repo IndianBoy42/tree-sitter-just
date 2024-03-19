@@ -35,6 +35,7 @@ make_timeout_fn := '''timeout () { perl -e 'alarm shift; exec @ARGV' "$@"; }'''
 # Files that should parse with errors but not crash
 errors_expected := '''
 	test/timeout-1aa6bf37e914715f4aa49e6cf693f7abf81aaf8e
+	test/crash-4b0422bb457cd6b39d1f8549f6739830254718a0z-assertion
 
 	# FIXME: xfail files, these should parse correctly
 	repositories/just/examples/kitchen-sink.just
@@ -156,7 +157,7 @@ test-parse-highlight: _clone-repo-just
 	just_path = Path(r"{{ just_path }}")
 
 	repo_files = sp.check_output(
-		["git", "ls-files", "*.just", "*justfile", "*timeout", "*crash"],
+		["git", "ls-files", "*.just", "*justfile", "*timeout*", "*crash*"],
 		encoding="utf8", shell=shell
 	)
 	just_repo_files =  sp.check_output(
