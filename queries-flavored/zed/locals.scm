@@ -10,19 +10,19 @@
 ; Definitions
 
 (alias
-  left: (identifier) @local.definition.variable)
+  left: (identifier) @local.definition)
 
 (assignment
-  left: (identifier) @local.definition.variable)
+  left: (identifier) @local.definition)
 
 (module
-  name: (identifier) @local.definition.namespace)
+  name: (identifier) @local.definition)
 
 (parameter
-  name: (identifier) @local.definition.variable)
+  name: (identifier) @local.definition)
 
 (recipe_header
-  name: (identifier) @local.definition.function)
+  name: (identifier) @local.definition)
 
 ; References
 

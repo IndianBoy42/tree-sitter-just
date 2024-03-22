@@ -291,8 +291,8 @@ REPLACEMENTS_HELIX = [
     (r"@keyword.module", r"@keyword.directive"),
     (r"@function.call", r"@function"),
     (r"@spell ?", r""),
-    # nothing more specific than reference
-    (r"(@local.reference)[\w.]+", r"\1"),
+    # nothing more specific than `@local.(reference,definition)`
+    (r"(@local\.\w+)\.[.\w]+", r"\1"),
 ]
 
 # Documentation not yet complete
