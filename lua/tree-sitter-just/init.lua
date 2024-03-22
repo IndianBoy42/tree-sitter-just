@@ -22,6 +22,7 @@ function M.setup(arg)
 	parser_config.just = {
 		install_info = {
 			url = arg["local"] and join_paths(
+				-- luacheck: ignore
 				vim.fn.stdpath("data"),
 				"site",
 				"pack",
