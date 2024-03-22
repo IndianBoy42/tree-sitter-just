@@ -2,10 +2,23 @@
 
 Tree-sitter grammar for Justfiles ([casey/just](https://github.com/casey/just))
 
-To use treesitter based highlighting, folds etc. the queries need to be added
-to the runtimepath, until I get a PR into `nvim-treesitter/nvim-treesitter`
-you can install this repo as a plugin using Plug/packer/manual clone etc. This
-plugin also adds a simple `ftdetect` plugin for detecting justfiles.
+## Usage
+
+### Neovim
+
+Just queries are now part of `nvim-treesitter`! Please follow installation
+instructions at <https://github.com/nvim-treesitter/nvim-treesitter>.
+
+### Helix
+
+Just queries are also part of [Helix](https://github.com/helix-editor/helix)!
+They should be installed by default.
+
+### Manual Installation (Neovim)
+
+This grammar can also be used locally, as a plugin with Plug, Packer, or a
+manual clone. This also requires a simple `ftdetect` plugin for detecting
+justfiles.
 
 Packer:
 
@@ -49,7 +62,37 @@ Don't forget to `:TSInstall` after adding this. With this method you do not
 have to add this repo as a plugin.
 
 Please note that the nightly version of `nvim-treesitter`, at least since
-`5b90ea2abaa4303b9205b5c9002a8cdd0acd11a5` (2024-01-19).
+`5b90ea2abaa4303b9205b5c9002a8cdd0acd11a5` (2024-01-19) is required.
+
+### Manual Installation (Helix)
+
+To use the latest version of this repository with Helix, you just need to
+update the `languages.toml` file, often at `~/.config/helix/languages.toml`:
+
+```toml
+[[grammar]]
+name = "just"
+# Use this line to use a local dependency
+source = { path = "/path/toa/tree-sitter-just" }
+# Use this line to use a git dependency
+# source = { git = "https://github.com/IndianBoy42/tree-sitter-just", rev = "7ad370abd9eb80e9e5266ea04a1e77d5b1692321" }
+
+[[language]]
+name = "just"
+scope = "scope.just"
+file-types = ["justfile", "JUSTFILE", "just"]
+```
+
+After updating `languages.toml`, run `hx --grammar build` to update.
+
+To get syntax highlighting and other query-based features you will need to
+place the queries in a `queries/just` directory within your runtime folder.
+To link to a cloned repository, the following should work:
+
+```sh
+# Change the second path to your runtime directory if not at `~/.config/helix/runtime`
+ln -s $(realpath queries-flavored/helix/) ~/.config/helix/runtime/queries/just
+```
 
 ## Contributing
 
