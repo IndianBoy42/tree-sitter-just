@@ -51,7 +51,7 @@ enum ts_symbol_identifiers {
   anon_sym_AT_DASH = 32,
   anon_sym_DASH_AT = 33,
   anon_sym_DASH = 34,
-  anon_sym_POUND_BANG = 35,
+  aux_sym_shebang_token1 = 35,
   aux_sym__shebang_with_lang_token1 = 36,
   anon_sym_env = 37,
   aux_sym__shebang_with_lang_token2 = 38,
@@ -170,7 +170,7 @@ static const char *const ts_symbol_names[] = {
     [anon_sym_AT_DASH] = "@-",
     [anon_sym_DASH_AT] = "-@",
     [anon_sym_DASH] = "-",
-    [anon_sym_POUND_BANG] = "#!",
+    [aux_sym_shebang_token1] = "shebang_token1",
     [aux_sym__shebang_with_lang_token1] = "_shebang_with_lang_token1",
     [anon_sym_env] = "env",
     [aux_sym__shebang_with_lang_token2] = "_shebang_with_lang_token2",
@@ -289,7 +289,7 @@ static const TSSymbol ts_symbol_map[] = {
     [anon_sym_AT_DASH] = anon_sym_AT_DASH,
     [anon_sym_DASH_AT] = anon_sym_DASH_AT,
     [anon_sym_DASH] = anon_sym_DASH,
-    [anon_sym_POUND_BANG] = anon_sym_POUND_BANG,
+    [aux_sym_shebang_token1] = aux_sym_shebang_token1,
     [aux_sym__shebang_with_lang_token1] = aux_sym__shebang_with_lang_token1,
     [anon_sym_env] = anon_sym_env,
     [aux_sym__shebang_with_lang_token2] = aux_sym__shebang_with_lang_token2,
@@ -550,9 +550,9 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
             .visible = true,
             .named = false,
         },
-    [anon_sym_POUND_BANG] =
+    [aux_sym_shebang_token1] =
         {
-            .visible = true,
+            .visible = false,
             .named = false,
         },
     [aux_sym__shebang_with_lang_token1] =
@@ -1753,7 +1753,9 @@ static bool ts_lex(TSLexer *lexer, TSStateId state) {
       ADVANCE(62);
     END_STATE();
   case 64:
-    ACCEPT_TOKEN(anon_sym_POUND_BANG);
+    ACCEPT_TOKEN(aux_sym_shebang_token1);
+    if (lookahead == '\t' || lookahead == ' ')
+      ADVANCE(64);
     END_STATE();
   case 65:
     ACCEPT_TOKEN(aux_sym__shebang_with_lang_token1);
@@ -2661,7 +2663,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
             [anon_sym_AT_DASH] = ACTIONS(1),
             [anon_sym_DASH_AT] = ACTIONS(1),
             [anon_sym_DASH] = ACTIONS(1),
-            [anon_sym_POUND_BANG] = ACTIONS(1),
+            [aux_sym_shebang_token1] = ACTIONS(1),
             [anon_sym_env] = ACTIONS(1),
             [aux_sym_string_token1] = ACTIONS(1),
             [anon_sym_SQUOTE_SQUOTE_SQUOTE] = ACTIONS(1),
@@ -2703,7 +2705,7 @@ static const uint16_t ts_parse_table[LARGE_STATE_COUNT][SYMBOL_COUNT] = {
             [anon_sym_set] = ACTIONS(17),
             [anon_sym_LBRACK] = ACTIONS(19),
             [anon_sym_AT] = ACTIONS(21),
-            [anon_sym_POUND_BANG] = ACTIONS(23),
+            [aux_sym_shebang_token1] = ACTIONS(23),
             [sym_comment] = ACTIONS(3),
         },
 };
@@ -5908,7 +5910,7 @@ static const uint16_t ts_small_parse_table[] = {
     sym_comment,
     ACTIONS(23),
     1,
-    anon_sym_POUND_BANG,
+    aux_sym_shebang_token1,
     ACTIONS(277),
     1,
     anon_sym_LBRACE_LBRACE,

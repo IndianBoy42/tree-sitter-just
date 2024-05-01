@@ -359,6 +359,37 @@ foo:
         (text)))))
 
 ================================================================================
+shebang with spaces
+================================================================================
+
+foo:
+  #!  /bin/sh
+  if [ -f "foo" ]; then
+    echo "foo {{var}}"
+  fi
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (shebang
+        (language))
+      (recipe_line
+        (text))
+      (recipe_line
+        (text)
+        (interpolation
+          (expression
+            (value
+              (identifier))))
+        (text))
+      (recipe_line
+        (text)))))
+
+================================================================================
 shebang with longer body
 ================================================================================
 
