@@ -9,7 +9,7 @@ fuzz_out := bin_dir / "fuzz.out"
 
 ts_path := justfile_directory() / "repositories" / "tree-sitter"
 ts_repo := "https://github.com/tree-sitter/tree-sitter"
-ts_sha := "1c55abb5308fe3891da545662e5df7ba28ade275" # v0.21.0
+ts_sha := "cdd46888603e06d6474a96c0024907f68242c45f" # v0.22.5
 
 just_path := justfile_directory() / "repositories" / "just"
 just_repo := "https://github.com/casey/just.git"
@@ -321,7 +321,7 @@ _clone-repo url path sha:
 
 	if [ ! -d '{{ path }}' ]; then
 		echo "Cloning {{ url }}"
-		git clone '{{ url }}' '{{ path }}' --depth=100
+		git clone '{{ url }}' '{{ path }}' --depth=1000
 	fi
 
 	actual_sha=$(git -C '{{ path }}' rev-parse HEAD)
