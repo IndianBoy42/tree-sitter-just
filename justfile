@@ -288,7 +288,7 @@ ci-validate-generated-files exit-code="1":
 	just {{ verbose_flag }} gen
 
 	failed=false
-	git diff ci-tmp-pre-updates --exit-code || failed=true
+	git diff ci-tmp-pre-updates --text --exit-code || failed=true
 	git tag -d ci-tmp-pre-updates
 
 	if ! [ "$failed" = "false" ]; then
