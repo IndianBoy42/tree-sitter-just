@@ -294,7 +294,8 @@ module.exports = grammar({
     recipe_line_prefix: (_) => choice("@-", "-@", "@", "-"),
 
     // Any shebang. Needs a named field to apply injection queries correctly.
-    shebang: ($) => seq("#!", choice($._shebang_with_lang, $._opaque_shebang)),
+    shebang: ($) =>
+      seq(/#![ \t]*/, choice($._shebang_with_lang, $._opaque_shebang)),
 
     // Shebang with a nested `language` token that we can extract
     _shebang_with_lang: ($) =>
