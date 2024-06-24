@@ -35,3 +35,6 @@ repositories/
 compile_commands.json
 .vscode/
 *.swp
+
+# No need to support ancient python
+setup.py
