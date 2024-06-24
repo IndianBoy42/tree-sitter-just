@@ -54,7 +54,18 @@
   {
     "type": "attribute",
     "named": true,
-    "fields": {},
+    "fields": {
+      "argument": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
