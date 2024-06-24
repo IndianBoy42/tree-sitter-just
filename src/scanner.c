@@ -22,11 +22,15 @@
 #define unused_attr
 #endif
 
+#ifndef fprintf_s
+#define fprintf_s fprintf // NOLINT
+#endif
+
 #ifdef DEBUG_PRINT
 #define dbg_print(...)                                                         \
   do {                                                                         \
-    fprintf_s(stderr, "    \033[96;1mparse: \033[0m");                           \
-    fprintf_s(stderr, __VA_ARGS__);                                              \
+    fprintf_s(stderr, "    \033[96;1mparse: \033[0m");                         \
+    fprintf_s(stderr, __VA_ARGS__);                                            \
   } while (0)
 #else
 #define dbg_print(...)
@@ -34,9 +38,9 @@
 
 #define panic(...)                                                             \
   do {                                                                         \
-    fprintf_s(stderr, "panic at %s:%d: ", __FILE_NAME__, __LINE__);              \
-    fprintf_s(stderr, __VA_ARGS__);                                              \
-    fprintf_s(stderr, "\n");                                                     \
+    fprintf_s(stderr, "panic at %s:%d: ", __FILE_NAME__, __LINE__);            \
+    fprintf_s(stderr, __VA_ARGS__);                                            \
+    fprintf_s(stderr, "\n");                                                   \
     exit(1);                                                                   \
   } while (0);
 

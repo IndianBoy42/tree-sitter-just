@@ -2,3 +2,4 @@ Checks: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,modernize-*,-mo
 WarningsAsErrors: true
 HeaderFilterRegex: ""
 FormatStyle: google
+ExtraArgsBefore: ["--std=c11"]
