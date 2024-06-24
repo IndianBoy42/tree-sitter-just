@@ -25,8 +25,8 @@
 #ifdef DEBUG_PRINT
 #define dbg_print(...)                                                         \
   do {                                                                         \
-    fprintf(stderr, "    \033[96;1mparse: \033[0m");                           \
-    fprintf(stderr, __VA_ARGS__);                                              \
+    fprintf_s(stderr, "    \033[96;1mparse: \033[0m");                           \
+    fprintf_s(stderr, __VA_ARGS__);                                              \
   } while (0)
 #else
 #define dbg_print(...)
@@ -34,9 +34,9 @@
 
 #define panic(...)                                                             \
   do {                                                                         \
-    fprintf(stderr, "panic at %s:%d: ", __FILE_NAME__, __LINE__);              \
-    fprintf(stderr, __VA_ARGS__);                                              \
-    fprintf(stderr, "\n");                                                     \
+    fprintf_s(stderr, "panic at %s:%d: ", __FILE_NAME__, __LINE__);              \
+    fprintf_s(stderr, __VA_ARGS__);                                              \
+    fprintf_s(stderr, "\n");                                                     \
     exit(1);                                                                   \
   } while (0);
 
