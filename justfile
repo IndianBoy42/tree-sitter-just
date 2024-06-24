@@ -9,11 +9,11 @@ fuzz_out := bin_dir / "fuzz.out"
 
 ts_path := justfile_directory() / "repositories" / "tree-sitter"
 ts_repo := "https://github.com/tree-sitter/tree-sitter"
-ts_sha := "cdd46888603e06d6474a96c0024907f68242c45f" # v0.22.5
+ts_sha := "b40f342067a89cd6331bf4c27407588320f3c263" # v0.22.6
 
 just_path := justfile_directory() / "repositories" / "just"
 just_repo := "https://github.com/casey/just.git"
-just_sha := "a2ff42e6c37ba5c429d444f3a18d3633e59f9a34" # 1.24.0
+just_sha := "5f91b37c82e6a92df2575babcb17a6a8e9c505f7" # 1.29.1
 
 include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"

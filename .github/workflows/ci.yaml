@@ -18,7 +18,7 @@ jobs:
       - uses: taiki-e/install-action@just
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
       - run: pip install ruff
       - name: Get npm cache directory
         id: npm-cache-dir
@@ -48,7 +48,7 @@ jobs:
       - uses: taiki-e/install-action@just
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
       - name: Get npm cache directory
         id: npm-cache-dir
         shell: bash

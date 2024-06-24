@@ -20,15 +20,15 @@
     "lexer"
   ],
   "dependencies": {
-    "eslint-config-prettier": "^9.1.0",
-    "nan": "^2.18.0",
-    "prettier": "^3.2.5",
-    "tree-sitter": "^0.20.6"
+    "nan": "^2.20.0",
+    "prettier": "^3.3.2",
+    "tree-sitter": "^0.21.1"
   },
   "devDependencies": {
-    "eslint": ">=8.56.0",
+    "eslint": ">=9.5.0",
     "eslint-config-google": "^0.14.0",
-    "tree-sitter-cli": "^0.21.0"
+    "eslint-config-prettier": "^9.1.0",
+    "tree-sitter-cli": "^0.22.6"
   },
   "scripts": {
     "format:check": "prettier --check .",
