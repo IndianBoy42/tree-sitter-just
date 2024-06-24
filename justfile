@@ -82,7 +82,9 @@ setup *npm-args:
 # Lint with more minimal dependencies that can be run during pre-commit
 _lint-min: _clone-repo-tree-sitter configure-compile-database
 	npm run lint:check
-	git ls-files '**.c' | grep -v 'parser\.c' | \
+	git ls-files '**.c' | \
+		grep -v 'parser\.c' | \
+		grep -v 'bindings/python' | \
 		xargs -IFNAME sh -c 'echo "\nchecking file FNAME" && clang-tidy FNAME'
 
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
