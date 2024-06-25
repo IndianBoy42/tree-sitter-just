@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 
     // Build a syntax tree based on source code stored in a string.
     TSTree *tree = ts_parser_parse_string(parser, NULL, data, file_size);
-    TSNode root_node = ts_tree_root_node(tree);
+    // TSNode root_node = ts_tree_root_node(tree);
     // assert(ts_node_child_count(root_node) > 0);
 
     // Free all of the heap-allocated memory.
