@@ -223,7 +223,18 @@ module.exports = grammar({
     //               | expression ','?
     sequence: ($) => comma_sep1($.expression),
 
-    attribute: ($) => seq("[", comma_sep1($.identifier), "]", $._newline),
+    attribute: ($) =>
+      seq(
+        "[",
+        comma_sep1(
+          choice(
+            $.identifier,
+            seq($.identifier, "(", field("argument", $.string), ")"),
+          ),
+        ),
+        "]",
+        $._newline,
+      ),
 
     // A complete recipe
     // recipe        : attribute? '@'? NAME parameter* variadic_parameters? ':' dependency* body?

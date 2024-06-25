@@ -203,7 +203,7 @@ test-parse-highlight: _clone-repo-just
 		sp.check_output(
 			ts_cmd + ["parse", fname] + scope_args, timeout=10, shell=shell
 		)
-	
+
 		print(f"Checking '{fname}': highlight'")
 		sp.check_output(
 			ts_cmd + ["highlight", fname] + scope_args,	timeout=10, shell=shell
@@ -235,7 +235,7 @@ test-parse-highlight: _clone-repo-just
 		sp.check_output(
 			ts_cmd + ["highlight",  fname] + scope_args, timeout=10, shell=shell
 		)
-	
+
 	print(
 		f"Successfully parsed {len(files) + len(error_files)} example files "
 		f"with {len(error_files)} expected failures"
