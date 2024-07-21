@@ -38,3 +38,6 @@ compile_commands.json
 
 # No need to support ancient python
 setup.py
+
+# Configuring includes for autocompletion in C files
+.clangd
