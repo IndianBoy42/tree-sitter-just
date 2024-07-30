@@ -90,7 +90,7 @@ _lint-min: _clone-repo-tree-sitter configure-compile-database
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint: _lint-min
 	cargo clippy
-	ruff .
+	ruff check .
 
 _out-dirs:
 	mkdir -p "{{ bin_dir }}"
