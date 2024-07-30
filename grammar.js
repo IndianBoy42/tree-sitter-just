@@ -332,8 +332,10 @@ module.exports = grammar({
 
     _raw_string_indented: (_) => seq("'''", repeat(/./), "'''"),
     _string: ($) => seq('"', repeat(choice($.escape_sequence, /[^\\"]+/)), '"'),
+    // We need try two separate munches so neither escape sequences nor
+    // potential closing quotes get eaten.
     _string_indented: ($) =>
-      seq('"""', repeat(choice($.escape_sequence, /[^\\"]+/)), '"""'),
+      seq('"""', repeat(choice($.escape_sequence, /[^\\]?[^\\"]+/)), '"""'),
 
     escape_sequence: (_) => ESCAPE_SEQUENCE,
 
