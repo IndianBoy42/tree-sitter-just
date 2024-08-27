@@ -74,7 +74,7 @@ export EXTRA_LDFLAGS := ldflags
 
 export CMAKE_C_FLAGS_RELEASE := CFLAGS
 export CMAKE_CXX_FLAGS_RELEASE := CXXFLAGS
-# export CMAKE_EXE_LINKER_FLAGS := ldflags # These don't get passed by enviroment variable
+# export CMAKE_EXE_LINKER_FLAGS := ldflags # These don't get passed by environment variable
 # export CMAKE_SHARED_LINKER_FLAGS := CMAKE_EXE_LINKER_FLAGS
 
 rust_static_flags := if static != "0" { " -C target-feature=+crt-static -C link-self-contained=yes" } else { "" }
@@ -988,7 +988,7 @@ apt-srcs:
 
 # Download all apt packages from a file in install-system.sh
 @_apt-repo name:
-    echo "The getpkg.sh script throws a lot of errors about missing dependencies, and returns error even when successfull"
+    echo "The getpkg.sh script throws a lot of errors about missing dependencies, and returns error even when successful"
     xargs -P(math (nproc) "* 8") -i sh -c "just getpkg {} \
     || true" < {{inst-script-dir}}/{{name}}.apt
 
@@ -1012,7 +1012,7 @@ smerge:
     apt update
     {{apt-install}} sublime-merge
 
-# TODO: install in an isolated virutal environment? (use pipx)
+# TODO: install in an isolated virtual environment? (use pipx)
 nvim-cfg:
     test -d ~/.config/nvim || https://github.com/IndianBoy42/LunarVim.git ~/.config/nvim
     cd ~/.config/nvim && just install
@@ -1092,7 +1092,7 @@ stow:
 jq: (bingh "jq" "stedolan/jq" "jq-linux64")
     echo "Installed jq"
 
-# Interative JSON Query CLI
+# Interactive JSON Query CLI
 ijq: (gitclone "https://github.com/gpanders/ijq.git" "ijq") (mkpackdir "ijq")
     {{apt-install}} scdoc
     cd {{blddir}}/ijq && make prefix={{prefix}}/ijq install
