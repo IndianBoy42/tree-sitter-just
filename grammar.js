@@ -230,6 +230,7 @@ module.exports = grammar({
           choice(
             $.identifier,
             seq($.identifier, "(", field("argument", $.string), ")"),
+            seq($.identifier, ":", field("argument", $.string)),
           ),
         ),
         "]",

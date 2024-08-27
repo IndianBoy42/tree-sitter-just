@@ -551,7 +551,7 @@ recipes containing attributes with arguments
 ================================================================================
 
 
-[group("foo"), group("echo")]
+[group("foo"), group: "echo"]
 foo:
   echo "foo"
 
