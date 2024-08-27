@@ -50,12 +50,10 @@
     "prebuildify": "^6.0.0"
   },
   "scripts": {
-    "format:check": "prettier --check .",
-    "format:write": "prettier --write .",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint --fix .",
     "install": "node-gyp-build",
-    "prebuildify": "prebuildify --napi --strip"
+    "prestart": "tree-sitter build --wasm",
+    "start": "tree-sitter playground",
+    "test": "node --test bindings/node/*_test.js"
   },
   "tree-sitter": [
     {
