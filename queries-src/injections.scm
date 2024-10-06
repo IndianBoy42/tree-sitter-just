@@ -82,16 +82,16 @@
 (recipe_body ;                                                                          ; SKIP-HELIX
   (shebang ;                                                                            ; SKIP-HELIX
     (language) @injection.language)                                                     ; SKIP-HELIX
-  (#not-any-of? @injection.language "python3" "nodejs" "node")                          ; SKIP-HELIX
+  (#not-any-of? @injection.language "python3" "nodejs" "node" "uv")                     ; SKIP-HELIX
   (#set! injection.include-children)) @injection.content                                ; SKIP-HELIX
                                                                                         ; SKIP-HELIX
 ; Transform some known executables                                                      ; SKIP-HELIX
                                                                                         ; SKIP-HELIX
-; python3 -> python                                                                     ; SKIP-HELIX
+; python3/uv -> python                                                                  ; SKIP-HELIX
 (recipe_body                                                                            ; SKIP-HELIX
   (shebang                                                                              ; SKIP-HELIX
     (language) @_lang)                                                                  ; SKIP-HELIX
-  (#eq? @_lang "python3")                                                               ; SKIP-HELIX
+  (#any-of? @_lang "python3" "uv")                                                      ; SKIP-HELIX
   (#set! injection.language "python")                                                   ; SKIP-HELIX
   (#set! injection.include-children)) @injection.content                                ; SKIP-HELIX
                                                                                         ; SKIP-HELIX
