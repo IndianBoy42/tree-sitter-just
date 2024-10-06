@@ -229,7 +229,12 @@ module.exports = grammar({
         comma_sep1(
           choice(
             $.identifier,
-            seq($.identifier, "(", field("argument", $.string), ")"),
+            seq(
+              $.identifier,
+              "(",
+              comma_sep1(field("argument", $.string)),
+              ")",
+            ),
           ),
         ),
         "]",
