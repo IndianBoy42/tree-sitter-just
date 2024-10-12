@@ -82,16 +82,16 @@
 (recipe_body ;
   (shebang ;
     (language) @injection.language)
-  (#not-any-of? @injection.language "python3" "nodejs" "node")
+  (#not-any-of? @injection.language "python3" "nodejs" "node" "uv")
   (#set! injection.include-children)) @injection.content
 
 ; Transform some known executables
 
-; python3 -> python
+; python3/uv -> python
 (recipe_body
   (shebang
     (language) @_lang)
-  (#eq? @_lang "python3")
+  (#any-of? @_lang "python3" "uv")
   (#set! injection.language "python")
   (#set! injection.include-children)) @injection.content
 

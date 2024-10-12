@@ -115,35 +115,40 @@
   left: (identifier) @keyword
   (#any-of? @keyword
     "allow-duplicate-recipes"
+    "allow-duplicate-variables"
     "dotenv-filename"
     "dotenv-load"
     "dotenv-path"
+    "dotenv-required"
     "export"
     "fallback"
     "ignore-comments"
     "positional-arguments"
     "shell"
-    "tempdi"
+    "shell-interpreter"
+    "tempdir"
     "windows-powershell"
-    "windows-shell"))
+    "windows-shell"
+    "working-directory"))
 
 ; highlight known attributes (filtering does not always work)
 (attribute
   (identifier) @attribute
   (#any-of? @attribute
-    "private"
-    "allow-duplicate-recipes"
-    "dotenv-filename"
-    "dotenv-load"
-    "dotenv-path"
-    "export"
-    "fallback"
-    "ignore-comments"
+    "confirm"
+    "doc"
+    "extension"
+    "group"
+    "linux"
+    "macos"
+    "no-cd"
+    "no-exit-message"
+    "no-quiet"
     "positional-arguments"
-    "shell"
-    "tempdi"
-    "windows-powershell"
-    "windows-shell"))
+    "private"
+    "script"
+    "unix"
+    "windows"))
 
 ; Numbers are part of the syntax tree, even if disallowed
 (numeric_error) @error
