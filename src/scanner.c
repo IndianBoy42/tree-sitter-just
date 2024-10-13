@@ -22,6 +22,10 @@
 #define unused_attr
 #endif
 
+#ifdef __wasm__
+#define assertf(...) (void)0;
+#else
+
 #ifndef fprintf_s
 #define fprintf_s fprintf // NOLINT
 #endif
@@ -53,6 +57,8 @@
 
 #ifndef __GNUC__
 #define __builtin_expect(a, b) a
+#endif
+
 #endif
 
 #define SBYTES sizeof(Scanner)

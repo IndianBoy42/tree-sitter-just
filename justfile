@@ -128,6 +128,9 @@ gen *extra-args:
 		clang-format -i src/parser.c || \
 		echo "skipping clang-format"
 
+build-wasm: gen
+    npx tree-sitter build --wasm
+
 alias t := test
 
 # Run tests that are built into tree-sitter, as well as integration and Cargo tests
