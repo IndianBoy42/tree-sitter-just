@@ -47,6 +47,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/install-action@just
       - uses: actions/setup-node@v4
+      - uses: mymindstorm/setup-emsdk@v14
         with:
           node-version: 20
       - name: Get npm cache directory
@@ -66,3 +67,5 @@ jobs:
         run: just --verbose test
       - name: Check if generated files are up to date (warn only)
         run: just --verbose ci-validate-generated-files 0
+      - name: Test WASM build
+        run: just --verbose build-wasm
