@@ -1463,7 +1463,7 @@
     },
     "_opaque_shebang": {
       "type": "PATTERN",
-      "value": "[^/]+"
+      "value": "[^/\\n]+"
     },
     "string": {
       "type": "CHOICE",

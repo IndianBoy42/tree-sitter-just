@@ -506,6 +506,32 @@ shebang interpolation
   (shebang))
 
 ================================================================================
+recipes with variable expansion in shebang
+================================================================================
+
+shebang_shell := "/bin/sh"
+
+foo:
+  #!{{shebang_shell}}
+  echo "foo"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (recipe
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (shebang)
+      (recipe_line
+        (text)))))
+
+================================================================================
 longer bodies
 ================================================================================
 
