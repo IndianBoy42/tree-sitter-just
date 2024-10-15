@@ -15,7 +15,7 @@ ts_sha := "bdfe32402e85673bbc693216f0a6ef72c98bb665" # v0.24.3
 just_path := justfile_directory() / "repositories" / "just"
 just_repo := "https://github.com/casey/just.git"
 just_branch := "master"
-just_sha := "5f91b37c82e6a92df2575babcb17a6a8e9c505f7" # 1.29.1
+just_sha := "f5bdffda344daca6c791303e4bb2006ee5a0b144" # 1.35.0
 
 include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
