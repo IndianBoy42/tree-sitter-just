@@ -320,7 +320,7 @@ module.exports = grammar({
       ),
 
     // Fallback shebang, any string
-    _opaque_shebang: (_) => /[^/]+/,
+    _opaque_shebang: (_) => /[^/\n]+/,
 
     // string        : STRING
     //               | INDENTED_STRING
