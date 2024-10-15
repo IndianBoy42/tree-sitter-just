@@ -30,12 +30,12 @@
   ],
   "dependencies": {
     "tree-sitter": "^0.21.1",
-    "prettier": "^3.3.2",
-    "node-addon-api": "^7.1.0",
-    "node-gyp-build": "^4.8.0"
+    "prettier": "^3.3.3",
+    "node-addon-api": "^8.2.1",
+    "node-gyp-build": "^4.8.2"
   },
   "peerDependencies": {
-    "tree-sitter": "^0.21.0"
+    "tree-sitter": "^0.21.1"
   },
   "peerDependenciesMeta": {
     "tree_sitter": {
@@ -46,8 +46,8 @@
     "eslint": ">=9.5.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^9.1.0",
-    "tree-sitter-cli": "^0.22.6",
-    "prebuildify": "^6.0.0"
+    "tree-sitter-cli": "^0.24.3",
+    "prebuildify": "^6.0.1"
   },
   "scripts": {
     "format:check": "prettier --check .",
@@ -56,31 +56,5 @@
     "lint:fix": "eslint --fix .",
     "install": "node-gyp-build",
     "prebuildify": "prebuildify --napi --strip"
-  },
-  "tree-sitter": [
-    {
-      "scope": "source.just",
-      "file-types": [
-        "just",
-        ".just",
-        "justfile",
-        "JUSTFILE",
-        "Justfile",
-        ".justfile",
-        ".JUSTFILE",
-        ".Justfile"
-      ],
-      "injection-regex": "^(?i)just(file)?$",
-      "first-line-regex": "#!\\S*bin\\S*[/ ]just",
-      "highlights": [
-        "queries-src/highlights.scm"
-      ],
-      "locals": [
-        "queries-src/locals.scm"
-      ],
-      "injections": [
-        "queries-src/injections.scm"
-      ]
-    }
-  ]
+  }
 }
