@@ -9,10 +9,12 @@ fuzz_out := bin_dir / "fuzz.out"
 
 ts_path := justfile_directory() / "repositories" / "tree-sitter"
 ts_repo := "https://github.com/tree-sitter/tree-sitter"
-ts_sha := "b40f342067a89cd6331bf4c27407588320f3c263" # v0.22.6
+ts_branch := "release-0.24" # release tags aren't on `master`
+ts_sha := "bdfe32402e85673bbc693216f0a6ef72c98bb665" # v0.24.3
 
 just_path := justfile_directory() / "repositories" / "just"
 just_repo := "https://github.com/casey/just.git"
+just_branch := "master"
 just_sha := "5f91b37c82e6a92df2575babcb17a6a8e9c505f7" # 1.29.1
 
 include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan"
@@ -320,7 +322,7 @@ pre-commit-install:
 	EOF
 
 # Clone or update a repo
-_clone-repo url path sha:
+_clone-repo url path sha branch:
 	#!/bin/sh
 	set -eaux
 
@@ -332,15 +334,15 @@ _clone-repo url path sha:
 	actual_sha=$(git -C '{{ path }}' rev-parse HEAD)
 	if [ "$actual_sha" != "{{ sha }}" ]; then
 		echo "Updating {{ url }} to {{ sha }}"
-		git -C '{{ path }}' fetch
+		git -C '{{ path }}' fetch origin {{ branch }}
 		git -C '{{ path }}' reset --hard '{{ sha }}'
 	fi
 
 # Clone the tree-sitter repo
-_clone-repo-tree-sitter: (_clone-repo ts_repo ts_path ts_sha)
+_clone-repo-tree-sitter: (_clone-repo ts_repo ts_path ts_sha ts_branch)
 
 # Clone the just repo
-_clone-repo-just: (_clone-repo just_repo just_path just_sha)
+_clone-repo-just: (_clone-repo just_repo just_path just_sha just_branch)
 
 # Build a simple debug executable
 debug-build: _clone-repo-tree-sitter _out-dirs
