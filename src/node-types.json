@@ -55,10 +55,14 @@
     "type": "attribute",
     "named": true,
     "fields": {
-      "argument": {
+      "arguments": {
         "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": ",",
+            "named": false
+          },
           {
             "type": "string",
             "named": true
