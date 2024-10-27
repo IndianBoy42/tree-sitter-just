@@ -55,7 +55,7 @@
     "type": "attribute",
     "named": true,
     "fields": {
-      "arguments": {
+      "argument": {
         "multiple": true,
         "required": false,
         "types": [

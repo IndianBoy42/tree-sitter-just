@@ -896,7 +896,7 @@
                     },
                     {
                       "type": "FIELD",
-                      "name": "arguments",
+                      "name": "argument",
                       "content": {
                         "type": "SEQ",
                         "members": [
@@ -960,7 +960,7 @@
                           },
                           {
                             "type": "FIELD",
-                            "name": "arguments",
+                            "name": "argument",
                             "content": {
                               "type": "SEQ",
                               "members": [

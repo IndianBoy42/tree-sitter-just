@@ -232,7 +232,7 @@ module.exports = grammar({
             seq(
               $.identifier,
               "(",
-              field("arguments", comma_sep1($.string)),
+              field("argument", comma_sep1($.string)),
               ")",
             ),
           ),
