@@ -92,6 +92,7 @@ module.exports = grammar({
     // alias         : 'alias' NAME ':=' NAME
     alias: ($) =>
       seq(
+        repeat($.attribute),
         "alias",
         field("left", $.identifier),
         ":=",
