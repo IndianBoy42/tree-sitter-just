@@ -73,6 +73,13 @@
       "type": "SEQ",
       "members": [
         {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "attribute"
+          }
+        },
+        {
           "type": "STRING",
           "value": "alias"
         },
@@ -895,37 +902,33 @@
                       "value": "("
                     },
                     {
-                      "type": "SEQ",
-                      "members": [
-                        {
-                          "type": "FIELD",
-                          "name": "argument",
-                          "content": {
+                      "type": "FIELD",
+                      "name": "argument",
+                      "content": {
+                        "type": "SEQ",
+                        "members": [
+                          {
                             "type": "SYMBOL",
                             "name": "string"
-                          }
-                        },
-                        {
-                          "type": "REPEAT",
-                          "content": {
-                            "type": "SEQ",
-                            "members": [
-                              {
-                                "type": "STRING",
-                                "value": ","
-                              },
-                              {
-                                "type": "FIELD",
-                                "name": "argument",
-                                "content": {
+                          },
+                          {
+                            "type": "REPEAT",
+                            "content": {
+                              "type": "SEQ",
+                              "members": [
+                                {
+                                  "type": "STRING",
+                                  "value": ","
+                                },
+                                {
                                   "type": "SYMBOL",
                                   "name": "string"
                                 }
-                              }
-                            ]
+                              ]
+                            }
                           }
-                        }
-                      ]
+                        ]
+                      }
                     },
                     {
                       "type": "STRING",
@@ -963,37 +966,33 @@
                             "value": "("
                           },
                           {
-                            "type": "SEQ",
-                            "members": [
-                              {
-                                "type": "FIELD",
-                                "name": "argument",
-                                "content": {
+                            "type": "FIELD",
+                            "name": "argument",
+                            "content": {
+                              "type": "SEQ",
+                              "members": [
+                                {
                                   "type": "SYMBOL",
                                   "name": "string"
-                                }
-                              },
-                              {
-                                "type": "REPEAT",
-                                "content": {
-                                  "type": "SEQ",
-                                  "members": [
-                                    {
-                                      "type": "STRING",
-                                      "value": ","
-                                    },
-                                    {
-                                      "type": "FIELD",
-                                      "name": "argument",
-                                      "content": {
+                                },
+                                {
+                                  "type": "REPEAT",
+                                  "content": {
+                                    "type": "SEQ",
+                                    "members": [
+                                      {
+                                        "type": "STRING",
+                                        "value": ","
+                                      },
+                                      {
                                         "type": "SYMBOL",
                                         "name": "string"
                                       }
-                                    }
-                                  ]
+                                    ]
+                                  }
                                 }
-                              }
-                            ]
+                              ]
+                            }
                           },
                           {
                             "type": "STRING",

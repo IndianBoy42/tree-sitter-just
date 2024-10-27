@@ -357,3 +357,20 @@ foo_re := if ".JUSTFILE" =~ '(?i)\.?just(?:file)?' { "match" } else { "mismatch"
           (expression
             (value
               (string))))))))
+
+================================================================================
+attribute on alias: Issue #158
+================================================================================
+
+[private]
+alias o := open
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (alias
+    (attribute
+      (identifier))
+     (identifier)
+     (identifier)))
+
