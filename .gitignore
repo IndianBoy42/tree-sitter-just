@@ -1,9 +1,17 @@
+# Rust build
+target/**
+
 # C/C++ language server cache
 .ccls-cache/**
 
+# Node cache
+node_modules
+
 # Tree-sitter ouptut
+build/
 .build/
 log.html
+*.wasm
 fuzzer-out/
 
 # Fuzzer items
@@ -18,6 +26,7 @@ fuzzer/artifacts
 # Windows things
 *.exp
 *.lib
+*.obj
 
 # Other repos
 repositories/
@@ -32,46 +41,3 @@ setup.py
 
 # Configuring includes for autocompletion in C files
 .clangd
-
-# ======================================================================
-# Sourced from tree-sitter-rust
-# https://github.com/tree-sitter/tree-sitter-rust/blob/master/.gitignore
-# ======================================================================
-# Rust artifacts
-Cargo.lock
-target/
-
-# Node artifacts
-build/
-prebuilds/
-node_modules/
-*.tgz
-
-# Swift artifacts
-.build/
-
-# Go artifacts
-go.sum
-_obj/
-
-# Python artifacts
-.venv/
-dist/
-*.egg-info
-*.whl
-
-# C artifacts
-*.a
-*.so
-*.so.*
-*.dylib
-*.dll
-*.pc
-
-# Example dirs
-/examples/*/
-
-# Grammar volatiles
-*.wasm
-*.obj
-*.o
