@@ -9,11 +9,13 @@ fuzz_out := bin_dir / "fuzz.out"
 
 ts_path := justfile_directory() / "repositories" / "tree-sitter"
 ts_repo := "https://github.com/tree-sitter/tree-sitter"
-ts_sha := "b40f342067a89cd6331bf4c27407588320f3c263" # v0.22.6
+ts_branch := "release-0.24" # release tags aren't on `master`
+ts_sha := "bdfe32402e85673bbc693216f0a6ef72c98bb665" # v0.24.3
 
 just_path := justfile_directory() / "repositories" / "just"
 just_repo := "https://github.com/casey/just.git"
-just_sha := "5f91b37c82e6a92df2575babcb17a6a8e9c505f7" # 1.29.1
+just_branch := "master"
+just_sha := "f5bdffda344daca6c791303e4bb2006ee5a0b144" # 1.35.0
 
 include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan"
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
@@ -36,9 +38,6 @@ make_timeout_fn := '''timeout () { perl -e 'alarm shift; exec @ARGV' "$@"; }'''
 errors_expected := '''
 	test/timeout-1aa6bf37e914715f4aa49e6cf693f7abf81aaf8e
 	test/crash-4b0422bb457cd6b39d1f8549f6739830254718a0z-assertion
-
-	# FIXME: xfail files, these should parse correctly
-	repositories/just/examples/kitchen-sink.just
 '''
 
 # Files used for testing that Just itself might not understand
@@ -127,6 +126,9 @@ gen *extra-args:
 	which clang-format > /dev/null && \
 		clang-format -i src/parser.c || \
 		echo "skipping clang-format"
+
+build-wasm: gen
+    npx tree-sitter build --wasm
 
 alias t := test
 
@@ -317,7 +319,7 @@ pre-commit-install:
 	EOF
 
 # Clone or update a repo
-_clone-repo url path sha:
+_clone-repo url path sha branch:
 	#!/bin/sh
 	set -eaux
 
@@ -329,15 +331,15 @@ _clone-repo url path sha:
 	actual_sha=$(git -C '{{ path }}' rev-parse HEAD)
 	if [ "$actual_sha" != "{{ sha }}" ]; then
 		echo "Updating {{ url }} to {{ sha }}"
-		git -C '{{ path }}' fetch
+		git -C '{{ path }}' fetch origin {{ branch }}
 		git -C '{{ path }}' reset --hard '{{ sha }}'
 	fi
 
 # Clone the tree-sitter repo
-_clone-repo-tree-sitter: (_clone-repo ts_repo ts_path ts_sha)
+_clone-repo-tree-sitter: (_clone-repo ts_repo ts_path ts_sha ts_branch)
 
 # Clone the just repo
-_clone-repo-just: (_clone-repo just_repo just_path just_sha)
+_clone-repo-just: (_clone-repo just_repo just_path just_sha just_branch)
 
 # Build a simple debug executable
 debug-build: _clone-repo-tree-sitter _out-dirs

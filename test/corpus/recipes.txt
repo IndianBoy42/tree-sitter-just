@@ -275,6 +275,70 @@ foo:
         (text)))))
 
 ================================================================================
+attribute with one argument
+================================================================================
+
+[attribute("foo")]
+foo:
+  body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string))
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text)))))
+
+================================================================================
+group attribute: Issue #176
+================================================================================
+
+[group("python")]
+fmt:
+  ruff format || true
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string))
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text)))))
+
+================================================================================
+attribute with multiple arguments
+================================================================================
+
+[attribute("foo", "bar")]
+foo:
+  body
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string)
+      (string))
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text)))))
+
+================================================================================
 stacked attributes
 ================================================================================
 
@@ -461,6 +525,32 @@ shebang interpolation
 
 (source_file
   (shebang))
+
+================================================================================
+recipes with variable expansion in shebang
+================================================================================
+
+shebang_shell := "/bin/sh"
+
+foo:
+  #!{{shebang_shell}}
+  echo "foo"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (assignment
+    (identifier)
+    (expression
+      (value
+        (string))))
+  (recipe
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (shebang)
+      (recipe_line
+        (text)))))
 
 ================================================================================
 longer bodies

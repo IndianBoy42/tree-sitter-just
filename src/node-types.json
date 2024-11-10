@@ -23,6 +23,16 @@
           }
         ]
       }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "attribute",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -59,6 +69,10 @@
         "multiple": true,
         "required": false,
         "types": [
+          {
+            "type": ",",
+            "named": false
+          },
           {
             "type": "string",
             "named": true
@@ -694,6 +708,7 @@
   {
     "type": "source_file",
     "named": true,
+    "root": true,
     "fields": {},
     "children": {
       "multiple": true,

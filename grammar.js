@@ -92,6 +92,7 @@ module.exports = grammar({
     // alias         : 'alias' NAME ':=' NAME
     alias: ($) =>
       seq(
+        repeat($.attribute),
         "alias",
         field("left", $.identifier),
         ":=",
@@ -229,7 +230,7 @@ module.exports = grammar({
         comma_sep1(
           choice(
             $.identifier,
-            seq($.identifier, "(", field("argument", $.string), ")"),
+            seq($.identifier, "(", field("argument", comma_sep1($.string)), ")"),
             seq($.identifier, ":", field("argument", $.string)),
           ),
         ),
@@ -316,7 +317,7 @@ module.exports = grammar({
       ),
 
     // Fallback shebang, any string
-    _opaque_shebang: (_) => /[^/]+/,
+    _opaque_shebang: (_) => /[^/\n]+/,
 
     // string        : STRING
     //               | INDENTED_STRING

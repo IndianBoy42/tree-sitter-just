@@ -1,4 +1,5 @@
 {
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "just",
   "word": "identifier",
   "rules": {
@@ -71,6 +72,13 @@
     "alias": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "attribute"
+          }
+        },
         {
           "type": "STRING",
           "value": "alias"
@@ -897,8 +905,29 @@
                       "type": "FIELD",
                       "name": "argument",
                       "content": {
-                        "type": "SYMBOL",
-                        "name": "string"
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "SYMBOL",
+                            "name": "string"
+                          },
+                          {
+                            "type": "REPEAT",
+                            "content": {
+                              "type": "SEQ",
+                              "members": [
+                                {
+                                  "type": "STRING",
+                                  "value": ","
+                                },
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "string"
+                                }
+                              ]
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -961,8 +990,29 @@
                             "type": "FIELD",
                             "name": "argument",
                             "content": {
-                              "type": "SYMBOL",
-                              "name": "string"
+                              "type": "SEQ",
+                              "members": [
+                                {
+                                  "type": "SYMBOL",
+                                  "name": "string"
+                                },
+                                {
+                                  "type": "REPEAT",
+                                  "content": {
+                                    "type": "SEQ",
+                                    "members": [
+                                      {
+                                        "type": "STRING",
+                                        "value": ","
+                                      },
+                                      {
+                                        "type": "SYMBOL",
+                                        "name": "string"
+                                      }
+                                    ]
+                                  }
+                                }
+                              ]
                             }
                           },
                           {
@@ -1454,7 +1504,7 @@
     },
     "_opaque_shebang": {
       "type": "PATTERN",
-      "value": "[^/]+"
+      "value": "[^/\\n]+"
     },
     "string": {
       "type": "CHOICE",
