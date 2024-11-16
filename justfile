@@ -17,7 +17,11 @@ just_repo := "https://github.com/casey/just.git"
 just_branch := "master"
 just_sha := "f5bdffda344daca6c791303e4bb2006ee5a0b144" # 1.35.0
 
-include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan"
+include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan" + if os() == "macos" {
+" -I" +  `xcrun --sdk macosx --show-sdk-path` + "/usr/include/"
+} else {
+""
+}
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 
 fuzzer_flags := env("FUZZER_FLAGS", "-fsanitize=fuzzer,address,undefined")
@@ -50,27 +54,33 @@ no_just_parsing := '''
 default:
 	just --list
 
-# Install needed packages and make sure tools are setup
-setup *npm-args:
+_check_installed +dep:
 	#!/bin/sh
 	set -eau
-
-	check_installed () {
+	check_installed() {
 		printf "checking $1... "
-		if "$1" --version 2> /dev/null ; then
+		local dep=0
+		command -v "$1" 1>/dev/null || dep=$?
+
+		if [[ "${dep}" == 0 ]]; then
 			echo "tool $1 found!"
 		else
 			echo
 			echo "tool $1 NOT found. This may be needed for some functionality"
 		fi
-		echo
 	}
 
-	check_installed npm
-	check_installed cargo
-	check_installed clang
-	check_installed clang-tidy
-	check_installed clang-format
+	for d in {{dep}}; do
+		check_installed $d
+	done
+
+# Install needed packages and make sure tools are setup
+setup *npm-args:
+	#!/bin/sh
+	set -eau
+
+
+	just _check_installed npm cargo clang clang-tidy clang-format kk
 
 	if which npm > /dev/null; then
 		npm install --include=dev {{ npm-args }}
@@ -89,6 +99,7 @@ _lint-min: _clone-repo-tree-sitter configure-compile-database
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint: _lint-min
 	cargo clippy
+	@just _check_installed ruff
 	ruff check .
 
 _out-dirs:
