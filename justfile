@@ -18,9 +18,9 @@ just_branch := "master"
 just_sha := "f5bdffda344daca6c791303e4bb2006ee5a0b144" # 1.35.0
 
 include_args := "-Isrc/ -I" + ts_path + "/lib/include -Inode_modules/nan" + if os() == "macos" {
-" -I" +  `xcrun --sdk macosx --show-sdk-path` + "/usr/include/"
+    " -I" +  `xcrun --sdk macosx --show-sdk-path` + "/usr/include/"
 } else {
-""
+    ""
 }
 general_cflags := "-Wall -Werror --pedantic -Wno-format-pedantic"
 
