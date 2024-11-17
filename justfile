@@ -78,8 +78,6 @@ _check_installed +dep:
 setup *npm-args:
 	#!/bin/sh
 	set -eau
-
-
 	just _check_installed npm cargo clang clang-tidy clang-format kk
 
 	if which npm > /dev/null; then
