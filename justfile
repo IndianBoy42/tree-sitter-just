@@ -10,7 +10,7 @@ fuzz_out := bin_dir / "fuzz.out"
 ts_path := justfile_directory() / "repositories" / "tree-sitter"
 ts_repo := "https://github.com/tree-sitter/tree-sitter"
 ts_branch := "release-0.24" # release tags aren't on `master`
-ts_sha := "bdfe32402e85673bbc693216f0a6ef72c98bb665" # v0.24.3
+ts_sha := "fc8c1863e2e5724a0c40bb6e6cfc8631bfe5908b" # v0.24.4
 
 just_path := justfile_directory() / "repositories" / "just"
 just_repo := "https://github.com/casey/just.git"
