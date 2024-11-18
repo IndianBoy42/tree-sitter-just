@@ -5,6 +5,7 @@ on:
     branches: [main]
 
 env:
+  JUST_VERBOSE: 1
   RUST_BACKTRACE: 1
   CI: 1
 
@@ -32,9 +33,9 @@ jobs:
           restore-keys: ${{ runner.os }}-node-
       - run: just setup
       - name: Verify generated files are up to date (error)
-        run: just --verbose ci-validate-generated-files
+        run: just ci-validate-generated-files
       - name: Check codestyle
-        run: just --verbose ci-codestyle
+        run: just ci-codestyle
 
   test:
     runs-on: ${{ matrix.os }}
@@ -62,13 +63,13 @@ jobs:
           restore-keys: ${{ runner.os }}-node-
       - run: just setup --locked
       - name: Configure
-        run: just --verbose configure-tree-sitter
+        run: just configure-tree-sitter
       - name: Run tests
-        run: just --verbose test
+        run: just test
       - name: Check if generated files are up to date (warn only)
-        run: just --verbose ci-validate-generated-files 0
+        run: just ci-validate-generated-files 0
       - name: Test WASM build
-        run: just --verbose build-wasm
+        run: just build-wasm
 
   success:
     needs:
