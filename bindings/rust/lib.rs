@@ -6,7 +6,7 @@
 //! ```
 //! let code = "";
 //! let mut parser = tree_sitter::Parser::new();
-//! parser.set_language(tree_sitter_just::language()).expect("Error loading just grammar");
+//! parser.set_language(&tree_sitter_just::language()).expect("Error loading just grammar");
 //! let tree = parser.parse(code, None).unwrap();
 //! ```
 //!
@@ -46,7 +46,7 @@ mod tests {
     fn test_can_load_grammar() {
         let mut parser = tree_sitter::Parser::new();
         parser
-            .set_language(super::language())
+            .set_language(&super::language())
             .expect("Error loading just language");
     }
 }
