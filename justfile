@@ -54,15 +54,15 @@ no_just_parsing := '''
 default:
 	just --list
 
-_check_installed +dep:
+# Verify that a tool is installed
+_check-installed +dep:
 	#!/bin/sh
 	set -eau
+
 	check_installed() {
 		printf "checking $1... "
-		local dep=0
-		command -v "$1" 1>/dev/null || dep=$?
 
-		if [[ "${dep}" == 0 ]]; then
+		if command -v "$1"; then
 			echo "tool $1 found!"
 		else
 			echo
@@ -70,7 +70,7 @@ _check_installed +dep:
 		fi
 	}
 
-	for d in {{dep}}; do
+	for d in {{ dep }}; do
 		check_installed $d
 	done
 
@@ -78,7 +78,7 @@ _check_installed +dep:
 setup *npm-args:
 	#!/bin/sh
 	set -eau
-	just _check_installed npm cargo clang clang-tidy clang-format kk
+	just _check-installed npm cargo clang clang-tidy clang-format
 
 	if which npm > /dev/null; then
 		npm install --include=dev {{ npm-args }}
@@ -97,7 +97,7 @@ _lint-min: _clone-repo-tree-sitter configure-compile-database
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint: _lint-min
 	cargo clippy
-	@just _check_installed ruff
+	@just _check-installed ruff
 	ruff check .
 
 _out-dirs:
