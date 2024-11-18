@@ -32,8 +32,6 @@ parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_path + "/lib/src
 
 base_cache_key := sha256_file(src / "scanner.c") + sha256_file(src / "parser.c") + sha256(parser_sources) + sha256(include_args) + sha256(general_cflags) + sha256(fuzzer_flags)
 
-verbose_flag := if env("CI", "") == "1" { "--verbose" } else { "" }
-
 # `timeout` is not available on all platforms, but perl often is. This needs a
 # bash shell.
 make_timeout_fn := '''timeout () { perl -e 'alarm shift; exec @ARGV' "$@"; }'''
@@ -52,7 +50,7 @@ no_just_parsing := '''
 
 # List all recipes
 default:
-	just --list
+	@just --list
 
 # Verify that a tool is installed
 _check-installed +dep:
@@ -144,8 +142,8 @@ alias t := test
 # Run tests that are built into tree-sitter, as well as integration and Cargo tests
 test *ts-test-args: gen
 	npx tree-sitter test {{ ts-test-args }}
-	just {{ verbose_flag }} test-parse-highlight
-	just {{ verbose_flag }} verify-no-error-tests
+	@just test-parse-highlight
+	@just verify-no-error-tests
 
 	echo '\nRunning Cargo tests'
 
@@ -298,7 +296,7 @@ ci-validate-generated-files exit-code="1":
 
 	git tag ci-tmp-pre-updates
 
-	just {{ verbose_flag }} gen
+	just gen
 
 	failed=false
 	git diff ci-tmp-pre-updates --text --exit-code || failed=true
