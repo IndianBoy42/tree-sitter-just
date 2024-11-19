@@ -12,6 +12,7 @@ build/
 .build/
 log.html
 *.wasm
+*.dylib
 fuzzer-out/
 
 # Fuzzer items
