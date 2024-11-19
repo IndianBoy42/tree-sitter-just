@@ -10,7 +10,7 @@ fuzz_out := bin_dir / "fuzz.out"
 ts_path := justfile_directory() / "repositories" / "tree-sitter"
 ts_repo := "https://github.com/tree-sitter/tree-sitter"
 ts_branch := "release-0.24" # release tags aren't on `master`
-ts_sha := "bdfe32402e85673bbc693216f0a6ef72c98bb665" # v0.24.3
+ts_sha := "fc8c1863e2e5724a0c40bb6e6cfc8631bfe5908b" # v0.24.4
 
 just_path := justfile_directory() / "repositories" / "just"
 just_repo := "https://github.com/casey/just.git"
@@ -32,8 +32,6 @@ parser_sources := src + "/scanner.c " + src + "/parser.c " + ts_path + "/lib/src
 
 base_cache_key := sha256_file(src / "scanner.c") + sha256_file(src / "parser.c") + sha256(parser_sources) + sha256(include_args) + sha256(general_cflags) + sha256(fuzzer_flags)
 
-verbose_flag := if env("CI", "") == "1" { "--verbose" } else { "" }
-
 # `timeout` is not available on all platforms, but perl often is. This needs a
 # bash shell.
 make_timeout_fn := '''timeout () { perl -e 'alarm shift; exec @ARGV' "$@"; }'''
@@ -52,17 +50,17 @@ no_just_parsing := '''
 
 # List all recipes
 default:
-	just --list
+	@just --list
 
-_check_installed +dep:
+# Verify that a tool is installed
+_check-installed +dep:
 	#!/bin/sh
 	set -eau
+
 	check_installed() {
 		printf "checking $1... "
-		local dep=0
-		command -v "$1" 1>/dev/null || dep=$?
 
-		if [[ "${dep}" == 0 ]]; then
+		if command -v "$1"; then
 			echo "tool $1 found!"
 		else
 			echo
@@ -70,7 +68,7 @@ _check_installed +dep:
 		fi
 	}
 
-	for d in {{dep}}; do
+	for d in {{ dep }}; do
 		check_installed $d
 	done
 
@@ -78,7 +76,7 @@ _check_installed +dep:
 setup *npm-args:
 	#!/bin/sh
 	set -eau
-	just _check_installed npm cargo clang clang-tidy clang-format kk
+	just _check-installed npm cargo clang clang-tidy clang-format
 
 	if which npm > /dev/null; then
 		npm install --include=dev {{ npm-args }}
@@ -97,7 +95,7 @@ _lint-min: _clone-repo-tree-sitter configure-compile-database
 # Run the linter for JS, C, Cargo, and Python. Requires clang-tidy, clippy, and ruff.
 lint: _lint-min
 	cargo clippy
-	@just _check_installed ruff
+	@just _check-installed ruff
 	ruff check .
 
 _out-dirs:
@@ -144,8 +142,8 @@ alias t := test
 # Run tests that are built into tree-sitter, as well as integration and Cargo tests
 test *ts-test-args: gen
 	npx tree-sitter test {{ ts-test-args }}
-	just {{ verbose_flag }} test-parse-highlight
-	just {{ verbose_flag }} verify-no-error-tests
+	@just test-parse-highlight
+	@just verify-no-error-tests
 
 	echo '\nRunning Cargo tests'
 
@@ -298,7 +296,7 @@ ci-validate-generated-files exit-code="1":
 
 	git tag ci-tmp-pre-updates
 
-	just {{ verbose_flag }} gen
+	just gen
 
 	failed=false
 	git diff ci-tmp-pre-updates --text --exit-code || failed=true
