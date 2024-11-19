@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Turn our tests into a corpus for the fuzzer (one test per file)
-"""
+"""Turn our tests into a corpus for the fuzzer (one test per file)"""
 
 from pathlib import Path
 import re

@@ -279,7 +279,7 @@ configure-tree-sitter:
 		j = json.load(f)
 		f.seek(0)
 
-		# Add ths tree-sitter-just directory to the config file
+		# Add the tree-sitter-just directory to the config file
 		parent_dir = os.path.dirname(r"{{ justfile_directory() }}")
 		j["parser-directories"].append(parent_dir)
 		json.dump(j, f)
