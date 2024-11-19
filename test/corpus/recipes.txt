@@ -641,7 +641,7 @@ recipes containing attributes with arguments
 ================================================================================
 
 
-[group("foo"), group: "echo"]
+[group("foo"), group("echo")]
 foo:
   echo "foo"
 
@@ -665,6 +665,45 @@ bar:
         (text))))
   (recipe
     (attribute
+      (identifier)
+      (string))
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text)))))
+
+================================================================================
+recipes containing key/value attributes
+================================================================================
+
+
+[group: "echo", group: "foo"]
+foo:
+  echo "foo"
+
+[doc("this is bar"), group: "bar"]
+bar:
+  echo "bar"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string)
+      (identifier)
+      (string))
+    (recipe_header
+      (identifier))
+    (recipe_body
+      (recipe_line
+        (text))))
+  (recipe
+    (attribute
+      (identifier)
+      (string)
       (identifier)
       (string))
     (recipe_header
