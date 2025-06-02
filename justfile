@@ -325,6 +325,13 @@ pre-commit-install:
 	just pre-commit
 	EOF
 
+# regenerate tree-sitter bindings
+regen:
+    rm CMakeLists.txt Makefile Package.swift binding.gyp go.mod pyproject.toml setup.py
+    rm -rf bindings
+    tree-sitter init --update
+
+
 # Clone or update a repo
 _clone-repo url path sha branch:
 	#!/bin/sh

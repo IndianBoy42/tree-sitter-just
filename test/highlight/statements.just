@@ -122,7 +122,7 @@ foo5 := ```echo hi```
 #                 $$$ punctuation.special
 
 bar5 := ```
-echo bye  
+echo bye
 ```
 # FIXME
 # <$ punctuation.special
