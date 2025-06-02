@@ -48,6 +48,10 @@ no_just_parsing := '''
 	test/highlight/invalid-syntax.just
 '''
 
+green := "\\033[32m"
+yellow := "\\033[33m"
+reset := "\\033[0m"
+
 # List all recipes
 default:
 	@just --list
@@ -430,3 +434,16 @@ configure-compile-database:
 
 	with open("compile_commands.json", "w") as f:
 		json.dump(results, f, indent=4)
+
+# Check for outdated npm and cargo packages
+outdated:
+    @printf '{{ yellow }}=={{ reset }}NPM{{ yellow }}=={{ reset }}\n'
+    npm outdated || true # `npm outdated` returns exit code 1 on finding outdated stuff ?!
+    @printf '{{ yellow }}={{ reset }}Cargo{{ yellow }}={{ reset }}\n'
+    cargo outdated -d 1
+    @printf '{{ yellow }}======={{ reset }}\n'
+
+# updates node package.json to latest available
+update:
+    npm outdated --parseable | awk -F: '{ printf("%s ", $4); }' | xargs npm install
+    cargo upgrade && cargo update
