@@ -141,14 +141,18 @@
     "group"
     "linux"
     "macos"
+    "metadata"
     "no-cd"
     "no-exit-message"
     "no-quiet"
+    "openbsd"
+    "parallel"
     "positional-arguments"
     "private"
     "script"
     "unix"
-    "windows"))
+    "windows"
+    "working-directory"))
 
 ; Numbers are part of the syntax tree, even if disallowed
 (numeric_error) @error
