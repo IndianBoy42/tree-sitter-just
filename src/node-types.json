@@ -74,6 +74,14 @@
             "named": false
           },
           {
+            "type": "attribute_kv_argument",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
             "type": "string",
             "named": true
           }
@@ -89,6 +97,32 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "attribute_kv_argument",
+    "named": true,
+    "fields": {
+      "key": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "string",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -939,7 +973,8 @@
   },
   {
     "type": "comment",
-    "named": true
+    "named": true,
+    "extra": true
   },
   {
     "type": "else",
