@@ -43,7 +43,7 @@ function array(rule) {
   );
 }
 
-module.exports = grammar({
+export default grammar({
   name: "just",
 
   externals: ($) => [

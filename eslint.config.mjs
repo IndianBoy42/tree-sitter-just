@@ -4,7 +4,7 @@ import prettier from "eslint-config-prettier";
 
 export default [
   {
-    ignores: ["repositories/", "target/"],
+    ignores: [".build/", "repositories/", "target/"],
   },
   prettier,
   {
@@ -20,14 +20,6 @@ export default [
     },
 
     rules: {
-      indent: [
-        "error",
-        2,
-        {
-          SwitchCase: 1,
-        },
-      ],
-
       "max-len": [
         "error",
         {

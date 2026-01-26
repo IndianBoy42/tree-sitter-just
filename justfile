@@ -48,6 +48,10 @@ no_just_parsing := '''
 	test/highlight/invalid-syntax.just
 '''
 
+green := "\\033[32m"
+yellow := "\\033[33m"
+reset := "\\033[0m"
+
 # List all recipes
 default:
 	@just --list
@@ -107,7 +111,7 @@ alias fmt := format
 # Autoformat code. Requires Cargo, clang-format, and black.
 format: configure-compile-database
 	npm run format:write
-	git ls-files '**.c' | grep -v 'parser\.c' | \
+	git ls-files '**.c' | grep -v 'parser\.c' | grep -v 'bindings/' | \
 		xargs -IFNAME sh -c \
 		'echo "\nformatting 'FNAME'" && clang-format -i FNAME --verbose'
 	cargo fmt
@@ -116,7 +120,7 @@ format: configure-compile-database
 # Check formatting without editing
 format-check: configure-compile-database
 	npm run format:check
-	git ls-files '**.c' | grep -v 'parser\.c' | \
+	git ls-files '**.c' | grep -v 'parser\.c' | grep -v 'bindings/' | \
 		xargs -IFNAME sh -c \
 		'echo "\nchecking formatting for 'FNAME'" && clang-format FNAME | diff -up - FNAME'
 	cargo fmt --check
@@ -133,6 +137,9 @@ gen *extra-args:
 	which clang-format > /dev/null && \
 		clang-format -i src/parser.c || \
 		echo "skipping clang-format"
+
+	# Format generated Rust bindings
+	cargo fmt
 
 build-wasm: gen
     npx tree-sitter build --wasm
@@ -271,8 +278,13 @@ configure-tree-sitter:
 	else:
 		shell = False
 
-	cfg_fname = r"""{{ config_directory() / "tree-sitter" / "config.json" }}"""
+	if os.name == "nt":
+		cfg_fname = os.path.join(os.environ["APPDATA"], "tree-sitter", "config.json")
+	else:
+		cfg_fname = os.path.expanduser("~/.config/tree-sitter/config.json")
+
 	if not os.path.isfile(cfg_fname):
+		os.makedirs(os.path.dirname(cfg_fname), exist_ok=True)
 		sp.run(["npx", "tree-sitter", "init-config"], check=True, shell=shell)
 
 	with open(cfg_fname, "r+") as f:
@@ -324,6 +336,14 @@ pre-commit-install:
 	#!/bin/sh
 	just pre-commit
 	EOF
+
+# regenerate tree-sitter bindings
+regen:
+	rm -f CMakeLists.txt Makefile Package.swift binding.gyp go.mod pyproject.toml setup.py
+	rm -rf bindings
+	tree-sitter init --update
+	just gen
+
 
 # Clone or update a repo
 _clone-repo url path sha branch:
@@ -423,3 +443,16 @@ configure-compile-database:
 
 	with open("compile_commands.json", "w") as f:
 		json.dump(results, f, indent=4)
+
+# Check for outdated npm and cargo packages
+outdated:
+    @printf '{{ yellow }}=={{ reset }}NPM{{ yellow }}=={{ reset }}\n'
+    npm outdated || true # `npm outdated` returns exit code 1 on finding outdated stuff ?!
+    @printf '{{ yellow }}={{ reset }}Cargo{{ yellow }}={{ reset }}\n'
+    cargo outdated -d 1
+    @printf '{{ yellow }}======={{ reset }}\n'
+
+# updates node package.json to latest available
+update:
+    npm outdated --parseable | awk -F: '{ printf("%s ", $4); }' | xargs npm install
+    cargo upgrade && cargo update
