@@ -48,3 +48,4 @@ zig-out/
 
 # clangd commands
 compile_commands.json
+repositories
