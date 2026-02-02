@@ -6,10 +6,11 @@
     "Amaan Qureshi <amaanq12@gmail.com>"
   ],
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Justfiles grammar for tree-sitter",
   "main": "bindings/node",
   "types": "bindings/node",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/IndianBoy42/tree-sitter-just"
@@ -29,13 +30,10 @@
     "src/**"
   ],
   "dependencies": {
-    "tree-sitter": "^0.22.1",
-    "prettier": "^3.3.3",
-    "node-addon-api": "^8.2.2",
-    "node-gyp-build": "^4.8.3"
-  },
-  "peerDependencies": {
-    "tree-sitter": "^0.22.1"
+    "node-addon-api": "^8.5.0",
+    "node-gyp-build": "^4.8.4",
+    "prettier": "^3.5.3",
+    "tree-sitter": "^0.22.4"
   },
   "peerDependenciesMeta": {
     "tree_sitter": {
@@ -43,11 +41,11 @@
     }
   },
   "devDependencies": {
-    "eslint": ">=9.15.0",
+    "eslint": "^9.28.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^9.1.0",
-    "tree-sitter-cli": "^0.24.4",
-    "prebuildify": "^6.0.1"
+    "eslint-config-prettier": "^10.1.5",
+    "prebuildify": "^6.0.1",
+    "tree-sitter-cli": "^0.25.5"
   },
   "scripts": {
     "format:check": "prettier --check .",
