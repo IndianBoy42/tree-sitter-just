@@ -711,3 +711,168 @@ bar:
     (recipe_body
       (recipe_line
         (text)))))
+
+================================================================================
+arg attribute with pattern
+================================================================================
+
+[arg('n', pattern='\d+')]
+double n:
+  echo $(({{n}} * 2))
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string)
+      (attribute_kv_argument
+        (identifier)
+        (string)))
+    (recipe_header
+      (identifier)
+      (parameters
+        (parameter
+          (identifier))))
+    (recipe_body
+      (recipe_line
+        (text)
+        (interpolation
+          (expression
+            (value
+              (identifier))))
+        (text)))))
+
+================================================================================
+arg attribute with bare flag
+================================================================================
+
+[arg("bar", long)]
+foo bar:
+  echo {{bar}}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string)
+      (identifier))
+    (recipe_header
+      (identifier)
+      (parameters
+        (parameter
+          (identifier))))
+    (recipe_body
+      (recipe_line
+        (text)
+        (interpolation
+          (expression
+            (value
+              (identifier))))))))
+
+================================================================================
+arg attribute with multiple options
+================================================================================
+
+[arg("output", long="output", short="o", help="Output file")]
+build output:
+  echo {{output}}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string)
+      (attribute_kv_argument
+        (identifier)
+        (string))
+      (attribute_kv_argument
+        (identifier)
+        (string))
+      (attribute_kv_argument
+        (identifier)
+        (string)))
+    (recipe_header
+      (identifier)
+      (parameters
+        (parameter
+          (identifier))))
+    (recipe_body
+      (recipe_line
+        (text)
+        (interpolation
+          (expression
+            (value
+              (identifier))))))))
+
+================================================================================
+arg attribute with value option
+================================================================================
+
+[arg("force", long="force", value="yes")]
+dangerous force="no":
+  echo "Force: {{force}}"
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (string)
+      (attribute_kv_argument
+        (identifier)
+        (string))
+      (attribute_kv_argument
+        (identifier)
+        (string)))
+    (recipe_header
+      (identifier)
+      (parameters
+        (parameter
+          (identifier)
+          (value
+            (string)))))
+    (recipe_body
+      (recipe_line
+        (text)
+        (interpolation
+          (expression
+            (value
+              (identifier))))
+        (text)))))
+
+================================================================================
+arg attribute combined with other attributes
+================================================================================
+
+[private, arg("x", long)]
+foo x:
+  echo {{x}}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (identifier)
+      (string)
+      (identifier))
+    (recipe_header
+      (identifier)
+      (parameters
+        (parameter
+          (identifier))))
+    (recipe_body
+      (recipe_line
+        (text)
+        (interpolation
+          (expression
+            (value
+              (identifier))))))))
