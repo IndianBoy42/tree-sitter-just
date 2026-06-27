@@ -456,3 +456,10 @@ outdated:
 update:
     npm outdated --parseable | awk -F: '{ printf("%s ", $4); }' | xargs npm install
     cargo upgrade && cargo update
+
+work:
+	cc -O3 -shared -fPIC -Isrc src/parser.c src/scanner.c -o parser.so
+	mkdir -p ~/.local/share/nvim/site/parser/
+	mv parser.so ~/.local/share/nvim/site/parser/just.so
+	mkdir -p ~/.local/share/nvim/lazy/nvim-treesitter/runtime/queries/just/
+	cp queries/just/*.scm ~/.local/share/nvim/lazy/nvim-treesitter/runtime/queries/just/
