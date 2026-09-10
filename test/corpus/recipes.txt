@@ -288,7 +288,9 @@ foo:
   (recipe
     (attribute
       (identifier)
-      (string))
+      (expression
+        (value
+          (string))))
     (recipe_header
       (identifier))
     (recipe_body
@@ -309,7 +311,9 @@ fmt:
   (recipe
     (attribute
       (identifier)
-      (string))
+      (expression
+        (value
+          (string))))
     (recipe_header
       (identifier))
     (recipe_body
@@ -330,8 +334,12 @@ foo:
   (recipe
     (attribute
       (identifier)
-      (string)
-      (string))
+      (expression
+        (value
+          (string)))
+      (expression
+        (value
+          (string))))
     (recipe_header
       (identifier))
     (recipe_body
@@ -655,9 +663,13 @@ bar:
   (recipe
     (attribute
       (identifier)
-      (string)
+      (expression
+        (value
+          (string)))
       (identifier)
-      (string))
+      (expression
+        (value
+          (string))))
     (recipe_header
       (identifier))
     (recipe_body
@@ -666,7 +678,9 @@ bar:
   (recipe
     (attribute
       (identifier)
-      (string))
+      (expression
+        (value
+          (string))))
     (recipe_header
       (identifier))
     (recipe_body
@@ -692,9 +706,13 @@ bar:
   (recipe
     (attribute
       (identifier)
-      (string)
+      (expression
+        (value
+          (string)))
       (identifier)
-      (string))
+      (expression
+        (value
+          (string))))
     (recipe_header
       (identifier))
     (recipe_body
@@ -703,9 +721,13 @@ bar:
   (recipe
     (attribute
       (identifier)
-      (string)
+      (expression
+        (value
+          (string)))
       (identifier)
-      (string))
+      (expression
+        (value
+          (string))))
     (recipe_header
       (identifier))
     (recipe_body
@@ -726,10 +748,14 @@ double n:
   (recipe
     (attribute
       (identifier)
-      (string)
+      (expression
+        (value
+          (string)))
       (attribute_kv_argument
         (identifier)
-        (string)))
+        (expression
+          (value
+            (string)))))
     (recipe_header
       (identifier)
       (parameters
@@ -758,8 +784,12 @@ foo bar:
   (recipe
     (attribute
       (identifier)
-      (string)
-      (identifier))
+      (expression
+        (value
+          (string)))
+      (expression
+        (value
+          (identifier))))
     (recipe_header
       (identifier)
       (parameters
@@ -787,16 +817,24 @@ build output:
   (recipe
     (attribute
       (identifier)
-      (string)
+      (expression
+        (value
+          (string)))
       (attribute_kv_argument
         (identifier)
-        (string))
+        (expression
+          (value
+            (string))))
       (attribute_kv_argument
         (identifier)
-        (string))
+        (expression
+          (value
+            (string))))
       (attribute_kv_argument
         (identifier)
-        (string)))
+        (expression
+          (value
+            (string)))))
     (recipe_header
       (identifier)
       (parameters
@@ -824,13 +862,19 @@ dangerous force="no":
   (recipe
     (attribute
       (identifier)
-      (string)
+      (expression
+        (value
+          (string)))
       (attribute_kv_argument
         (identifier)
-        (string))
+        (expression
+          (value
+            (string))))
       (attribute_kv_argument
         (identifier)
-        (string)))
+        (expression
+          (value
+            (string)))))
     (recipe_header
       (identifier)
       (parameters
@@ -862,8 +906,12 @@ foo x:
     (attribute
       (identifier)
       (identifier)
-      (string)
-      (identifier))
+      (expression
+        (value
+          (string)))
+      (expression
+        (value
+          (identifier))))
     (recipe_header
       (identifier)
       (parameters
@@ -901,3 +949,54 @@ import:
     (recipe_body
       (recipe_line
         (text)))))
+
+================================================================================
+arg attribute with expression arguments
+================================================================================
+
+[arg('svcs', help='names: ' + services)]
+[doc: 'a' + b]
+[group()]
+build *svcs=services:
+    echo {{ svcs }}
+
+--------------------------------------------------------------------------------
+
+(source_file
+  (recipe
+    (attribute
+      (identifier)
+      (expression
+        (value
+          (string)))
+      (attribute_kv_argument
+        (identifier)
+        (expression
+          (value
+            (string))
+          (value
+            (identifier)))))
+    (attribute
+      (identifier)
+      (expression
+        (value
+          (string))
+        (value
+          (identifier))))
+    (attribute
+      (identifier))
+    (recipe_header
+      (identifier)
+      (parameters
+        (variadic_parameter
+          (parameter
+            (identifier)
+            (value
+              (identifier))))))
+    (recipe_body
+      (recipe_line
+        (text)
+        (interpolation
+          (expression
+            (value
+              (identifier))))))))
