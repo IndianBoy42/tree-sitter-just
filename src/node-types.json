@@ -78,11 +78,7 @@
             "named": true
           },
           {
-            "type": "identifier",
-            "named": true
-          },
-          {
-            "type": "string",
+            "type": "expression",
             "named": true
           }
         ]
@@ -118,7 +114,7 @@
         "required": true,
         "types": [
           {
-            "type": "string",
+            "type": "expression",
             "named": true
           }
         ]

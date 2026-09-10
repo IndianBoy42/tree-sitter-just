@@ -371,6 +371,5 @@ alias o := open
   (alias
     (attribute
       (identifier))
-     (identifier)
-     (identifier)))
-
+    (identifier)
+    (identifier)))

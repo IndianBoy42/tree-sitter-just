@@ -226,7 +226,7 @@ export default grammar({
 
     // Key=value argument for attributes like [arg("x", pattern='\d+')]
     attribute_kv_argument: ($) =>
-      seq(field("key", $.identifier), "=", field("value", $.string)),
+      seq(field("key", $.identifier), "=", field("value", $.expression)),
 
     attribute: ($) =>
       seq(
@@ -237,15 +237,15 @@ export default grammar({
             seq(
               $.identifier,
               "(",
-              field(
-                "argument",
-                comma_sep1(
-                  choice($.string, $.identifier, $.attribute_kv_argument),
+              optional(
+                field(
+                  "argument",
+                  comma_sep1(choice($.attribute_kv_argument, $.expression)),
                 ),
               ),
               ")",
             ),
-            seq($.identifier, ":", field("argument", $.string)),
+            seq($.identifier, ":", field("argument", $.expression)),
           ),
         ),
         "]",
